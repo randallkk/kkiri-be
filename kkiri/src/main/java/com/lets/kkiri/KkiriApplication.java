@@ -1,13 +1,13 @@
-package com.lets.kiri;
+package com.lets.kkiri;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KiriApplication {
+public class KkiriApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KiriApplication.class, args);
+        SpringApplication.run(KkiriApplication.class, args);
     }
 
 }
