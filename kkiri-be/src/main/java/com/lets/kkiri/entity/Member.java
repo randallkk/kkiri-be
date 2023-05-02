@@ -16,6 +16,7 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String email;
     private String nickname;
+    private Role role;
     private String profileImg;
     private String address;
     private String accountUrl;
@@ -30,9 +31,10 @@ public class Member {
     private Boolean meetAlarm;
 
     @Builder
-    public Member(String email, String nickname, String profileImg, String address, String accountUrl, String kakaoId, Boolean isWithdrawal, Boolean moimAlarm, Boolean chatAlarm, Boolean meetAlarm) {
+    public Member(String email, String nickname, Role role, String profileImg, String address, String accountUrl, String kakaoId, Boolean isWithdrawal, Boolean moimAlarm, Boolean chatAlarm, Boolean meetAlarm) {
         this.email = email;
         this.nickname = nickname;
+        this.role = role;
         this.profileImg = profileImg;
         this.address = address;
         this.accountUrl = accountUrl;
