@@ -27,6 +27,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.session:spring-session-data-redis'
+
+    // 파이어베이스 관련 gradle
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
