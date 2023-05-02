@@ -27,33 +27,40 @@ public class RabbitConfig {
 
 	private static final String CHAT_QUEUE_NAME = "chat.queue";
 	private static final String CHAT_EXCHANGE_NAME = "chat.exchange";
+	private static final String GPS_QUEUE_NAME = "gps.queue";
+	private static final String GPS_EXCHANGE_NAME = "gps.exchange";
 	private static final String ROUTING_KEY = "room.*";
 
 	//Queue 등록
 	@Bean
-	public Queue queue() {
+	public Queue chatQueue() {
 		return new Queue(CHAT_QUEUE_NAME, true);
 	}
+	@Bean
+	public Queue gpsQueue() { return new Queue(GPS_QUEUE_NAME, true); }
 
 	//Exchange 등록
 	@Bean
-	public TopicExchange exchange() {
+	public TopicExchange chatExchange() {
 		return new TopicExchange(CHAT_EXCHANGE_NAME);
 	}
+	@Bean
+	public TopicExchange gpsExchange() { return new TopicExchange(GPS_EXCHANGE_NAME); }
 
 	//Exchange와 Queue 바인딩
 	@Bean
-	public Binding binding() {
-		return BindingBuilder.bind(queue()).to(exchange()).with(ROUTING_KEY);
+	public Binding chatBinding() {
+		return BindingBuilder.bind(chatQueue()).to(chatExchange()).with(ROUTING_KEY);
 	}
+	@Bean
+	public Binding gpsBinding() { return BindingBuilder.bind(gpsQueue()).to(gpsExchange()).with(ROUTING_KEY); }
 
 	@Bean
 	public Module dateTimeModule() {
 		return new JavaTimeModule();
 	}
 
-	//Spring에서 자동 생성해주는 ConnectionFactory는 SimpleConnectionFactory
-	//여기서 사용하는 건 CachingConnectionFactory라 새로 등록
+	// CachingConnectionFactory 새로 등록
 	@Bean
 	public ConnectionFactory connectionFactory() {
 		CachingConnectionFactory factory = new CachingConnectionFactory();
@@ -68,18 +75,33 @@ public class RabbitConfig {
 	 * messageConverter를 커스터마이징 하기 위해 Bean 새로 등록
 	 */
 	@Bean
-	public RabbitTemplate rabbitTemplate() {
+	public RabbitTemplate chatRabbitTemplate() {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
 		rabbitTemplate.setMessageConverter(jsonMessageConverter());
 		rabbitTemplate.setRoutingKey(CHAT_QUEUE_NAME);
 		return rabbitTemplate;
 	}
+	@Bean
+	public RabbitTemplate gpsRabbitTemplate() {
+		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+		rabbitTemplate.setMessageConverter(jsonMessageConverter());
+		rabbitTemplate.setRoutingKey(GPS_QUEUE_NAME);
+		return rabbitTemplate;
+	}
 
 	@Bean
-	public SimpleMessageListenerContainer container() {
+	public SimpleMessageListenerContainer chatContainer() {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory());
 		container.setQueueNames(CHAT_QUEUE_NAME);
+		// container.setMessageListener(null);
+		return container;
+	}
+	@Bean
+	public SimpleMessageListenerContainer gpsContainer() {
+		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory());
+		container.setQueueNames(GPS_QUEUE_NAME);
 		// container.setMessageListener(null);
 		return container;
 	}
