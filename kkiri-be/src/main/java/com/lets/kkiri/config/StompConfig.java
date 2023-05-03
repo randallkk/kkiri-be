@@ -35,7 +35,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 		registry.setApplicationDestinationPrefixes("/pub");
 
 		registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
-			.setRelayHost(host)
+			.setRelayHost("k8a606.p.ssafy.io")
 			.setRelayPort(3001)
 			.setClientLogin(username)
 			.setClientPasscode(password)
