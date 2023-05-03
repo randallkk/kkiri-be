@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 public class AuthService implements OAuth2UserService {
 
-    private final OAuth2UserInfo oAuth2UserInfo;
+//    private final OAuth2UserInfo oAuth2UserInfo;
     private final MemberRepository memberRepository;
 
     @Override
@@ -77,16 +77,16 @@ public class AuthService implements OAuth2UserService {
         return member;
     }
 
-    @Override
-    public Member getMember(String token) {
-        String identifier = JwtTokenUtil.getIdentifier(token);
-        Optional<Member> findMember = memberRepository.findByEmail(identifier);
-        if (findMember.isPresent()) {
-            return findMember.get();
-        } else{
-            throw new MemberNotFoundException();
-        }
-    }
+//    @Override
+//    public Member getMember(String token) {
+//        String identifier = JwtTokenUtil.getIdentifier(token);
+//        Optional<Member> findMember = memberRepository.findByEmail(identifier);
+//        if (findMember.isPresent()) {
+//            return findMember.get();
+//        } else{
+//            throw new MemberNotFoundException();
+//        }
+//    }
 
 
 }
