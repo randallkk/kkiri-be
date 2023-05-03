@@ -17,8 +17,8 @@ public class GpsDto {
     private Long id;
     private Long roomId;
     private Long memberId;
-    private int longitude;
-    private int latitude;
+    private Double longitude;
+    private Double latitude;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime regDate;
 }
