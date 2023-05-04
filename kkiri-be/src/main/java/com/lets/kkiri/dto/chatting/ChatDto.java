@@ -16,10 +16,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class ChatDto {
 	private Long id;
-	private Long chatRoomId;
+	private Long roomId;
 	private Long memberId;
 	private String message;
-	private String region;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDateTime regDate;
 }
