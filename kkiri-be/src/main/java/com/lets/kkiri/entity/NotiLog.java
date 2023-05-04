@@ -21,8 +21,8 @@ public class NotiLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MemberDevice memberDevice;
+    @JoinColumn(name = "token")
+    private String token;
 
     private String title;
     private String body;
