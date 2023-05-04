@@ -1,8 +1,9 @@
-package com.lets.kiri.stomp;
+package com.lets.kkiri.stomp;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 
@@ -19,6 +20,7 @@ public class MessageFrameHandler<T> implements StompFrameHandler {
         this.tClass = tClass;
     }
 
+    @NotNull
     @Override
     public Type getPayloadType(StompHeaders headers) {
         return this.tClass;

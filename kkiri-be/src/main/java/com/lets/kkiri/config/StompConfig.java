@@ -26,8 +26,9 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint(ENDPOINT)
-			// .setAllowedOriginPatterns()
-			.withSockJS();
+			.setAllowedOriginPatterns("*")
+//			.withSockJS()
+		;
 	}
 
 	@Override
@@ -38,8 +39,8 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 		registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
 			.setRelayHost(host)
 			.setRelayPort(3001)
-			// .setClientLogin()
-			// .setClientPasscode()
+			.setClientLogin(username)
+			.setClientPasscode(password)
 			.setSystemLogin(username)
 			.setSystemPasscode(password);
 
