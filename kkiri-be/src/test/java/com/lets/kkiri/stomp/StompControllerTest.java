@@ -1,4 +1,4 @@
-package com.lets.kiri.stomp;
+package com.lets.kkiri.stomp;
 
 import com.lets.kkiri.dto.gps.GpsDto;
 import jdk.jfr.Description;
@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.notNullValue;
 public class StompControllerTest extends StompSupport {
 
     @Test
-    @Description("gps/location/{roomId}로 gpsDto를 전송하면 /gps/{roomId}로 gpsDto가 전송되는지 확인")
     public void findLocation() throws ExecutionException, InterruptedException, TimeoutException {
         /* GIVEN */
         MessageFrameHandler<GpsDto> handler = new MessageFrameHandler<>(GpsDto.class);
