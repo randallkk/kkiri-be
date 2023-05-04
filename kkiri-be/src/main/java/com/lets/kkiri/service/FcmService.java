@@ -36,8 +36,15 @@ public class FcmService {
     public List<NotiLogDto> sendMessage(List<String> tokenList, String title, String body) throws IOException {
         List<NotiLogDto> results = new ArrayList<>();
         MulticastMessage message = MulticastMessage.builder()
-                .putData("title", title)
-                .putData("body", body)
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setTtl(3600 * 1000)
+                        .setPriority(AndroidConfig.Priority.HIGH)
+                        .setNotification(AndroidNotification.builder()
+                                .setTitle(title)
+                                .setBody(body)
+                                .setChannelId("hurry")
+                                .build())
+                        .build())
                 .addAllTokens(tokenList)
                 .build();
 
