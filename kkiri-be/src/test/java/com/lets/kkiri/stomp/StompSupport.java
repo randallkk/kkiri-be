@@ -1,4 +1,4 @@
-package com.lets.kiri.stomp;
+package com.lets.kkiri.stomp;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,8 @@ public class StompSupport {
     private final WebSocketStompClient websocketClient;
 
     public StompSupport() {
-        this.websocketClient = new WebSocketStompClient(new SockJsClient(createTransport()));
+//        this.websocketClient = new WebSocketStompClient(new SockJsClient(createTransport()));
+        this.websocketClient = new WebSocketStompClient(new StandardWebSocketClient());
         this.websocketClient.setMessageConverter(new MappingJackson2MessageConverter());
         this.url = "ws://localhost:";
     }
