@@ -2,6 +2,9 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.11'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    // querydsl
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.lets'
@@ -12,10 +15,16 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    // querydsl
+    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
     mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
@@ -44,8 +53,51 @@ dependencies {
     implementation 'org.webjars:sockjs-client:1.5.1'
     implementation 'org.springframework.boot:spring-boot-starter-amqp:2.6.4'
 
+    // querydsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
+    implementation 'com.querydsl:querydsl-apt:5.0.0'
+
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'com.auth0:java-jwt:3.10.3'
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+tasks {
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+    main {
+        resources {
+            srcDirs ("src/main/resources")
+        }
+    }
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+jar {
+    enabled = false
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
