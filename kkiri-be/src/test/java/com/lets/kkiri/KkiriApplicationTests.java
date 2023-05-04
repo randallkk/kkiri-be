@@ -1,10 +1,10 @@
-package com.lets.kiri;
+package com.lets.kkiri;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class KiriApplicationTests {
+class KkiriApplicationTests {
 
     @Test
     void contextLoads() {
