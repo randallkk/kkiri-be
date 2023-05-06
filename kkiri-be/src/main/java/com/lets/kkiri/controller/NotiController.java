@@ -2,6 +2,7 @@ package com.lets.kkiri.controller;
 
 import com.lets.kkiri.dto.noti.HelpNotiReq;
 import com.lets.kkiri.dto.noti.PressNotiReq;
+import com.lets.kkiri.dto.noti.RouteGuideNotiReq;
 import com.lets.kkiri.service.FcmService;
 import com.lets.kkiri.service.NotiService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,12 @@ public class NotiController {
     @PostMapping("/helps")
     public ResponseEntity<?> sendHelpNoti(@RequestBody HelpNotiReq helpNotiReq) {
         notiService.sendHelpNoti(helpNotiReq);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/helps/guides")
+    public ResponseEntity<?> sendRouteGuide(@RequestBody RouteGuideNotiReq routeGuideReq) {
+        notiService.sendRoute(routeGuideReq);
         return ResponseEntity.ok().build();
     }
 }
