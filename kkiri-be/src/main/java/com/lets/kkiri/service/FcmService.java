@@ -30,20 +30,12 @@ public class FcmService {
 
     @Value("${firebase.send.url}")
     String FCM_SEND_URL;
-    public List<NotiLogDto> sendMessageToToken(List<String> tokenList, String channelId, String title, String body) throws IOException {
+
+    public List<NotiLogDto> sendMessageToToken(FcmMessageDto messageDto) throws IOException {
         List<NotiLogDto> results = new ArrayList<>();
-        MulticastMessage message = MulticastMessage.builder()
-                .setAndroidConfig(AndroidConfig.builder()
-                        .setTtl(3600 * 1000)
-                        .setPriority(AndroidConfig.Priority.HIGH)
-                        .setNotification(AndroidNotification.builder()
-                                .setTitle(title)
-                                .setBody(body)
-                                .setChannelId(channelId)
-                                .build())
-                        .build())
-                .addAllTokens(tokenList)
-                .build();
+        MulticastMessage message = makeMessage(messageDto);
+
+        List<String> tokenList = messageDto.getTokenList();
 
         BatchResponse sendRes = null;
         try {
@@ -55,35 +47,44 @@ public class FcmService {
         List<SendResponse> responses = sendRes.getResponses();
 
         for (int i = 0; i < responses.size(); i++) {
-            if(!responses.get(i).isSuccessful()) continue;
+            if (!responses.get(i).isSuccessful()) continue;
             String messageId = responses.get(i).getMessageId().split("/")[3];
             String token = tokenList.get(i);
 
             results.add(
                     NotiLogDto.builder()
-                                        .messageId(messageId)
-                                        .token(token)
-                                        .title(title)
-                                        .body(body)
-                                        .image(null)
-                                        .build()
+                            .messageId(messageId)
+                            .token(token)
+                            .title(messageDto.getTitle())
+                            .body(messageDto.getBody())
+                            .image(null)
+                            .build()
             );
         }
         return results;
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
-        FcmMessageDto fcmMessage = FcmMessageDto.builder()
-                .message(FcmMessageDto.Message.builder()
-                        .token(targetToken)
-                        .notification(FcmMessageDto.Notification.builder()
-                                .title(title)
-                                .body(body)
-                                .image(null)
-                                .build()
-                        ).build()).validateOnly(false).build();
+    private MulticastMessage makeMessage(FcmMessageDto messageDto) throws JsonParseException, JsonProcessingException {
+        Notification.Builder notificationBuilder = Notification.builder()
+                .setTitle(messageDto.getTitle())
+                .setBody(messageDto.getBody());
 
-        return objectMapper.writeValueAsString(fcmMessage);
+        AndroidConfig.Builder androidConfigBuilder = AndroidConfig.builder()
+                .setTtl(3600 * 1000)
+                .setPriority(AndroidConfig.Priority.HIGH)
+                .setNotification(
+                        AndroidNotification.builder()
+                                .setChannelId(messageDto.getChannelId())
+                                .build()
+                );
+
+        MulticastMessage.Builder multicastMessageBuilder = MulticastMessage.builder()
+                .setNotification(notificationBuilder.build())
+                .setAndroidConfig(androidConfigBuilder.build())
+                .addAllTokens(messageDto.getTokenList());
+
+        if(messageDto.getPath() != null) multicastMessageBuilder.putData("path", objectMapper.writeValueAsString(messageDto.getPath()));
+        return multicastMessageBuilder.build();
     }
 
     private String getAccessToken() throws IOException {

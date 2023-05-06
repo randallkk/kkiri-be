@@ -1,10 +1,10 @@
 package com.lets.kkiri.service;
 
-import com.google.firebase.messaging.Message;
 import com.lets.kkiri.dto.fcm.FcmMessageDto;
 import com.lets.kkiri.dto.noti.HelpNotiReq;
 import com.lets.kkiri.dto.noti.NotiLogDto;
 import com.lets.kkiri.dto.noti.PressNotiReq;
+import com.lets.kkiri.dto.noti.RouteGuideNotiReq;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.Moim;
 import com.lets.kkiri.repository.member.MemberDeviceRepositorySupport;
@@ -28,22 +28,26 @@ public class NotiService {
     private final MemberRepository memberRepository;
     private final MemberDeviceRepositorySupport memberDeviceRepositorySupport;
     private final FcmService fcmService;
+
     public void sendPressNoti(PressNotiReq pressNotiReq) {
-        Member recvMember = memberRepository.findByEmail(pressNotiReq.getRecieverEmail()).orElseThrow(
+        Member recvMember = memberRepository.findByEmail(pressNotiReq.getReceiverEmail()).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
 
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMemberId(recvMember.getId());
-        if(tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+        if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
 
         List<NotiLogDto> successLogList = new ArrayList<>();
         try {
-            successLogList =  fcmService.sendMessageToToken(
-                    tokenList,
-                    "hurry",
-                    "재촉 알림",
-                    pressNotiReq.getSenderEmail() + "님이 재촉 중입니다.");
-        } catch (IOException e){
+            successLogList = fcmService.sendMessageToToken(
+                    FcmMessageDto.builder()
+                            .tokenList(tokenList)
+                            .channelId("hurry")
+                            .title("재촉 알림")
+                            .body(pressNotiReq.getSenderEmail() + "님이 재촉 중입니다.")
+                            .build()
+            );
+        } catch (IOException e) {
             log.error("FCM ERROR");
         }
 
@@ -63,16 +67,47 @@ public class NotiService {
 
         // 보내는 사람을 제외한 모임원들의 토큰들을 불러옴.
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMoimId(senderId, targetMoim.getId().toString());
-        if(tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+        if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
 
         List<NotiLogDto> successLogList = new ArrayList<>();
         try {
             successLogList = fcmService.sendMessageToToken(
-                    tokenList,
-                    "hurry",
-                    "도움 요청 알림",
-                    helpNotiReq.getSenderEmail() + "님이 도움을 요청 중입니다.");
-        } catch (IOException e){
+                    FcmMessageDto.builder()
+                            .tokenList(tokenList)
+                            .channelId("hurry")
+                            .title("도움 요청 알림")
+                            .body(helpNotiReq.getSenderEmail() + "님이 도움을 요청 중입니다.")
+                            .build()
+            );
+        } catch (IOException e) {
+            log.error("FCM ERROR");
+        }
+
+        successLogList.forEach((log) -> {
+            notiLogRepository.save(log.toEntity());
+        });
+    }
+
+    public void sendRoute(RouteGuideNotiReq routeGuideReq) {
+        Member recvMember = memberRepository.findByEmail(routeGuideReq.getReceiverEmail()).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+        );
+
+        List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMemberId(recvMember.getId());
+        if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+
+        List<NotiLogDto> successLogList = new ArrayList<>();
+        try {
+            successLogList = fcmService.sendMessageToToken(
+                    FcmMessageDto.builder()
+                            .tokenList(tokenList)
+                            .channelId("path")
+                            .title("길 안내 알림")
+                            .body(routeGuideReq.getSenderEmail() + "님이 길 안내 중입니다.")
+                            .path(routeGuideReq.getPath())
+                            .build()
+            );
+        } catch (IOException e) {
             log.error("FCM ERROR");
         }
 
