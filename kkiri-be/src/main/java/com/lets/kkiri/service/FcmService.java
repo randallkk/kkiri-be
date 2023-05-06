@@ -9,15 +9,12 @@ import com.lets.kkiri.dto.fcm.FcmMessageDto;
 import com.lets.kkiri.dto.noti.NotiLogDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -33,7 +30,7 @@ public class FcmService {
 
     @Value("${firebase.send.url}")
     String FCM_SEND_URL;
-    public List<NotiLogDto> sendMessage(List<String> tokenList, String title, String body) throws IOException {
+    public List<NotiLogDto> sendMessageToToken(List<String> tokenList, String channelId, String title, String body) throws IOException {
         List<NotiLogDto> results = new ArrayList<>();
         MulticastMessage message = MulticastMessage.builder()
                 .setAndroidConfig(AndroidConfig.builder()
@@ -42,7 +39,7 @@ public class FcmService {
                         .setNotification(AndroidNotification.builder()
                                 .setTitle(title)
                                 .setBody(body)
-                                .setChannelId("hurry")
+                                .setChannelId(channelId)
                                 .build())
                         .build())
                 .addAllTokens(tokenList)

@@ -1,5 +1,6 @@
 package com.lets.kkiri.controller;
 
+import com.lets.kkiri.dto.noti.HelpNotiReq;
 import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.service.FcmService;
 import com.lets.kkiri.service.NotiService;
@@ -26,4 +27,9 @@ public class NotiController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/helps")
+    public ResponseEntity<?> sendHelpNoti(@RequestBody HelpNotiReq helpNotiReq) {
+        notiService.sendHelpNoti(helpNotiReq);
+        return ResponseEntity.ok().build();
+    }
 }
