@@ -12,5 +12,5 @@ public class PressNotiReq {
     private String senderEmail;
 
     // 수신 유저 이메일
-    private String recieverEmail;
+    private String receiverEmail;
 }
