@@ -2,7 +2,7 @@ package com.lets.kkiri.controller;
 
 import java.time.LocalDateTime;
 
-import com.lets.kkiri.entity.MongoMessage;
+import com.lets.kkiri.entity.Message;
 import com.lets.kkiri.service.ChatService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,9 +15,6 @@ import com.lets.kkiri.dto.chatting.ChatDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,10 +38,10 @@ public class ChatController {
 		template.convertAndSend(CHAT_EXCHANGE_NAME, "room."+roomId, chatDto); //exchange
 
 		//DB에 넣기
-		chatService.chatInsert(MongoMessage.builder()
+		chatService.chatInsert(Message.builder()
 						.message(chatDto.getMessage())
 						.time(chatDto.getRegDate())
-//						.memberId(chatDto.getMemberId())
+						.memberId(chatDto.getMemberId())
 //						.roomId(chatDto.getRoomId())
 						.build());
 	}
