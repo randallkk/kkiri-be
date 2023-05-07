@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ChatDto {
-	private Long id;
 	private Long roomId;
 	private Long memberId;
 	private String message;
