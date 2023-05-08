@@ -20,11 +20,11 @@ public class MoimPostReq {
     // 모임 링크
     private String link;
     // 집합 장소
-    private String place;
+    private String placeName;
     // 위도
-    private String lat;
+    private String latitude;
     // 경도
-    private String lng;
+    private String longitude;
     private String meetingAt;
     @ColumnDefault("0")
     private Integer lateFee;
@@ -34,9 +34,9 @@ public class MoimPostReq {
         return Moim.builder()
                 .name(name)
                 .link(link)
-                .place(place)
-                .lat(lat)
-                .lng(lng)
+                .placeName(placeName)
+                .lat(latitude)
+                .lng(longitude)
                 .meetingAt(
                         LocalDateTime.parse(meetingAt, formatter)
                 )
@@ -48,9 +48,9 @@ public class MoimPostReq {
         return MoimPostReq.builder()
                 .name(moim.getName())
                 .link(moim.getLink())
-                .place(moim.getPlace())
-                .lat(moim.getLat())
-                .lng(moim.getLng())
+                .placeName(moim.getPlaceName())
+                .latitude(moim.getLat())
+                .longitude(moim.getLng())
                 .meetingAt(moim.getMeetingAt().toString())
                 .lateFee(moim.getLateFee())
                 .build();
