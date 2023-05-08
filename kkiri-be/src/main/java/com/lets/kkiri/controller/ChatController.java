@@ -36,7 +36,7 @@ public class ChatController {
 
 		//exchange
 		template.convertAndSend(CHAT_EXCHANGE_NAME, "room."+roomId, chatDto); //exchange
-
+		receive(chatDto);
 		//DB에 넣기
 		chatService.chatInsert(Message.builder()
 						.message(chatDto.getMessage())
@@ -50,6 +50,7 @@ public class ChatController {
 	public void send(ChatDto chatDto, @DestinationVariable String roomId) {
 		chatDto.setRegDate(LocalDateTime.now());
 
+		receive(chatDto);
 		template.convertAndSend(CHAT_EXCHANGE_NAME, "room."+roomId, chatDto); //exchange
 	}
 
