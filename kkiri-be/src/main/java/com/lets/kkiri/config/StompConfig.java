@@ -23,6 +23,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		System.out.println("stomp 연결해보자");
 		registry.addEndpoint("/stomp")
 			// .setAllowedOrigins("*")
 			.setAllowedOriginPatterns("*")
