@@ -29,4 +29,5 @@ public class Moim {
     // 경도
     private String lng;
     private LocalDateTime meetingAt;
+    private Integer lateFee;
 }
