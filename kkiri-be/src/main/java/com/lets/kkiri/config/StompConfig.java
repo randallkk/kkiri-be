@@ -21,19 +21,18 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 	@Value("${spring.rabbitmq.password}")
 	private String password;
 
+	public final static String ENDPOINT = "/stomp";
+
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		System.out.println("stomp 연결해보자");
-		registry.addEndpoint("/stomp")
-			// .setAllowedOrigins("*")
+		registry.addEndpoint(ENDPOINT)
 			.setAllowedOriginPatterns("*")
-			.withSockJS()
+//			.withSockJS()
 		;
 	}
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		System.out.println("pub도 연결해보자");
 		registry.setPathMatcher(new AntPathMatcher(".")); //chat/room/3 => chat.room.3
 		registry.setApplicationDestinationPrefixes("/pub");
 
