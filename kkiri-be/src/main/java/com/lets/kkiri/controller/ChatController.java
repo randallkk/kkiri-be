@@ -29,7 +29,8 @@ public class ChatController {
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
 	private final static String CHAT_QUEUE_NAME = "chat.queue";
 
-	@MessageMapping("/chat.enter.{roomId}")
+	// @MessageMapping("/chat.enter.{roomId}")
+	@MessageMapping("/chat")
 	public void enter(
 		ChatDto chatDto,
 		@DestinationVariable String roomId) {
