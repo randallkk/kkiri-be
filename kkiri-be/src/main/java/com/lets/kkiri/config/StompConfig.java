@@ -23,6 +23,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		System.out.println("stomp 연결해보자");
 		registry.addEndpoint("/stomp")
 			// .setAllowedOrigins("*")
 			.setAllowedOriginPatterns("*")
@@ -32,6 +33,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
+		System.out.println("pub도 연결해보자");
 		registry.setPathMatcher(new AntPathMatcher(".")); //chat/room/3 => chat.room.3
 		registry.setApplicationDestinationPrefixes("/pub");
 
