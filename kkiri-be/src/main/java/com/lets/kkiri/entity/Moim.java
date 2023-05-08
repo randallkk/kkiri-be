@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -29,4 +26,17 @@ public class Moim {
     // 경도
     private String lng;
     private LocalDateTime meetingAt;
+    @ColumnDefault("0")
+    private Integer lateFee;
+
+    @Builder
+    public Moim(String name, String link, String place, String lat, String lng, LocalDateTime meetingAt, Integer lateFee) {
+        this.name = name;
+        this.link = link;
+        this.place = place;
+        this.lat = lat;
+        this.lng = lng;
+        this.meetingAt = meetingAt;
+        this.lateFee = lateFee;
+    }
 }

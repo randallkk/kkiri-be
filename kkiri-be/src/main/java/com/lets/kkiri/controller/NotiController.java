@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class NotiController {
     private final NotiService notiService;
-    private final FcmService fcmService;
-
     @PostMapping("/presses")
     public ResponseEntity<?> sendPressNoti(@RequestBody PressNotiReq pressNotiReq) {
         notiService.sendPressNoti(pressNotiReq);

@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface MoimRepository extends JpaRepository<Moim, Long> {
     Optional<Moim> findById(Long id);
+    Moim save(Moim moim);
 }
