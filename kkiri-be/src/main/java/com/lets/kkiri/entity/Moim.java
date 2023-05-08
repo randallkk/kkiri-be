@@ -19,8 +19,10 @@ public class Moim {
     private String name;
     // 모임 링크
     private String link;
-    // 집합 장소
-    private String place;
+    // 집합 장소 이름
+    private String placeName;
+    // 도로명 주소
+    private String address;
     // 위도
     private String lat;
     // 경도
@@ -30,10 +32,11 @@ public class Moim {
     private Integer lateFee;
 
     @Builder
-    public Moim(String name, String link, String place, String lat, String lng, LocalDateTime meetingAt, Integer lateFee) {
+    public Moim(String name, String link, String placeName, String address, String lat, String lng, LocalDateTime meetingAt, Integer lateFee) {
         this.name = name;
         this.link = link;
-        this.place = place;
+        this.placeName = placeName;
+        this.address = address;
         this.lat = lat;
         this.lng = lng;
         this.meetingAt = meetingAt;
