@@ -30,7 +30,9 @@ public class ChatController {
 	private final static String CHAT_QUEUE_NAME = "chat.queue";
 
 	@MessageMapping("/chat.enter.{roomId}")
-	public void enter(ChatDto chatDto, @DestinationVariable String roomId) {
+	public void enter(
+		ChatDto chatDto,
+		@DestinationVariable String roomId) {
 		chatDto.setMessage("입장하셨습니다.");
 		chatDto.setRegDate(LocalDateTime.now());
 		System.out.println("==========1===============");
