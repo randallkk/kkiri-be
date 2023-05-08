@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class KakaoPlaceDto {
-    @SerializedName("address_name")
+    @SerializedName("road_address_name")
     private String addressName;
     @SerializedName("place_name")
     private String placeName;
