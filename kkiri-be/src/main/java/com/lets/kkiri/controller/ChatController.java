@@ -27,10 +27,9 @@ public class ChatController {
 	private final ChatService chatService;
 
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
-	private final static String CHAT_QUEUE_NAME = "chat.queue";
 
-	// @MessageMapping("/chat.enter.{roomId}")
-	@MessageMapping("/chat")
+
+	@MessageMapping("/chat.enter.{roomId}")
 	public void enter(
 		ChatDto chatDto,
 		@DestinationVariable String roomId) {
@@ -46,12 +45,14 @@ public class ChatController {
 
 		//DB에 넣기
 		chatService.chatInsert(Message.builder()
-						.message(chatDto.getMessage())
-						.time(chatDto.getRegDate())
-						.memberId(chatDto.getMemberId())
-//						.roomId(chatDto.getRoomId())
-						.build());
+			.message(chatDto.getMessage())
+			.time(chatDto.getRegDate())
+			.memberId(chatDto.getMemberId())
+			//						.roomId(chatDto.getRoomId())
+			.build());
 	}
+
+	private final static String CHAT_QUEUE_NAME = "chat.queue";
 
 	@MessageMapping("/chat.message.{roomId}")
 	public void send(ChatDto chatDto, @DestinationVariable String roomId) {
