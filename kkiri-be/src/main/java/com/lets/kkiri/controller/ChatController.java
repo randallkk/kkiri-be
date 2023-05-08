@@ -29,7 +29,7 @@ public class ChatController {
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
 	private final static String CHAT_QUEUE_NAME = "chat.queue";
 
-	@MessageMapping("chat.enter.{roomId}")
+	@MessageMapping("/chat.enter.{roomId}")
 	public void enter(ChatDto chatDto, @DestinationVariable String roomId) {
 		chatDto.setMessage("입장하셨습니다.");
 		chatDto.setRegDate(LocalDateTime.now());
@@ -50,7 +50,7 @@ public class ChatController {
 						.build());
 	}
 
-	@MessageMapping("chat.message.{roomId}")
+	@MessageMapping("/chat.message.{roomId}")
 	public void send(ChatDto chatDto, @DestinationVariable String roomId) {
 		chatDto.setRegDate(LocalDateTime.now());
 
