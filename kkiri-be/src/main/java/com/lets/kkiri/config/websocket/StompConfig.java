@@ -1,4 +1,4 @@
-package com.lets.kkiri.config;
+package com.lets.kkiri.config.websocket;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +26,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		System.out.println("stomp 연결해보자");
-		registry.addEndpoint(ENDPOINT)
+		registry.addEndpoint("/stomp")
 			// .setAllowedOrigins("*")
 			.setAllowedOriginPatterns("*")
 			.withSockJS()
@@ -40,12 +40,14 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 		registry.setApplicationDestinationPrefixes("/pub");
 
 		registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+		// registry.enableStompBrokerRelay("/stomp")
 			.setRelayHost(host)
 			.setRelayPort(3001)
 			.setClientLogin(username)
 			.setClientPasscode(password)
 			.setSystemLogin(username)
-			.setSystemPasscode(password);
+			.setSystemPasscode(password)
+		;
 
 	}
 
