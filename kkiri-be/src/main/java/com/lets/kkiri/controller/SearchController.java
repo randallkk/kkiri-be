@@ -22,7 +22,7 @@ public class SearchController {
     @GetMapping()
     public SearchPlaceRes search(
             @RequestParam String query,
-            @PageableDefault(size = 10, page = 0) Pageable pageable
+            @PageableDefault(size = 10, page = 1) Pageable pageable
     ) {
         return kakaoSearchService.searchPlace(query, pageable);
     }
