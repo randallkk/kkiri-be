@@ -35,7 +35,7 @@ public class ChatController {
 	public void enter(
 		ChatDto chatDto,
 		@DestinationVariable String roomId) {
-		chatDto.setMessage("입장하셨습니다.");
+		chatDto.setMessage("입장하셨습니다!!");
 		chatDto.setRegDate(LocalDateTime.now());
 		System.out.println("==========1===============");
 		receive(chatDto);
