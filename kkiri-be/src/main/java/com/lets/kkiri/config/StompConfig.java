@@ -21,10 +21,12 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 	@Value("${spring.rabbitmq.password}")
 	private String password;
 
+	public final static String ENDPOINT = "/stomp";
+
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		System.out.println("stomp 연결해보자");
-		registry.addEndpoint("/stomp")
+		registry.addEndpoint(ENDPOINT)
 			// .setAllowedOrigins("*")
 			.setAllowedOriginPatterns("*")
 			.withSockJS()
