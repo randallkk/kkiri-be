@@ -1,4 +1,4 @@
-package com.lets.kkiri.config;
+package com.lets.kkiri.config.websocket;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,7 @@ public class RabbitConfig {
 	private static final String GPS_QUEUE_NAME = "gps.queue";
 	private static final String GPS_EXCHANGE_NAME = "gps.exchange";
 	private static final String ROUTING_KEY = "room.*";
+
 
 	//Queue 등록
 	@Bean
@@ -100,7 +102,9 @@ public class RabbitConfig {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory());
 		container.setQueueNames(CHAT_QUEUE_NAME);
-		// container.setMessageListener(null);
+		container.setMaxConcurrentConsumers(3);
+		container.setReceiveTimeout(3000L);
+		// container.setMessageListener(chatMessageListener());
 		return container;
 	}
 	@Bean
@@ -108,6 +112,8 @@ public class RabbitConfig {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory());
 		container.setQueueNames(GPS_QUEUE_NAME);
+		container.setMaxConcurrentConsumers(3);
+		container.setReceiveTimeout(3000L);
 		// container.setMessageListener(null);
 		return container;
 	}
