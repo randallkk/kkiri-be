@@ -27,8 +27,8 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		System.out.println("stomp 연결해보자");
 		registry.addEndpoint("/stomp")
-			// .setAllowedOrigins("*")
-			.setAllowedOriginPatterns("*")
+			.setAllowedOrigins("*")
+			// .setAllowedOriginPatterns("https://k8a606.p.ssafy.io")
 			.withSockJS()
 		;
 	}
