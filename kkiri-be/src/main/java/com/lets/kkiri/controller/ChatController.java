@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 import com.lets.kkiri.dto.chatting.ChatDto;
@@ -29,7 +30,8 @@ public class ChatController {
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
 
 
-	@MessageMapping("/chat.enter.{roomId}")
+	@MessageMapping("/chat/enter/{roomId}")
+	@SendTo("/topic/room.{roomId}")
 	public void enter(
 		ChatDto chatDto,
 		@DestinationVariable String roomId) {
@@ -54,7 +56,7 @@ public class ChatController {
 
 	private final static String CHAT_QUEUE_NAME = "chat.queue";
 
-	@MessageMapping("/chat.message.{roomId}")
+	@MessageMapping("/chat/message/{roomId}")
 	public void send(ChatDto chatDto, @DestinationVariable String roomId) {
 		chatDto.setRegDate(LocalDateTime.now());
 
