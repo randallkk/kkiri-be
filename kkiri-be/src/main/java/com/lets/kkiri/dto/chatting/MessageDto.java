@@ -16,8 +16,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @ToString
-public class ChatDto {
-	private Long roomId;
+public class MessageDto {
+	public enum MessageType {
+		ENTER, TALK
+	}
+
+	private MessageType messageType;
+	private Long moimId;
 	private Long memberId;
 	private String message;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
