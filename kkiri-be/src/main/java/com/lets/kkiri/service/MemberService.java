@@ -22,4 +22,8 @@ public class MemberService {
         );
         return member;
     }
+
+    public void createUser(Member member) {
+        memberRepository.save(member);
+    }
 }
