@@ -14,13 +14,8 @@ import lombok.*;
 @Setter
 @ToString
 public class MessageDto {
-	public enum MessageType {
-		ENTER, TALK
-	}
-
-	private MessageType messageType;
 	private Long moimId;
-	private Long memberId;
+	private String memberKakaoId;
 	private String nickname;
 	private String message;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
