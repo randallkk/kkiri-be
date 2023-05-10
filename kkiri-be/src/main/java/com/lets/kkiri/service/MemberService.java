@@ -14,8 +14,8 @@ import java.util.Optional;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    public Member getMemberByEmail(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(
+    public Member getMemberByKakaoId(String kakaoId) {
+        Member member = memberRepository.findByKakaoId(kakaoId).orElseThrow(
                 () -> {
                     log.error("MemberService.getMemberByEmail: member not found");
                     return new IllegalArgumentException("MemberService.getMemberByEmail: member not found");
