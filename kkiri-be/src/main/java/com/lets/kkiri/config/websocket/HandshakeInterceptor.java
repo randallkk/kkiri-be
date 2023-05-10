@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lets.kkiri.config.jwt.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.server.ServerHttpRequest;
@@ -25,10 +26,10 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor{
         ServletServerHttpRequest ssreq = (ServletServerHttpRequest) request;
         HttpServletRequest req =  ssreq.getServletRequest();
 
-        // HttpSession 에 저장된 이용자의 아이디를 추출하는 경우
-        String memberKakaoId = (String)req.getSession().getAttribute("memberKakaoId");
-        attributes.put("memberKakaoId", memberKakaoId);
-        log.info("ws:// memberKakaoId: {} 회원님이 웹소켓에 접속햇삼 꺄륵><", memberKakaoId);
+        String accessToken = req.getHeader("Authorization");
+        String memberIdentifier = JwtTokenUtil.getIdentifier(accessToken);
+        attributes.put("memberKakaoId", memberIdentifier);
+        log.info("ws:// memberKakaoId: {} 회원님이 웹소켓에 접속햇삼 꺄륵><", memberIdentifier);
         return super.beforeHandshake(request, response, wsHandler, attributes);
     }
 
