@@ -13,10 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class GpsDto {
-    private Long id;
-    private Long roomId;
-    private Long memberId;
+public class GpsPub {
     private Double longitude;
     private Double latitude;
     @JsonDeserialize(using = LocalDateDeserializer.class)
