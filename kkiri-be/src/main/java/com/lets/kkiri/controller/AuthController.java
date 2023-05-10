@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @EnableWebSecurity
 @RestController
@@ -29,18 +30,21 @@ public class AuthController {
     private final RedisService redisService;
 
     @PostMapping("/login")
-    public ResponseEntity getKakaoCode(@RequestBody KakaoUserPostDto reqeust) {
-        Member member = memberService.getMemberByKakaoUserInfo(reqeust);
+    public ResponseEntity getKakaoCode(@RequestBody KakaoUserPostDto request) {
+        Member member = memberService.getMemberByKakaoUserInfo(request);
         // 로그인 처리
         String accessToken = JwtTokenUtil.getToken(JwtTokenUtil.atkExpirationTime, member.getKakaoId());
         String refreshToken = JwtTokenUtil.getToken(JwtTokenUtil.rtkExpirationTime, member.getKakaoId());
 
         redisService.setValues(refreshToken, member.getKakaoId());
 
+        List<String> deviceTokens = memberService.getDeviceTokensByMemberId(member.getId());
+
         return ResponseEntity.ok().body(
                 MemberTokenRes.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
+                        .deviceTokens(deviceTokens)
                         .build()
         );
     }
