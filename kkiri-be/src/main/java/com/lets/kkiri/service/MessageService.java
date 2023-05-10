@@ -1,9 +1,7 @@
 package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lets.kkiri.dto.chatting.MessageRoomDto;
-import com.lets.kkiri.repository.chat.MessageRepository;
-import com.lets.kkiri.repository.moim.MoimRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

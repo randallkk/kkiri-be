@@ -2,11 +2,10 @@ package com.lets.kkiri.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.dto.chatting.MessageDto;
-import com.lets.kkiri.dto.chatting.MessageRoomDto;
+import com.lets.kkiri.service.MessageRoomDto;
 import com.lets.kkiri.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;

@@ -1,5 +1,6 @@
-package com.lets.kkiri.dto.chatting;
+package com.lets.kkiri.service;
 
+import com.lets.kkiri.dto.chatting.MessageDto;
 import com.lets.kkiri.service.MessageService;
 import lombok.Builder;
 import lombok.Getter;
