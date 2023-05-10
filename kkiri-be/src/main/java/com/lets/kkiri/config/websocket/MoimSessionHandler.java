@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.dto.WebSocketSessionInfo;
 import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
-import com.lets.kkiri.service.GpsService;
 import com.lets.kkiri.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,7 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 
 	private final ObjectMapper objectMapper;
 	private final MessageService messageService;
-	private final GpsService gpsService;
+	// private final GpsService gpsService;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
@@ -48,7 +47,7 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 		log.info("content : {}" + content);
 		switch (msg.getType()) {
 			case MESSAGE:
-
+				messageService.sendMessage(session, content);
 				break;
 			case GPS:
 				gpsService.handleActions(session, (GpsPub) content);
