@@ -1,10 +1,12 @@
 package com.lets.kkiri.controller;
 
 import com.lets.kkiri.config.jwt.JwtTokenUtil;
+import com.lets.kkiri.dto.auth.RtkVerifyPostReq;
+import com.lets.kkiri.dto.auth.RtkVerifyPostRes;
 import com.lets.kkiri.dto.member.KakaoIdPostReq;
 import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.dto.member.MemberLoginPostRes;
-import com.lets.kkiri.dto.member.ReissueGetRes;
+import com.lets.kkiri.dto.auth.ReissueGetRes;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.service.MemberService;
 import com.lets.kkiri.service.RedisService;
@@ -66,5 +68,16 @@ public class AuthController {
                 .accessToken(afterATK)
                 .refreshToken(afterRTK)
                 .build());
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity getLoginVerify(@RequestBody RtkVerifyPostReq request){
+        String refreshToken = request.getRefreshToken();
+        Boolean isExpired = false;
+        if (JwtTokenUtil.getExpiration(refreshToken) <= 0) isExpired = true;
+        return ResponseEntity.ok().body(
+                RtkVerifyPostRes.builder()
+                        .isExpired(isExpired)
+                        .build());
     }
 }
