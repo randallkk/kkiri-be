@@ -8,6 +8,7 @@ import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.dto.member.MemberLoginPostRes;
 import com.lets.kkiri.dto.auth.ReissueGetRes;
 import com.lets.kkiri.entity.Member;
+import com.lets.kkiri.service.AuthService;
 import com.lets.kkiri.service.MemberService;
 import com.lets.kkiri.service.RedisService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class AuthController {
     Integer rtkExpirationTime;
     private final MemberService memberService;
     private final RedisService redisService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity getKakaoCode(@RequestBody KakaoUserPostDto request) {
@@ -80,4 +82,13 @@ public class AuthController {
                         .isExpired(isExpired)
                         .build());
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity doLogout(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken
+    ){
+        authService.logout(accessToken.substring(7));
+        return ResponseEntity.ok().body("SUCCESS");
+    }
+
 }
