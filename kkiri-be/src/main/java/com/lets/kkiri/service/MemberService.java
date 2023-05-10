@@ -47,4 +47,13 @@ public class MemberService {
                 .map(MemberDevice::getToken)
                 .collect(Collectors.toList());
     }
+
+    public void addDeviceToken(String kakaoId, String deviceToken) {
+        Member member = getMemberByKakaoId(kakaoId);
+        memberDeviceRepository.save(
+                MemberDevice.builder()
+                        .token(deviceToken)
+                        .member(member)
+                        .build());
+    }
 }
