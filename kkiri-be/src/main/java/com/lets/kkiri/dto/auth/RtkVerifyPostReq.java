@@ -2,10 +2,10 @@ package com.lets.kkiri.dto.auth;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
+@NoArgsConstructor
 @Data
-public class ReissueGetRes {
-    String accessToken;
+public class RtkVerifyPostReq {
     String refreshToken;
 }
