@@ -19,13 +19,13 @@ public class Message {
     @CreatedDate
     private LocalDateTime time;
     private Long memberId;
-    private Long roomId;
+    private Long moimId;
 
     @Builder
-    public Message(String message, LocalDateTime time, Long memberId, Long roomId) {
+    public Message(String message, LocalDateTime time, Long memberId, Long moimId) {
         this.message = message;
         this.time = time;
         this.memberId = memberId;
-        this.roomId = roomId;
+        this.moimId = moimId;
     }
 }
