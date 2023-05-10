@@ -3,6 +3,7 @@ package com.lets.kkiri.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Member {
     private String profileImg;
     private String address;
     private String accountUrl;
+    @Column(unique = true)
     private String kakaoId;
     @ColumnDefault("false")
     private Boolean isWithdrawal;

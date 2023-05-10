@@ -1,5 +1,6 @@
 package com.lets.kkiri.service;
 
+import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,17 @@ public class MemberService {
                 }
         );
         return member;
+    }
+
+    public Member getMemberByKakaoUserInfo(KakaoUserPostDto kakaoUserInfo) {
+        Optional<Member> member = memberRepository.findByKakaoId(kakaoUserInfo.getKakaoId());
+        return member.orElseGet(() -> {
+            memberRepository.save(kakaoUserInfo.toEntity());
+            return kakaoUserInfo.toEntity();
+        });
+    }
+
+    public void createUser(Member member) {
+        memberRepository.save(member);
     }
 }
