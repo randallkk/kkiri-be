@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String kakaoId = JwtTokenUtil.getIdentifier(token);
         String isLogout = (String) redisTemplate.opsForValue().get(kakaoId);
 
-        if (!"logout".equals(isLogout)) {
+        if ("logout".equals(isLogout)) {
             filterChain.doFilter(request, response);
             return;
         } // [토큰 블랙리스트 확인] 끝
