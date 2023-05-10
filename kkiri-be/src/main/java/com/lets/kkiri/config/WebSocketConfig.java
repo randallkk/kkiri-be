@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-	private final MessageHandler messageHandler;
+	private final MoimSessionHandler moimSessionHandler;
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(messageHandler, "/ws/api")
+		registry.addHandler(moimSessionHandler, "/ws/api")
 			.setAllowedOrigins("*")
 		;
 	}

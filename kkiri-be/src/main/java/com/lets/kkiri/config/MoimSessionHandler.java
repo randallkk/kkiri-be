@@ -1,31 +1,48 @@
 package com.lets.kkiri.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lets.kkiri.dto.chatting.MessageDto;
-import com.lets.kkiri.service.MessageRoomDto;
+import com.lets.kkiri.dto.moim.MoimSessionReq;
+import com.lets.kkiri.service.GpsService;
 import com.lets.kkiri.service.MessageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import lombok.extern.log4j.Log4j2;
-
 @Component
 @Log4j2
 @RequiredArgsConstructor
-public class MessageHandler extends TextWebSocketHandler {
+public class MoimSessionHandler extends TextWebSocketHandler {
 
-	private final MessageService messageService;
 	private final ObjectMapper objectMapper;
+	private final MessageService messageService;
+	private final GpsService gpsService;
+
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String payload = message.getPayload();
 		log.info("payload : {}" + payload);
 
-		MessageDto msg = objectMapper.readValue(payload, MessageDto.class);
-		MessageRoomDto room = messageService.findById(msg.getMoimId());
-		room.handleActions(session, msg, messageService);
+		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
+		Object content = msg.getContent();
+		log.info("content : {}" + content);
+		switch (msg.getType()) {
+			case MESSAGE:
+
+				break;
+			case GPS:
+
+				break;
+			case EMOJI:
+
+				break;
+			case URGENT:
+
+				break;
+			default:
+				throw new IllegalStateException("Unexpected value: " + msg);
+		}
 	}
 }
