@@ -19,11 +19,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class MessageService {
+    private final ObjectMapper objectMapper;
 
-    public void sendMessage(WebSocketSession session, Object content) throws IOException {
-        String payload = content.toString();
-        log.debug("context payload : {}", content.toString());
-        session.sendMessage(new TextMessage(payload));
+    public void sendMessage(WebSocketSession session, Object content)  {
+        try{
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(content)));
+        }catch (Exception e){
+            log.debug("sendMessage error : {}", e.getMessage());
+        }
     }
 
 }
