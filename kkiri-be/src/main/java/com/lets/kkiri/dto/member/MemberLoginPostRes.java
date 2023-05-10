@@ -7,7 +7,7 @@ import java.util.List;
 
 @Builder
 @Data
-public class MemberTokenRes {
+public class LoginMemberInfoRes {
     String accessToken;
     String refreshToken;
     List<String> deviceTokens;
