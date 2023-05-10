@@ -1,4 +1,4 @@
-package com.lets.kkiri.config;
+package com.lets.kkiri.config.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.dto.moim.MoimSessionReq;

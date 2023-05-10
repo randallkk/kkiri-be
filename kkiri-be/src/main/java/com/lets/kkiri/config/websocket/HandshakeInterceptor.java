@@ -1,4 +1,4 @@
-package com.lets.kkiri.config;
+package com.lets.kkiri.config.websocket;
 
 import java.util.Map;
 

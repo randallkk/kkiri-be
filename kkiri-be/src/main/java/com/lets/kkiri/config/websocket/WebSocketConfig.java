@@ -1,4 +1,4 @@
-package com.lets.kkiri.config;
+package com.lets.kkiri.config.websocket;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
