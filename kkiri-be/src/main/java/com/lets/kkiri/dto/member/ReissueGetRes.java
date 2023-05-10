@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class MemberTokenRes {
+public class ReissueGetRes {
     String accessToken;
     String refreshToken;
 }

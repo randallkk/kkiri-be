@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.*;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,26 +51,31 @@ public class JwtTokenUtil {
                 .build();
     }
 
-    public static String getToken(String email) {
+    public static String getToken(String kakaoId) {
 //        int expirationTime = (type.equals("access-token")) ? atkExpirationTime : rtkExpirationTime;
 
         Date expires = JwtTokenUtil.getTokenExpiration(rtkExpirationTime);
         return JWT.create()
-                .withSubject(email)
+                .withSubject(kakaoId)
                 .withExpiresAt(expires)
                 .withIssuer(ISSUER)
                 .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
                 .sign(Algorithm.HMAC512(secretKey.getBytes()));
     }
 
-    public static String getToken(int expiresToken, String email) {
+    public static String getToken(int expiresToken, String kakaoId) {
         Date expires = JwtTokenUtil.getTokenExpiration(expiresToken);
         return JWT.create()
-                .withSubject(email)
+                .withSubject(kakaoId)
                 .withExpiresAt(expires)
                 .withIssuer(ISSUER)
                 .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
                 .sign(Algorithm.HMAC512(secretKey.getBytes()));
+    }
+
+    public static String getIdentifier(String token){
+        handleError(token);
+        return getVerifier().verify(token.replace(TOKEN_PREFIX, "")).getSubject();
     }
 
     public static Date getTokenExpiration(int expirationTime) {

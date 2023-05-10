@@ -19,9 +19,9 @@ public class RedisService {
     @Value("${jwt.expiration.rtk}")
     private Long EXPIRED_MINUTES; // 로그인 유효 시간
 
-    public void setValues(String token, String email){
+    public void setValues(String token, String kakaoId){
         ValueOperations<String, String> values = redisTemplate.opsForValue();
-        values.set(email, token, Duration.ofMinutes(EXPIRED_MINUTES));
+        values.set(kakaoId, token, Duration.ofMinutes(EXPIRED_MINUTES));
     }
 
     public void setBlackList(String token, String email, Long expiration){
@@ -29,10 +29,10 @@ public class RedisService {
         values.set(email, token, Duration.ofMillis(expiration));
     }
 
-    public String getValues(String token){
+    public String getValues(String kakaoId){
         ValueOperations<String, String> values = redisTemplate.opsForValue();
-        String refreshToken = values.get(token);
-        return ( refreshToken == null)? "" : refreshToken;
+        String refreshToken = values.get(kakaoId);
+        return ( refreshToken == null )? "" : refreshToken;
     }
 
     public void deleteValues(String token){

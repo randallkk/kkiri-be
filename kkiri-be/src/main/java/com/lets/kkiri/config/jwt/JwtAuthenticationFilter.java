@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         // Read the Authorization header, where the JWT Token should be
-        String header = request.getHeader(JwtTokenUtil.HEADER_STRING);
+        String token = request.getHeader(JwtTokenUtil.HEADER_STRING);
 
         /*
          * Spring Security에서 권한 획득하려면
@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
          * 으로 값을 얻어와야 함.
          */
         // header가 null이거나, 'Bearer '로 시작하지 않는다면 예외 처리.
-        if (header == null || !header.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
+        if (token == null || !token.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -59,10 +59,10 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
             해당 토큰값으로 된 key 레코드가 레디스에 있다면 사용하지 못하게 필터링
          */
-        String email = JwtTokenUtil.getVerifier().verify(header.replace(JwtTokenUtil.TOKEN_PREFIX, "")).getSubject();
-        String isLogout = (String) redisTemplate.opsForValue().get(email);
+        String kakaoId = JwtTokenUtil.getIdentifier(token);
+        String isLogout = (String) redisTemplate.opsForValue().get(kakaoId);
 
-        if (!"logout".equals(isLogout)) {
+        if ("logout".equals(isLogout)) {
             filterChain.doFilter(request, response);
             return;
         } // [토큰 블랙리스트 확인] 끝
@@ -86,19 +86,16 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         // 요청 헤더에 Authorization 키값에 jwt 토큰이 포함된 경우에만, 토큰 검증 및 인증 처리 로직 실행.
         if (token != null) {
             // parse the token and validate it (decode)
-            JWTVerifier verifier = JwtTokenUtil.getVerifier();
-            JwtTokenUtil.handleError(token);
-            DecodedJWT decodedJWT = verifier.verify(token.replace(JwtTokenUtil.TOKEN_PREFIX, ""));
-            String email = decodedJWT.getSubject();
+            String kakaoId = JwtTokenUtil.getIdentifier(token);
 
             // Search in the DB if we find the user by token subject (username)
             // If so, then grab user details and create spring auth token using username, pass, authorities/roles
-            if (email != null) {
+            if (kakaoId != null) {
                 // jwt 토큰에 포함된 계정 정보(userId) 통해 실제 디비에 해당 정보의 계정이 있는지 조회.
-                Member member = memberService.getMemberByEmail(email);
+                Member member = memberService.getMemberByKakaoId(kakaoId);
                 // 식별된 정상 유저인 경우, 요청 context 내에서 참조 가능한 인증 정보(jwtAuthentication) 생성.
                 MemberDetails userDetails = new MemberDetails(member);
-                UsernamePasswordAuthenticationToken jwtAuthentication = new UsernamePasswordAuthenticationToken(email,
+                UsernamePasswordAuthenticationToken jwtAuthentication = new UsernamePasswordAuthenticationToken(kakaoId,
                         null, userDetails.getAuthorities());
                 jwtAuthentication.setDetails(userDetails);
                 return jwtAuthentication;
