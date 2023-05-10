@@ -2,6 +2,7 @@ package com.lets.kkiri.config.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
+import com.lets.kkiri.service.MessageRoomService;
 import com.lets.kkiri.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +18,7 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 
 	private final ObjectMapper objectMapper;
 	private final MessageService messageService;
+	private final MessageRoomService messageRoomService;
 	// private final GpsService gpsService;
 
 	@Override
@@ -29,7 +31,7 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 		log.info("content : {}" + content);
 		switch (msg.getType()) {
 			case MESSAGE:
-				messageService.sendMessage(session, content);
+				messageRoomService.sendMessage(content, messageService);
 				break;
 			case GPS:
 
