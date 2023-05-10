@@ -2,7 +2,6 @@ package com.lets.kkiri.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
-@PropertySource("classpath:application.yml")
 public class RedisService {
 
     private final RedisTemplate redisTemplate;
@@ -24,9 +22,9 @@ public class RedisService {
         values.set(kakaoId, token, Duration.ofMinutes(EXPIRED_MINUTES));
     }
 
-    public void setBlackList(String token, String email, Long expiration){
+    public void setBlackList(String kakaoId, Long expiration){
         ValueOperations<String, String> values = redisTemplate.opsForValue();
-        values.set(email, token, Duration.ofMillis(expiration));
+        values.set(kakaoId, "LOGOUT", Duration.ofMillis(expiration));
     }
 
     public String getValues(String kakaoId){
