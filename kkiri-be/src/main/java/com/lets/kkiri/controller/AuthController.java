@@ -1,7 +1,6 @@
 package com.lets.kkiri.controller;
 
 import com.lets.kkiri.config.jwt.JwtTokenUtil;
-import com.lets.kkiri.dto.member.KakaoIdPostReq;
 import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.dto.member.MemberLoginPostRes;
 import com.lets.kkiri.dto.auth.ReissueGetRes;
@@ -53,10 +52,9 @@ public class AuthController {
 
     @PostMapping("/reissue")
     public ResponseEntity getAccessToken(
-            @RequestHeader(JwtTokenUtil.HEADER_STRING) String refreshToken,
-            @RequestBody KakaoIdPostReq request
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String refreshToken
     ) {
-        String kakaoId = request.getKakaoId();
+        String kakaoId = JwtTokenUtil.getIdentifier(refreshToken.substring(7));
         if (!redisService.getValues(kakaoId).equals(refreshToken.substring(7))) return ResponseEntity.status(401).body("INVALID TOKEN");
 
         // 프론트로 보내줄 access, refresh token 생성
