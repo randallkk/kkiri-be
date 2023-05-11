@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import com.lets.kkiri.dto.moim.MoimSessionReq;
+
 @Getter
 @AllArgsConstructor
 @Document("message")
@@ -21,13 +23,15 @@ public class Message {
     private String memberKakaoId;
     private String nickname;
     private Long moimId;
+    private MoimSessionReq.MoimSessionType messageType;
 
     @Builder
-    public Message(String message, LocalDateTime time, String memberKakaoId, String nickname, Long moimId) {
+    public Message(String message, LocalDateTime time, String memberKakaoId, String nickname, Long moimId, MoimSessionReq.MoimSessionType messageType) {
         this.message = message;
         this.time = time;
         this.memberKakaoId = memberKakaoId;
         this.nickname = nickname;
         this.moimId = moimId;
+        this.messageType = messageType;
     }
 }
