@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class MessageMetaData {
-	Long lastMessageId;
+	String lastMessageId;
 	boolean last;
 }
