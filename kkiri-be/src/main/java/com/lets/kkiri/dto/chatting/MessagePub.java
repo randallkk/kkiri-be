@@ -14,5 +14,5 @@ import lombok.*;
 public class MessagePub {
 	private String message;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
-	private LocalDateTime regDate;
+	private LocalDateTime time;
 }
