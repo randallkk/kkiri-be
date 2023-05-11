@@ -1,9 +1,8 @@
-package com.lets.kkiri.repository.chat;
+package com.lets.kkiri.repository.chatting;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.lets.kkiri.entity.Message;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public interface MessageRepository extends MongoRepository<Message, String> {
 }
