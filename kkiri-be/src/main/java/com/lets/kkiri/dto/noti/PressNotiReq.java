@@ -3,14 +3,11 @@ package com.lets.kkiri.dto.noti;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
-@AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class PressNotiReq {
-    // 발신 유저 이메일
-    private String senderEmail;
-
-    // 수신 유저 이메일
-    private String receiverEmail;
+    // 수신 유저 카카오 id
+    private String receiverKakaoId;
 }

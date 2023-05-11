@@ -29,8 +29,8 @@ public class NotiService {
     private final MemberDeviceRepositorySupport memberDeviceRepositorySupport;
     private final FcmService fcmService;
 
-    public void sendPressNoti(PressNotiReq pressNotiReq) {
-        Member recvMember = memberRepository.findByEmail(pressNotiReq.getReceiverEmail()).orElseThrow(
+    public void sendPressNoti(String senderKakaoId, String receiverKakaoId) {
+        Member recvMember = memberRepository.findByKakaoId(receiverKakaoId).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
 
@@ -44,7 +44,7 @@ public class NotiService {
                             .tokenList(tokenList)
                             .channelId("hurry")
                             .title("재촉 알림")
-                            .body(pressNotiReq.getSenderEmail() + "님이 재촉 중입니다.")
+                            .body(senderKakaoId + "님이 재촉 중입니다.")
                             .build()
             );
         } catch (IOException e) {
@@ -56,12 +56,12 @@ public class NotiService {
         });
     }
 
-    public void sendHelpNoti(HelpNotiReq helpNotiReq) {
-        Moim targetMoim = moimRepository.findById(helpNotiReq.getChatRoomId()).orElseThrow(
+    public void sendHelpNoti(String senderKakaoId, Long chatRoomId) {
+        Moim targetMoim = moimRepository.findById(chatRoomId).orElseThrow(
                 () -> new IllegalArgumentException("해당 모임이 존재하지 않습니다.")
         );
 
-        Long senderId = memberRepository.findByEmail(helpNotiReq.getSenderEmail()).orElseThrow(
+        Long senderId = memberRepository.findByKakaoId(senderKakaoId).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         ).getId();
 
@@ -74,9 +74,9 @@ public class NotiService {
             successLogList = fcmService.sendMessageToToken(
                     FcmMessageDto.builder()
                             .tokenList(tokenList)
-                            .channelId("hurry")
+                            .channelId("sos")
                             .title("도움 요청 알림")
-                            .body(helpNotiReq.getSenderEmail() + "님이 도움을 요청 중입니다.")
+                            .body(senderKakaoId + "님이 도움을 요청 중입니다.")
                             .build()
             );
         } catch (IOException e) {
@@ -88,8 +88,8 @@ public class NotiService {
         });
     }
 
-    public void sendRoute(RouteGuideNotiReq routeGuideReq) {
-        Member recvMember = memberRepository.findByEmail(routeGuideReq.getReceiverEmail()).orElseThrow(
+    public void sendRoute(String senderKakaoId, RouteGuideNotiReq routeGuideReq) {
+        Member recvMember = memberRepository.findByKakaoId(routeGuideReq.getReceiverKakaoId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
 
@@ -103,7 +103,7 @@ public class NotiService {
                             .tokenList(tokenList)
                             .channelId("path")
                             .title("길 안내 알림")
-                            .body(routeGuideReq.getSenderEmail() + "님이 길 안내 중입니다.")
+                            .body(senderKakaoId + "님이 길 안내 중입니다.")
                             .path(routeGuideReq.getPath())
                             .build()
             );
