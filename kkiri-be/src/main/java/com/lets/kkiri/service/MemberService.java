@@ -22,10 +22,10 @@ public class MemberService {
     private final MemberDeviceRepository memberDeviceRepository;
     public Member getMemberByKakaoId(String kakaoId) {
         Member member = memberRepository.findByKakaoId(kakaoId).orElseThrow(
-                () -> {
-                    log.error("MemberService.getMemberByEmail: member not found");
-                    return new IllegalArgumentException("MemberService.getMemberByEmail: member not found");
-                }
+            () -> {
+                log.error("MemberService.getMemberByEmail: member not found");
+                return new IllegalArgumentException("MemberService.getMemberByEmail: member not found");
+            }
         );
         return member;
     }
@@ -44,16 +44,16 @@ public class MemberService {
 
     public List<String> getDeviceTokensByMemberId(Long memberId) {
         return memberDeviceRepository.findByMemberId(memberId).stream()
-                .map(MemberDevice::getToken)
-                .collect(Collectors.toList());
+            .map(MemberDevice::getToken)
+            .collect(Collectors.toList());
     }
 
     public void addDeviceToken(String kakaoId, String deviceToken) {
         Member member = getMemberByKakaoId(kakaoId);
         memberDeviceRepository.save(
-                MemberDevice.builder()
-                        .token(deviceToken)
-                        .member(member)
-                        .build());
+            MemberDevice.builder()
+                .token(deviceToken)
+                .member(member)
+                .build());
     }
 }
