@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/chat")
 public class MessageController {
 
-	private final MessageService messageService;
 	private final MessageRoomService messageRoomService;
 
 	@GetMapping()
