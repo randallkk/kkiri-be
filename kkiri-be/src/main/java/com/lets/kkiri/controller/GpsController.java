@@ -1,6 +1,5 @@
 package com.lets.kkiri.controller;
 
-import com.lets.kkiri.dto.gps.GpsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
