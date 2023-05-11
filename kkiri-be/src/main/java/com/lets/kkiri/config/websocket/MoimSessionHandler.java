@@ -29,21 +29,15 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
 		Object content = msg.getContent();
 		log.info("content : {}" + content);
-		switch (msg.getType()) {
-			case MESSAGE:
-				messageRoomService.sendMessage(content, messageService);
-				break;
-			case GPS:
+		if(msg.getType().equals(MoimSessionReq.MoimSessionType.GPS)) {
 
-				break;
-			case EMOJI:
-
-				break;
-			case URGENT:
-
-				break;
-			default:
-				throw new IllegalStateException("Unexpected value: " + msg);
+		}
+		else if(msg.getType().equals(MoimSessionReq.MoimSessionType.MESSAGE)
+				|| msg.getType().equals(MoimSessionReq.MoimSessionType.EMOJI)) {
+			messageRoomService.handleActions(session, msg.getType(), content, messageService);
+		}
+		else {
+			throw new IllegalStateException("Unexpected value: " + msg);
 		}
 	}
 }
