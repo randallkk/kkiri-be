@@ -1,11 +1,12 @@
-package com.lets.kkiri.config.jwt;
+package com.lets.kkiri.common.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.*;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,15 +26,15 @@ import static com.google.common.collect.Lists.newArrayList;
 public class JwtTokenUtil {
     private static String secretKey;
 
-    public static Integer atkExpirationTime;
+    public static Long atkExpirationTime;
 
-    public static Integer rtkExpirationTime;
+    public static Long rtkExpirationTime;
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
     public static final String ISSUER = "KKIRI";
 
     @Autowired
-    public JwtTokenUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration.atk}") Integer atkExpirationTime, @Value("${jwt.expiration.rtk}") Integer rtkExpirationTime) {
+    public JwtTokenUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration.atk}") Long atkExpirationTime, @Value("${jwt.expiration.rtk}") Long rtkExpirationTime) {
         this.secretKey = secretKey;
         this.atkExpirationTime = atkExpirationTime;
         this.rtkExpirationTime = rtkExpirationTime;
@@ -63,7 +64,7 @@ public class JwtTokenUtil {
                 .sign(Algorithm.HMAC512(secretKey.getBytes()));
     }
 
-    public static String getToken(int expiresToken, String kakaoId) {
+    public static String getToken(long expiresToken, String kakaoId) {
         Date expires = JwtTokenUtil.getTokenExpiration(expiresToken);
         return JWT.create()
                 .withSubject(kakaoId)
@@ -78,7 +79,7 @@ public class JwtTokenUtil {
         return getVerifier().verify(token.replace(TOKEN_PREFIX, "")).getSubject();
     }
 
-    public static Date getTokenExpiration(int expirationTime) {
+    public static Date getTokenExpiration(long expirationTime) {
         Date now = new Date();
         return new Date(now.getTime() + expirationTime);
     }
@@ -103,23 +104,31 @@ public class JwtTokenUtil {
         try {
             verifier.verify(token.replace(TOKEN_PREFIX, ""));
         } catch (AlgorithmMismatchException ex) {
-            throw ex;
+            throw new KkiriException(ErrorCode.JWT_ALGORITHM_NOT_SUPPORTED);
         } catch (InvalidClaimException ex) {
-            throw ex;
+            // INVALID_CLAIM
+            throw new KkiriException(ErrorCode.JWT_INVALID_CLAIM);
         } catch (SignatureGenerationException ex) {
-            throw ex;
+            // JWT_SIGNATURE_GENERATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_SIGNATURE_VERIFICATION_FAILED);
         } catch (SignatureVerificationException ex) {
-            throw ex;
+            // JWT_SIGNATURE_VERIFICATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_SIGNATURE_VERIFICATION_FAILED);
         } catch (TokenExpiredException ex) {
-            throw ex;
+            // JWT_TOKEN_EXPIRED
+            throw new KkiriException(ErrorCode.ACCESS_TOKEN_EXPIRED);
         } catch (JWTCreationException ex) {
-            throw ex;
+            // JWT_CREATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_CREATION_FAILED);
         } catch (JWTDecodeException ex) {
-            throw ex;
+            // JWT_DECODE_FAILED
+            throw new KkiriException(ErrorCode.JWT_DECODE_FAILED);
         } catch (JWTVerificationException ex) {
-            throw ex;
+            // JWT_VERIFICATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_VERIFICATION_FAILED);
         } catch (Exception ex) {
-            throw ex;
+            // JWT_VERIFICATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_VERIFICATION_FAILED);
         }
     }
 
@@ -127,23 +136,31 @@ public class JwtTokenUtil {
         try {
             verifier.verify(token.replace(TOKEN_PREFIX, ""));
         } catch (AlgorithmMismatchException ex) {
-            throw ex;
+            throw new KkiriException(ErrorCode.JWT_ALGORITHM_NOT_SUPPORTED);
         } catch (InvalidClaimException ex) {
-            throw ex;
+            // INVALID_CLAIM
+            throw new KkiriException(ErrorCode.JWT_INVALID_CLAIM);
         } catch (SignatureGenerationException ex) {
-            throw ex;
+            // JWT_SIGNATURE_GENERATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_SIGNATURE_VERIFICATION_FAILED);
         } catch (SignatureVerificationException ex) {
-            throw ex;
+            // JWT_SIGNATURE_VERIFICATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_SIGNATURE_VERIFICATION_FAILED);
         } catch (TokenExpiredException ex) {
-            throw ex;
+            // JWT_TOKEN_EXPIRED
+            throw new KkiriException(ErrorCode.ACCESS_TOKEN_EXPIRED);
         } catch (JWTCreationException ex) {
-            throw ex;
+            // JWT_CREATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_CREATION_FAILED);
         } catch (JWTDecodeException ex) {
-            throw ex;
+            // JWT_DECODE_FAILED
+            throw new KkiriException(ErrorCode.JWT_DECODE_FAILED);
         } catch (JWTVerificationException ex) {
-            throw ex;
+            // JWT_VERIFICATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_VERIFICATION_FAILED);
         } catch (Exception ex) {
-            throw ex;
+            // JWT_VERIFICATION_FAILED
+            throw new KkiriException(ErrorCode.JWT_VERIFICATION_FAILED);
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.lets.kkiri.controller;
 
-import com.lets.kkiri.config.jwt.JwtTokenUtil;
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
+import com.lets.kkiri.common.util.JwtTokenUtil;
 import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.dto.member.MemberLoginPostRes;
 import com.lets.kkiri.dto.auth.ReissueGetRes;
@@ -22,10 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     @Value("${jwt.expiration.atk}")
-    Integer atkExpirationTime;
+    Long atkExpirationTime;
 
     @Value("${jwt.expiration.rtk}")
-    Integer rtkExpirationTime;
+    Long rtkExpirationTime;
     private final MemberService memberService;
     private final RedisService redisService;
     private final AuthService authService;
@@ -55,7 +57,7 @@ public class AuthController {
             @RequestHeader(JwtTokenUtil.HEADER_STRING) String refreshToken
     ) {
         String kakaoId = JwtTokenUtil.getIdentifier(refreshToken.substring(7));
-        if (!redisService.getValues(kakaoId).equals(refreshToken.substring(7))) return ResponseEntity.status(401).body("INVALID TOKEN");
+        if (!redisService.getValues(kakaoId).equals(refreshToken.substring(7))) throw new KkiriException(ErrorCode.INVALID_TOKEN);
 
         // 프론트로 보내줄 access, refresh token 생성
         String afterATK = JwtTokenUtil.getToken(JwtTokenUtil.atkExpirationTime, kakaoId);
