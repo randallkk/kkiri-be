@@ -25,12 +25,13 @@ public class MoimPostReq {
     private String latitude;
     // 경도
     private String longitude;
-    private String meetingAt;
+    private String date;
+    private String time;
     @ColumnDefault("0")
     private Integer lateFee;
 
     public Moim toEntity(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm");
         return Moim.builder()
                 .name(name)
                 .link(link)
@@ -38,21 +39,9 @@ public class MoimPostReq {
                 .lat(latitude)
                 .lng(longitude)
                 .meetingAt(
-                        LocalDateTime.parse(meetingAt, formatter)
+                        LocalDateTime.parse(date + time, formatter)
                 )
                 .lateFee(lateFee)
-                .build();
-    }
-
-    public static MoimPostReq of(Moim moim){
-        return MoimPostReq.builder()
-                .name(moim.getName())
-                .link(moim.getLink())
-                .placeName(moim.getPlaceName())
-                .latitude(moim.getLat())
-                .longitude(moim.getLng())
-                .meetingAt(moim.getMeetingAt().toString())
-                .lateFee(moim.getLateFee())
                 .build();
     }
 }
