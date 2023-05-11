@@ -61,10 +61,9 @@ public class RedisStoreUtil {
 
     /**
      * redis에 저장된 moimId에 해당하는 모든 세션 데이터를 가져온다.
-     * @param moimId
-     * @param classType
-     * @return
-     * @param <T>
+     * @param moimId 모임 아이디, key pattern으로 사용
+     * @param classType 가져올 데이터 타입 (ex. WebSocketSession.class)
+     * @return 가져온 데이터 리스트
      */
     public <T> ArrayList<T> getAllSessionsByMoimId(Long moimId, Class<T> classType) {
         ArrayList<T> values = new ArrayList<>();
