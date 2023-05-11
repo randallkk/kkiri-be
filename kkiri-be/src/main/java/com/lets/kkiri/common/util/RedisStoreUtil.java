@@ -3,9 +3,13 @@ package com.lets.kkiri.common.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -55,6 +59,33 @@ public class RedisStoreUtil {
         }
     }
 
+    /**
+     * redis에 저장된 moimId에 해당하는 모든 세션 데이터를 가져온다.
+     * @param moimId
+     * @param classType
+     * @return
+     * @param <T>
+     */
+    public <T> ArrayList<T> getAllSessionsByMoimId(Long moimId, Class<T> classType) {
+        ArrayList<T> values = new ArrayList<>();
+
+        ScanOptions scanOptions = ScanOptions.scanOptions().match(moimId+"-*").count(10).build();
+        Cursor<byte[]> keys = Objects.requireNonNull(redisTemplate.getConnectionFactory()).getConnection().scan(scanOptions);
+
+        while (keys.hasNext()) {
+            String key = new String(keys.next());
+            String value = redisTemplate.opsForValue().get(key);
+            try {
+                values.add(objectMapper.readValue(value, classType));
+            } catch(Exception e){
+                log.error(e.getMessage());
+                throw new RuntimeException(e.getMessage());
+                // TODO: 2023-05-11 에러처리
+            }
+        }
+        return values;
+    }
+/*
     public <T> boolean updateData(String key, T data) {
         try {
             String value = objectMapper.writeValueAsString(data);
@@ -65,4 +96,5 @@ public class RedisStoreUtil {
             return false;
         }
     }
+ */
 }
