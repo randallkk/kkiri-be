@@ -18,14 +18,16 @@ public class Message {
     private String message;
     @CreatedDate
     private LocalDateTime time;
-    private Long memberId;
+    private String memberKakaoId;
+    private String nickname;
     private Long moimId;
 
     @Builder
-    public Message(String message, LocalDateTime time, Long memberId, Long moimId) {
+    public Message(String message, LocalDateTime time, String memberKakaoId, String nickname, Long moimId) {
         this.message = message;
         this.time = time;
-        this.memberId = memberId;
+        this.memberKakaoId = memberKakaoId;
+        this.nickname = nickname;
         this.moimId = moimId;
     }
 }
