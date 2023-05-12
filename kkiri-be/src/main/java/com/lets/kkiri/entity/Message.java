@@ -3,14 +3,19 @@ package com.lets.kkiri.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import com.lets.kkiri.dto.moim.MoimSessionReq;
+
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Document("message")
 public class Message {
     @Id
@@ -18,14 +23,18 @@ public class Message {
     private String message;
     @CreatedDate
     private LocalDateTime time;
-    private Long memberId;
+    private String memberKakaoId;
+    private String nickname;
     private Long moimId;
+    private MoimSessionReq.MoimSessionType messageType;
 
     @Builder
-    public Message(String message, LocalDateTime time, Long memberId, Long moimId) {
+    public Message(String message, LocalDateTime time, String memberKakaoId, String nickname, Long moimId, MoimSessionReq.MoimSessionType messageType) {
         this.message = message;
         this.time = time;
-        this.memberId = memberId;
+        this.memberKakaoId = memberKakaoId;
+        this.nickname = nickname;
         this.moimId = moimId;
+        this.messageType = messageType;
     }
 }

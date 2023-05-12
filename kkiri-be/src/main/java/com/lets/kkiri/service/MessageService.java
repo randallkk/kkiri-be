@@ -1,15 +1,20 @@
 package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lets.kkiri.dto.chatting.MessageSub;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.PostConstruct;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,28 +23,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MessageService {
     private final ObjectMapper objectMapper;
-    private Map<Long, MessageRoomDto> messageRooms;
-//    private final MoimRepository moimRepository;
+    private final MongoTemplate mongoTemplate;
 
-    @PostConstruct
-    private void init() {
-        messageRooms = new LinkedHashMap<>();
-        messageRooms.put(1L, createRoom(1L));
-    }
-
-    public MessageRoomDto findById(Long roodId) {
-        return messageRooms.get(roodId);
-    }
-
-    public MessageRoomDto createRoom(Long roomId) {
-        return MessageRoomDto.builder().roomId(roomId).build();
-    }
-
-    public <T> void sendMessage(WebSocketSession session, T messageDto) {
-        try {
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(messageDto)));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+    public void sendMessage(WebSocketSession session, MessageSub msg)  {
+        try{
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
+            log.debug("sendMessage : {}", msg);
+            //메세지 전송 후 DB에 저장
+            msg.setTime(LocalDateTime.now());
+            mongoTemplate.save(msg);
+        }catch (Exception e){
+            log.debug("sendMessage error : {}", e.getMessage());
         }
     }
 
