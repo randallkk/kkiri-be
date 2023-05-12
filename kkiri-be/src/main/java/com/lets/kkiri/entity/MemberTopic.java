@@ -1,5 +1,6 @@
 package com.lets.kkiri.entity;
 
+import com.lets.kkiri.dto.member.MemberTopicDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,4 +20,11 @@ public class MemberTopic {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberDevice memberDevice;
     private String name;
+
+    public static MemberTopic of(MemberTopicDto memberTopicDto) {
+        return MemberTopic.builder()
+                .memberDevice(memberTopicDto.getMemberDevice())
+                .name(memberTopicDto.getMoimId().toString())
+                .build();
+    }
 }
