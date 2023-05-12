@@ -5,6 +5,7 @@ import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.service.MessageRoomService;
 import com.lets.kkiri.service.MessageService;
 
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,13 +24,14 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 	private final ObjectMapper objectMapper;
 	private final MessageService messageService;
 	private final MessageRoomService messageRoomService;
+	private WebSocketSession mySession;
 	// private final GpsService gpsService;
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String payload = message.getPayload();
 		log.info("payload : {}" + payload);
-
+		mySession = session;
 		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
 		Object content = msg.getContent();
 		log.info("content : {}" + content);
@@ -43,5 +45,11 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 		else {
 			throw new IllegalStateException("Unexpected value: " + msg);
 		}
+
+
+	}
+
+	public WebSocketSession getSession() {
+		return mySession;
 	}
 }

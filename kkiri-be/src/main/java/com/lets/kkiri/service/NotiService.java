@@ -34,9 +34,14 @@ public class NotiService {
     private final MemberRepository memberRepository;
     private final MemberDeviceRepositorySupport memberDeviceRepositorySupport;
     private final FcmService fcmService;
-    private final WebSocketSession session;
+    private WebSocketSession session;
     private final MessageRoomService messageRoomService;
     private final MessageService messageService;
+    private final MoimSessionHandler moimSessionHandler;
+
+    private void getSession() {
+        session = moimSessionHandler.getSession();
+    }
 
     public void sendPressNoti(PressNotiReq pressNotiReq) {
         Member recvMember = memberRepository.findByEmail(pressNotiReq.getReceiverEmail()).orElseThrow(
