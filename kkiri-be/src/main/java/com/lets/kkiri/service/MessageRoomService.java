@@ -9,6 +9,7 @@ import com.lets.kkiri.dto.chatting.MessageRes;
 import com.lets.kkiri.dto.chatting.MessageSub;
 import com.lets.kkiri.dto.moim.MoimSessionListDto;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
+
 import com.lets.kkiri.entity.Message;
 import com.lets.kkiri.repository.chatting.MessageRepositorySupport;
 
@@ -44,6 +45,7 @@ public class MessageRoomService {
     }
 
     public <T> void sendMessage(WebSocketSession session, MoimSessionReq.MoimSessionType type, MessageDto msg, MessageService messageService) {
+        log.debug("MessageRoomService / sendMessage ()");
         ArrayList<WebSocketSession> sessions = redisStoreUtil.getAllSessionsByMoimId(Long.parseLong(session.getAttributes().get("moimId").toString()), WebSocketSession.class);
         MessageSub sub = MessageSub.messageDtoToSub(msg);
         sub.setMessageType(type);

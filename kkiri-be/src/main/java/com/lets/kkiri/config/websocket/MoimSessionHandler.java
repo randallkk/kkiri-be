@@ -1,67 +1,55 @@
 package com.lets.kkiri.config.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lets.kkiri.dto.WebSocketSessionInfo;
-import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.service.MessageRoomService;
 import com.lets.kkiri.service.MessageService;
+
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-@Slf4j
-@RequiredArgsConstructor
 @Component
+@Log4j2
+@RequiredArgsConstructor
 public class MoimSessionHandler extends TextWebSocketHandler {
 
 	private final ObjectMapper objectMapper;
 	private final MessageService messageService;
 	private final MessageRoomService messageRoomService;
+	private WebSocketSession mySession;
 	// private final GpsService gpsService;
-
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session) {
-		// 클라이언트가 서버에 연결되면 호출되는 메소드
-		StringBuilder sb = new StringBuilder();
-		Long moimId = (Long) session.getAttributes().get("moimId");
-		String kakaoId = (String) session.getAttributes().get("kakaoId");
-		sb.append(moimId).append(":")
-				.append(kakaoId);
-		log.debug("session Key : {}", sb);
-
-		WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
-		webSocketSessionInfo.addSession(moimId, kakaoId, session);
-
-		log.info("[ws://] kakaoId: {} 회원님이 {} 모임 웹소켓에 접속 완료 햇삼 꺄륵><", kakaoId, moimId);
-	}
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String payload = message.getPayload();
 		log.info("payload : {}" + payload);
-
+		mySession = session;
 		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
 		Object content = msg.getContent();
 		log.info("content : {}" + content);
-		switch (msg.getType()) {
-			case MESSAGE:
-				messageRoomService.sendMessage(content, messageService);
-				break;
-			case GPS:
-				gpsService.handleActions(session, (GpsPub) content);
-				break;
-			case EMOJI:
+		if(msg.getType().equals(MoimSessionReq.MoimSessionType.GPS)) {
 
-				break;
-			case URGENT:
-
-				break;
-			default:
-				throw new IllegalStateException("Unexpected value: " + msg);
 		}
+		else if(msg.getType().equals(MoimSessionReq.MoimSessionType.MESSAGE)
+			|| msg.getType().equals(MoimSessionReq.MoimSessionType.EMOJI)) {
+			messageRoomService.handleActions(session, msg.getType(), content, messageService);
+		}
+		else {
+			throw new IllegalStateException("Unexpected value: " + msg);
+		}
+
+
+	}
+
+	public WebSocketSession getSession() {
+		return mySession;
 	}
 }

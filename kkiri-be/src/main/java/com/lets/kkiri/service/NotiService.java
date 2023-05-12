@@ -65,7 +65,7 @@ public class NotiService {
             //재촉 메세지 채팅방에 전송
             if(session.isOpen()) {
                 MessageDto dto = MessageDto.builder()
-                    .message(pressNotiReq.getSenderEmail()+"님이 " + pressNotiReq.getReceiverEmail()+"님을 재촉 중입니다.")
+                    .message(senderKakaoId+"님이 " + receiverKakaoId+"님을 재촉 중입니다.")
                     .build();
                 messageRoomService.sendMessage(session, MoimSessionReq.MoimSessionType.URGENT, dto, messageService);
             }
