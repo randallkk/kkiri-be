@@ -16,6 +16,10 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.LinkedHashMap;
+
+@Slf4j
+@RequiredArgsConstructor
 @Component
 @Log4j2
 @RequiredArgsConstructor
@@ -30,22 +34,20 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String payload = message.getPayload();
-		log.info("payload : {}" + payload);
-		mySession = session;
+		log.info("payload : {}", payload);
+
 		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
 		Object content = msg.getContent();
-		log.info("content : {}" + content);
-		if(msg.getType().equals(MoimSessionReq.MoimSessionType.GPS)) {
+		log.debug("content : {}", content.toString());
+		log.debug("content type : {}", content.getClass());
+		switch (msg.getType()) {
+			case MESSAGE:
 
-		}
-		else if(msg.getType().equals(MoimSessionReq.MoimSessionType.MESSAGE)
-			|| msg.getType().equals(MoimSessionReq.MoimSessionType.EMOJI)) {
-			messageRoomService.handleActions(session, msg.getType(), content, messageService);
-		}
-		else {
-			throw new IllegalStateException("Unexpected value: " + msg);
-		}
-
+				break;
+			case GPS:
+				gpsService.handleActions(session, content);
+				break;
+			case EMOJI:
 
 	}
 

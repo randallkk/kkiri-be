@@ -1,7 +1,6 @@
 package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lets.kkiri.common.util.RedisStoreUtil;
 import com.lets.kkiri.dto.WebSocketSessionInfo;
 import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.gps.GpsSub;
@@ -22,9 +21,10 @@ public class GpsService {
 
     private final ObjectMapper objectMapper;
 
-    public void handleActions(WebSocketSession session, GpsPub gpsPub) {
+    public void handleActions(WebSocketSession session, Object object) {
         Long moimId = (Long) session.getAttributes().get("moimId");
         String kakaoId = (String) session.getAttributes().get("kakaoId");
+        GpsPub gpsPub = objectMapper.convertValue(object, GpsPub.class);
         log.debug("[ws://] {} 회원님의 위치 - gpsPub : {}", kakaoId, gpsPub.toString());
         sendMessage(new GpsSub(moimId, kakaoId, gpsPub));
     }
@@ -47,8 +47,6 @@ public class GpsService {
         try {
             if (session.isOpen()) {
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(gpsSub)));
-                StandardWebSocketSession standardWebSocketSession = (StandardWebSocketSession) session;
-                standardWebSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(gpsSub)));
             }
             else log.error("세션이 닫혀있습니다.", new IOException("세션이 닫혀있습니다."));
         } catch (Exception e) {
