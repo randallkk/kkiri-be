@@ -47,8 +47,6 @@ public class GpsService {
         try {
             if (session.isOpen()) {
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(gpsSub)));
-                StandardWebSocketSession standardWebSocketSession = (StandardWebSocketSession) session;
-                standardWebSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(gpsSub)));
             }
             else log.error("세션이 닫혀있습니다.", new IOException("세션이 닫혀있습니다."));
         } catch (Exception e) {
