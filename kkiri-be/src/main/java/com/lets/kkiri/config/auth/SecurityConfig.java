@@ -33,19 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 인증이 필요없는 API 목록
     private static final String[] OPEN_API_GET = new String[]{
             "/api/auth/**",
-            "/api/contents/**",
-            "/api/search/**",
-            "/api/categories/**",
-            "/api/recommends/random/**",
-            "/api/quizzes/**",
-            "/login/**",
-            "/oauth2/**",
-            "/api/quizzes/**"
     };
 
     private static final String[] OPEN_API_POST = new String[]{
             "/api/auth/login",
-            "/api/contents/**/feedback",
     };
 
     private static final String[] ADMIN_API_POST = new String[]{
@@ -85,9 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), memberService, redisTemplate)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, OPEN_API_GET).permitAll()
-                .antMatchers(HttpMethod.POST, OPEN_API_POST).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and().cors();
     }
 
