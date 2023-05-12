@@ -11,12 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @ToString
 public class MessageSub {
 	private MoimSessionReq.MoimSessionType messageType;
@@ -27,7 +29,7 @@ public class MessageSub {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDateTime time;
 
-	public static MessageSub toDto(Message msg) {
+	public static MessageSub messageToDto(Message msg) {
 		MessageSub sub = new MessageSub();
 		sub.moimId = msg.getMoimId();
 		sub.memberKakaoId = msg.getMemberKakaoId();
@@ -35,6 +37,16 @@ public class MessageSub {
 		sub.message = msg.getMessage();
 		sub.time = msg.getTime();
 		sub.messageType = msg.getMessageType();
+		return sub;
+	}
+
+	public static MessageSub messageDtoToSub(MessageDto msg) {
+		MessageSub sub = new MessageSub();
+		sub.moimId = msg.getMoimId();
+		sub.memberKakaoId = msg.getMemberKakaoId();
+		sub.nickname = msg.getNickname();
+		sub.message = msg.getMessage();
+		sub.time = msg.getTime();
 		return sub;
 	}
 }
