@@ -1,6 +1,7 @@
 package com.lets.kkiri.controller;
 
 import com.lets.kkiri.common.util.JwtTokenUtil;
+import com.lets.kkiri.dto.moim.MoimInfoGetRes;
 import com.lets.kkiri.dto.moim.MoimPostReq;
 import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.entity.Member;
@@ -26,5 +27,14 @@ public class MoimController {
         String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
         moimService.addMoim(kakaoId, moimPostReq);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{moimId}")
+    public ResponseEntity moimDetail(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
+            @PathVariable Long moimId
+    ) {
+        MoimInfoGetRes res = moimService.findMoimById(moimId);
+        return ResponseEntity.ok().body(res);
     }
 }
