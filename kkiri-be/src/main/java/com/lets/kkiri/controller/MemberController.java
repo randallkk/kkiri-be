@@ -1,12 +1,18 @@
 package com.lets.kkiri.controller;
 
-import com.lets.kkiri.common.util.JwtTokenUtil;
+import com.lets.kkiri.config.jwt.JwtTokenUtil;
+import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.dto.member.MemberDevicePostReq;
+import com.lets.kkiri.dto.member.MemberLoginPostRes;
+import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController

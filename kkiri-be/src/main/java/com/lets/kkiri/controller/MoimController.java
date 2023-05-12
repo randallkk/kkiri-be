@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MoimController {
     private final MoimService moimService;
     @PostMapping()
-    public ResponseEntity moinAdd(@RequestBody MoimPostReq moimPostReq) throws Exception {
+    public ResponseEntity moinAdd(@RequestBody MoimPostReq moimPostReq) {
         moimService.addMoim(moimPostReq);
         return ResponseEntity.ok().build();
     }
