@@ -1,5 +1,7 @@
 package com.lets.kkiri.service;
 
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.MemberDevice;
@@ -21,13 +23,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberDeviceRepository memberDeviceRepository;
     public Member getMemberByKakaoId(String kakaoId) {
-        Member member = memberRepository.findByKakaoId(kakaoId).orElseThrow(
-                () -> {
-                    log.error("MemberService.getMemberByEmail: member not found");
-                    return new IllegalArgumentException("MemberService.getMemberByEmail: member not found");
-                }
-        );
-        return member;
+        return memberRepository.findByKakaoId(kakaoId).orElseThrow(() -> {
+            throw new KkiriException(ErrorCode.MEMBER_NOT_FOUND);
+        });
     }
 
     public Member getMemberByKakaoUserInfo(KakaoUserPostDto kakaoUserInfo) {
