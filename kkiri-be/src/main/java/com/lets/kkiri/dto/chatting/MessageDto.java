@@ -24,16 +24,13 @@ public class MessageDto {
 	private String memberKakaoId;
 	private String nickname;
 	private String message;
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	private LocalDateTime time;
 
-	public static MessageDto toDto(Message msg) {
+	public MessageDto toDto(Message msg) {
 		MessageDto dto = new MessageDto();
 		dto.moimId = msg.getMoimId();
 		dto.memberKakaoId = msg.getMemberKakaoId();
 		dto.nickname = msg.getNickname();
 		dto.message = msg.getMessage();
-		dto.time = msg.getTime();
 		return dto;
 	}
 }
