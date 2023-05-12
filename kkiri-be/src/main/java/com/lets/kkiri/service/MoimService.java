@@ -27,11 +27,13 @@ public class MoimService {
     private final MemberTopicService memberTopicService;
     private final MemberTopicRepositorySupport memberTopicRepositorySupport;
 
-    public void addMoim(String kakaoId, MoimPostReq moimPostReq) {
+    public Long addMoim(String kakaoId, MoimPostReq moimPostReq) {
         Moim moim = moimRepository.save(moimPostReq.toEntity());
 
         Long memberId = memberService.getMemberByKakaoId(kakaoId).getId();
         memberTopicService.addMemberToMoim(memberId, moim.getId());
+
+        return moim.getId();
     }
 
     public MoimInfoGetRes findMoimById(Long moimId) {
