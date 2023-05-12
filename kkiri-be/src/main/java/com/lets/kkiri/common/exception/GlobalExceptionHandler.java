@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.FileNotFoundException;
 
@@ -12,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({KkiriException.class})
     protected ResponseEntity handleKkiriException(KkiriException e) {
-        return new ResponseEntity(e.getErrorCode(), e.getErrorCode().getStatus());
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(ErrorResponse.toErrorResponse(e.getErrorCode()));
     }
     @ExceptionHandler({UnsupportedOperationException.class})
     protected ResponseEntity handleUnsupportedOperationException(UnsupportedOperationException e) {
