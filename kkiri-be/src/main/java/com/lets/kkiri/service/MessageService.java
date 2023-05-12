@@ -14,6 +14,7 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.annotation.PostConstruct;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,7 +29,9 @@ public class MessageService {
         try{
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
             log.debug("sendMessage : {}", msg);
-            // mongoTemplate.save(content);
+            //메세지 전송 후 DB에 저장
+            msg.setTime(LocalDateTime.now());
+            mongoTemplate.save(msg);
         }catch (Exception e){
             log.debug("sendMessage error : {}", e.getMessage());
         }
