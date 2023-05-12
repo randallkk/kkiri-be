@@ -7,9 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.lets.kkiri.common.exception.ErrorCode;
-import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.common.util.JwtTokenUtil;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.lets.kkiri.config.ResponseBodyWriteUtil;
 import com.lets.kkiri.config.auth.MemberDetails;
 import com.lets.kkiri.entity.Member;
@@ -21,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 요청 헤더에 jwt 토큰이 있는 경우, 토큰 검증 및 인증 처리 로직 정의.
@@ -36,7 +36,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         // Read the Authorization header, where the JWT Token should be
         String token = request.getHeader(JwtTokenUtil.HEADER_STRING);
 
@@ -48,7 +49,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         // header가 null이거나, 'Bearer '로 시작하지 않는다면 예외 처리.
         if (token == null || !token.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
-            throw new KkiriException(ErrorCode.ACCESS_TOKEN_NULL);
+            return;
         }
 
         /*
@@ -63,7 +64,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         if ("logout".equals(isLogout)) {
             filterChain.doFilter(request, response);
-            throw new KkiriException(ErrorCode.UNAUTHORIZED);
+            return;
         } // [토큰 블랙리스트 확인] 끝
 
         try {
@@ -72,11 +73,11 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             // jwt 토큰으로 부터 획득한 인증 정보(authentication) 설정.
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception ex) {
-            throw new KkiriException(ErrorCode.UNAUTHORIZED);
+            ResponseBodyWriteUtil.sendError(request, response, ex);
+            return;
         }
 
         filterChain.doFilter(request, response);
-        throw new KkiriException(ErrorCode.UNVALID_TOKEN);
     }
 
     @Transactional(readOnly = true)
@@ -99,8 +100,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 jwtAuthentication.setDetails(userDetails);
                 return jwtAuthentication;
             }
-            throw new KkiriException(ErrorCode.MEMBER_NOT_FOUND);
+            return null;
         }
-        throw new KkiriException(ErrorCode.ACCESS_TOKEN_NULL);
+        return null;
     }
 }

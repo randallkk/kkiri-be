@@ -12,16 +12,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({KkiriException.class})
     protected ResponseEntity handleKkiriException(KkiriException e) {
-        return new ResponseEntity(e.getErrorCode().getMessage(), HttpStatus.valueOf(e.getErrorCode().getStatus().value()));
+        return new ResponseEntity(e.getErrorCode(), e.getErrorCode().getStatus());
     }
-
     @ExceptionHandler({UnsupportedOperationException.class})
     protected ResponseEntity handleUnsupportedOperationException(UnsupportedOperationException e) {
+        e.printStackTrace();
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({FileNotFoundException.class})
     protected ResponseEntity handleFileNotFoundException(FileNotFoundException e) {
+        e.printStackTrace();
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
