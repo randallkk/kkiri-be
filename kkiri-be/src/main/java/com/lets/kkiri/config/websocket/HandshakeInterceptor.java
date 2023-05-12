@@ -1,6 +1,6 @@
 package com.lets.kkiri.config.websocket;
 
-import com.lets.kkiri.config.jwt.JwtTokenUtil;
+import com.lets.kkiri.common.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.server.ServerHttpRequest;
