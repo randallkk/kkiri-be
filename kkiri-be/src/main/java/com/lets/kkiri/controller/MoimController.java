@@ -3,10 +3,7 @@ package com.lets.kkiri.controller;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.common.util.JwtTokenUtil;
-import com.lets.kkiri.dto.moim.MoimInfoGetRes;
-import com.lets.kkiri.dto.moim.MoimLinkPostReq;
-import com.lets.kkiri.dto.moim.MoimPostReq;
-import com.lets.kkiri.dto.moim.MoimRegisterRes;
+import com.lets.kkiri.dto.moim.*;
 import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.service.MemberService;
@@ -16,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/moims")
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class MoimController {
     private final MoimService moimService;
     private final MemberService memberService;
+
     @PostMapping()
     public ResponseEntity moinAdd(
             @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
@@ -32,6 +32,21 @@ public class MoimController {
         Long moimId = moimService.addMoim(kakaoId, moimPostReq);
         MoimRegisterRes res = MoimRegisterRes.builder().moimId(moimId).build();
         return ResponseEntity.ok().body(res);
+    }
+
+    @GetMapping()
+    public ResponseEntity moimCardList(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
+            @RequestParam(required = false) String date
+    ) {
+        String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
+        System.out.println("DATE >>>>>>>>> " + date);
+
+        List<MoimCardDto> moimCards = moimService.findMoimsByKakaoId(kakaoId, date);
+
+        return ResponseEntity.ok().body(MoimCardListGetRes.builder()
+                .moimCardList(moimCards)
+                .build());
     }
 
     @GetMapping("/{moimId}")

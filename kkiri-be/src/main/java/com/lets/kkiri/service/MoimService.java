@@ -1,9 +1,11 @@
 package com.lets.kkiri.service;
 
+import com.google.type.DateTime;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.member.MemberKakaoIdNameImageDto;
 import com.lets.kkiri.dto.member.MemberProfileDto;
+import com.lets.kkiri.dto.moim.MoimCardDto;
 import com.lets.kkiri.dto.moim.MoimInfoGetRes;
 import com.lets.kkiri.dto.moim.MoimLinkPostReq;
 import com.lets.kkiri.dto.moim.MoimPostReq;
@@ -11,11 +13,14 @@ import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.MemberTopic;
 import com.lets.kkiri.entity.Moim;
 import com.lets.kkiri.repository.MemberTopicRepositorySupport;
+import com.lets.kkiri.repository.MoimRepositorySupport;
 import com.lets.kkiri.repository.moim.MoimRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +32,7 @@ public class MoimService {
     private final MoimRepository moimRepository;
     private final MemberTopicService memberTopicService;
     private final MemberTopicRepositorySupport memberTopicRepositorySupport;
+    private final MoimRepositorySupport moimRepositorySupport;
 
     public Long addMoim(String kakaoId, MoimPostReq moimPostReq) {
         Moim moim = moimRepository.save(moimPostReq.toEntity());
@@ -76,5 +82,24 @@ public class MoimService {
         } catch (Exception e) {
             throw new KkiriException(ErrorCode.MOIM_CREATE_FAIL);
         }
+    }
+
+    public List<MoimCardDto> findMoimsByKakaoId(String kakaoId, String date) {
+        Member member = memberService.getMemberByKakaoId(kakaoId);
+
+        List<MoimCardDto> moimCards = moimRepositorySupport.findMoimsByMemberIdAndDate(member.getId(), date);
+
+        moimCards.forEach((moinCard) -> {
+            List<MemberKakaoIdNameImageDto> members = findMembersByMoimId(moinCard.getMoimId()).stream().collect(ArrayList::new, (list, memberProfileDto) -> {
+                list.add(MemberKakaoIdNameImageDto.builder()
+                        .kakaoId(memberProfileDto.getKakaoId())
+                        .nickname(memberProfileDto.getNickname())
+                        .profileImage(memberProfileDto.getProfileImg())
+                        .build());
+            }, ArrayList::addAll);
+            moinCard.setMembers(members);
+        });
+
+        return moimCards;
     }
 }
