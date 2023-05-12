@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.lets.kkiri.common.util.JwtTokenUtil;
 import com.lets.kkiri.config.ResponseBodyWriteUtil;
 import com.lets.kkiri.config.auth.MemberDetails;
 import com.lets.kkiri.entity.Member;
