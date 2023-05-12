@@ -1,6 +1,9 @@
 package com.lets.kkiri.service;
 
+import com.lets.kkiri.config.websocket.MoimSessionHandler;
+import com.lets.kkiri.dto.chatting.MessageDto;
 import com.lets.kkiri.dto.fcm.FcmMessageDto;
+import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.dto.noti.HelpNotiReq;
 import com.lets.kkiri.dto.noti.NotiLogDto;
 import com.lets.kkiri.dto.noti.PressNotiReq;
@@ -13,7 +16,10 @@ import com.lets.kkiri.repository.moim.MoimRepository;
 import com.lets.kkiri.repository.noti.NotiLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +34,9 @@ public class NotiService {
     private final MemberRepository memberRepository;
     private final MemberDeviceRepositorySupport memberDeviceRepositorySupport;
     private final FcmService fcmService;
+    private final WebSocketSession session;
+    private final MessageRoomService messageRoomService;
+    private final MessageService messageService;
 
     public void sendPressNoti(String senderKakaoId, String receiverKakaoId) {
         Member recvMember = memberRepository.findByKakaoId(receiverKakaoId).orElseThrow(
@@ -47,6 +56,15 @@ public class NotiService {
                             .body(senderKakaoId + "님이 재촉 중입니다.")
                             .build()
             );
+
+            //재촉 메세지 채팅방에 전송
+            if(session.isOpen()) {
+                MessageDto dto = MessageDto.builder()
+                    .message(pressNotiReq.getSenderEmail()+"님이 " + pressNotiReq.getReceiverEmail()+"님을 재촉 중입니다.")
+                    .build();
+                messageRoomService.sendMessage(session, MoimSessionReq.MoimSessionType.URGENT, dto, messageService);
+            }
+
         } catch (IOException e) {
             log.error("FCM ERROR");
         }
