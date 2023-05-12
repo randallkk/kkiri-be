@@ -1,7 +1,7 @@
 package com.lets.kkiri.config.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lets.kkiri.common.util.RedisStoreUtil;
+import com.lets.kkiri.dto.WebSocketSessionInfo;
 import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.service.GpsService;
@@ -22,19 +22,19 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 	private final MessageService messageService;
 	private final GpsService gpsService;
 
-	private final RedisStoreUtil redisStoreUtil;
-
 	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+	public void afterConnectionEstablished(WebSocketSession session) {
 		// 클라이언트가 서버에 연결되면 호출되는 메소드
 		StringBuilder sb = new StringBuilder();
 		Long moimId = (Long) session.getAttributes().get("moimId");
 		String kakaoId = (String) session.getAttributes().get("kakaoId");
-		sb.append("WebsocketSession:")
-				.append(moimId).append(":")
+		sb.append(moimId).append(":")
 				.append(kakaoId);
-		log.debug("session Key : {}", sb.toString());
-		redisStoreUtil.saveData(sb.toString(), session);
+		log.debug("session Key : {}", sb);
+
+		WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
+		webSocketSessionInfo.addSession(moimId, kakaoId, session);
+
 		log.info("[ws://] kakaoId: {} 회원님이 {} 모임 웹소켓에 접속 완료 햇삼 꺄륵><", kakaoId, moimId);
 	}
 
