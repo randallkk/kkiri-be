@@ -1,5 +1,7 @@
 package com.lets.kkiri.controller;
 
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.search.SearchPlaceRes;
 import com.lets.kkiri.service.KakaoSearchService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class SearchController {
             @RequestParam String query,
             @PageableDefault(size = 10, page = 1) Pageable pageable
     ) {
+        if (true) throw new KkiriException(ErrorCode.INVALID_TOKEN);
         return kakaoSearchService.searchPlace(query, pageable);
     }
 }

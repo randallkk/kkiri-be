@@ -1,6 +1,6 @@
 package com.lets.kkiri.controller;
 
-import com.lets.kkiri.config.jwt.JwtTokenUtil;
+import com.lets.kkiri.common.util.JwtTokenUtil;
 import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.dto.member.MemberDevicePostReq;
 import com.lets.kkiri.dto.member.MemberLoginPostRes;

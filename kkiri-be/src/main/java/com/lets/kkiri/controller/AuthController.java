@@ -1,6 +1,6 @@
 package com.lets.kkiri.controller;
 
-import com.lets.kkiri.config.jwt.JwtTokenUtil;
+import com.lets.kkiri.common.util.JwtTokenUtil;
 import com.lets.kkiri.dto.member.KakaoUserPostDto;
 import com.lets.kkiri.dto.member.MemberLoginPostRes;
 import com.lets.kkiri.dto.auth.ReissueGetRes;
@@ -22,10 +22,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     @Value("${jwt.expiration.atk}")
-    Integer atkExpirationTime;
+    Long atkExpirationTime;
 
     @Value("${jwt.expiration.rtk}")
-    Integer rtkExpirationTime;
+    Long rtkExpirationTime;
     private final MemberService memberService;
     private final RedisService redisService;
     private final AuthService authService;

@@ -1,6 +1,6 @@
 package com.lets.kkiri.controller;
 
-import com.lets.kkiri.config.jwt.JwtTokenUtil;
+import com.lets.kkiri.common.util.JwtTokenUtil;
 import com.lets.kkiri.dto.noti.HelpNotiReq;
 import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.dto.noti.RouteGuideNotiReq;

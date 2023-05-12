@@ -1,11 +1,10 @@
-package com.lets.kkiri.config.jwt;
+package com.lets.kkiri.common.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.*;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +14,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-
-import static com.google.common.collect.Lists.newArrayList;
-
 /**
  * jwt 토큰 유틸 정의.
  */
@@ -25,15 +21,15 @@ import static com.google.common.collect.Lists.newArrayList;
 public class JwtTokenUtil {
     private static String secretKey;
 
-    public static Integer atkExpirationTime;
+    public static Long atkExpirationTime;
 
-    public static Integer rtkExpirationTime;
+    public static Long rtkExpirationTime;
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
     public static final String ISSUER = "KKIRI";
 
     @Autowired
-    public JwtTokenUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration.atk}") Integer atkExpirationTime, @Value("${jwt.expiration.rtk}") Integer rtkExpirationTime) {
+    public JwtTokenUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration.atk}") Long atkExpirationTime, @Value("${jwt.expiration.rtk}") Long rtkExpirationTime) {
         this.secretKey = secretKey;
         this.atkExpirationTime = atkExpirationTime;
         this.rtkExpirationTime = rtkExpirationTime;
@@ -52,8 +48,6 @@ public class JwtTokenUtil {
     }
 
     public static String getToken(String kakaoId) {
-//        int expirationTime = (type.equals("access-token")) ? atkExpirationTime : rtkExpirationTime;
-
         Date expires = JwtTokenUtil.getTokenExpiration(rtkExpirationTime);
         return JWT.create()
                 .withSubject(kakaoId)
@@ -63,7 +57,7 @@ public class JwtTokenUtil {
                 .sign(Algorithm.HMAC512(secretKey.getBytes()));
     }
 
-    public static String getToken(int expiresToken, String kakaoId) {
+    public static String getToken(long expiresToken, String kakaoId) {
         Date expires = JwtTokenUtil.getTokenExpiration(expiresToken);
         return JWT.create()
                 .withSubject(kakaoId)
@@ -78,7 +72,7 @@ public class JwtTokenUtil {
         return getVerifier().verify(token.replace(TOKEN_PREFIX, "")).getSubject();
     }
 
-    public static Date getTokenExpiration(int expirationTime) {
+    public static Date getTokenExpiration(long expirationTime) {
         Date now = new Date();
         return new Date(now.getTime() + expirationTime);
     }
