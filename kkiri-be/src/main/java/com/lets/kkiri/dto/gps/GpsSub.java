@@ -1,8 +1,11 @@
 package com.lets.kkiri.dto.gps;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import lombok.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +18,7 @@ public class GpsSub {
     private String kakaoId;
     private Double longitude;
     private Double latitude;
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime regDate;
 
     public GpsSub(Long moimId, String kakaoId, GpsPub gpsPub) {
