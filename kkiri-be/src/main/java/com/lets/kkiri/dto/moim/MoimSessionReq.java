@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class MoimSessionReq {
     public enum MoimSessionType {   // message, gps, emoji, 재촉 ...
-        MESSAGE, GPS, EMOJI, URGENT
+        MESSAGE, GPS, EMOJI, URGENT, JOIN
     }
     private MoimSessionType type;
     private Object content;

@@ -1,6 +1,8 @@
 package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.WebSocketSessionInfo;
 import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.gps.GpsSub;
@@ -9,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.adapter.standard.StandardWebSocketSession;
 
 import java.io.IOException;
 import java.util.Map;
@@ -23,10 +24,23 @@ public class GpsService {
 
     public void handleActions(WebSocketSession session, Object object) {
         Long moimId = (Long) session.getAttributes().get("moimId");
-        String kakaoId = (String) session.getAttributes().get("kakaoId");
-        GpsPub gpsPub = objectMapper.convertValue(object, GpsPub.class);
-        log.debug("[ws://] {} 회원님의 위치 - gpsPub : {}", kakaoId, gpsPub.toString());
-        sendMessage(new GpsSub(moimId, kakaoId, gpsPub));
+        String kakaoId;
+        try {
+            kakaoId = (String) session.getAttributes().get("kakaoId");
+            GpsPub gpsPub = objectMapper.convertValue(object, GpsPub.class);
+            log.debug("[ws://] {} 회원님의 위치 - gpsPub : {}", kakaoId, gpsPub.toString());
+            sendMessage(new GpsSub(moimId, kakaoId, gpsPub));
+        } catch (NullPointerException e) {
+            log.error("세션에 kakaoId가 없습니다.", e);
+            try {
+                session.close();
+                log.debug("[ws://] 세션을 닫았습니다.");
+                throw new KkiriException(ErrorCode.UNAUTHORIZED);
+            } catch (IOException ioException) {
+                log.error("세션을 닫는데 실패했습니다.", ioException);
+
+            }
+        }
     }
 
     void sendMessage(GpsSub gpsSub) {
