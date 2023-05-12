@@ -17,8 +17,6 @@ import java.time.format.DateTimeFormatter;
 @Data
 public class MoimPostReq {
     private String name;
-    // 모임 링크
-    private String link;
     // 집합 장소
     private String placeName;
     // 위도
@@ -34,7 +32,6 @@ public class MoimPostReq {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm");
         return Moim.builder()
                 .name(name)
-                .link(link)
                 .placeName(placeName)
                 .lat(latitude)
                 .lng(longitude)
