@@ -13,6 +13,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.LinkedHashMap;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -41,17 +43,18 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String payload = message.getPayload();
-		log.info("payload : {}" + payload);
+		log.info("payload : {}", payload);
 
 		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
 		Object content = msg.getContent();
-		log.info("content : {}" + content);
+		log.debug("content : {}", content.toString());
+		log.debug("content type : {}", content.getClass());
 		switch (msg.getType()) {
 			case MESSAGE:
 
 				break;
 			case GPS:
-				gpsService.handleActions(session, (GpsPub) content);
+				gpsService.handleActions(session, content);
 				break;
 			case EMOJI:
 
