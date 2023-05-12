@@ -68,8 +68,7 @@ public class JwtTokenUtil {
     }
 
     public static String getIdentifier(String token){
-        handleError(token);
-        return getVerifier().verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+        return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
     }
 
     public static Date getTokenExpiration(long expirationTime) {
