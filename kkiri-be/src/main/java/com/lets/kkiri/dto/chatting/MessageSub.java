@@ -46,7 +46,6 @@ public class MessageSub {
 		sub.memberKakaoId = msg.getMemberKakaoId();
 		sub.nickname = msg.getNickname();
 		sub.message = msg.getMessage();
-		sub.time = msg.getTime();
 		return sub;
 	}
 }

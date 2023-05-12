@@ -3,6 +3,8 @@ package com.lets.kkiri.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,6 +15,7 @@ import com.lets.kkiri.dto.moim.MoimSessionReq;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Document("message")
 public class Message {
     @Id
