@@ -5,6 +5,7 @@ import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.member.MemberKakaoIdNameImageDto;
 import com.lets.kkiri.dto.member.MemberProfileDto;
 import com.lets.kkiri.dto.moim.MoimInfoGetRes;
+import com.lets.kkiri.dto.moim.MoimLinkPostReq;
 import com.lets.kkiri.dto.moim.MoimPostReq;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.MemberTopic;
@@ -64,5 +65,16 @@ public class MoimService {
 
     public List<MemberProfileDto> findMembersByMoimId(Long moimId){
         return memberTopicRepositorySupport.findMembersByMoimId(moimId);
+    }
+
+    public void addLinkToMoim(MoimLinkPostReq moimPostReq) {
+        Moim moim = moimRepository.findById(moimPostReq.getMoimId()).orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND));
+        moim.addLinkToMoim(moimPostReq.getLink());
+
+        try {
+            moimRepository.save(moim);
+        } catch (Exception e) {
+            throw new KkiriException(ErrorCode.MOIM_CREATE_FAIL);
+        }
     }
 }
