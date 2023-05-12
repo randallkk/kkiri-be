@@ -42,4 +42,8 @@ public class Moim {
         this.meetingAt = meetingAt;
         this.lateFee = lateFee;
     }
+
+    public void addLinkToMoim (String link) {
+        this.link = link;
+    }
 }
