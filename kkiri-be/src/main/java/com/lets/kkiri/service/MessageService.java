@@ -24,18 +24,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MessageService {
     private final ObjectMapper objectMapper;
-    private final MongoTemplate mongoTemplate;
-    private final SequenceGeneratorService sequenceGeneratorService;
 
     public void sendMessage(WebSocketSession session, MessageSub msg)  {
         try{
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
             log.debug("sendMessage : {}", msg);
-            //메세지 전송 후 DB에 저장
-            msg.setTime(LocalDateTime.now());
-            Message saveMsg = msg.toEntity(msg);
-            saveMsg.setSeq(sequenceGeneratorService.generateSequence(Message.SEQUENCE_NAME));
-            mongoTemplate.save(saveMsg);
         }catch (Exception e){
             log.debug("sendMessage error : {}", e.getMessage());
         }
