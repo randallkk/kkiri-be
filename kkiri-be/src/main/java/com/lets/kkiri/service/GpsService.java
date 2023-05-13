@@ -6,6 +6,7 @@ import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.WebSocketSessionInfo;
 import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.gps.GpsSub;
+import com.lets.kkiri.dto.moim.MoimSessionReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static com.lets.kkiri.dto.moim.MoimSessionReq.MoimSessionType.GPS;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,15 +55,15 @@ public class GpsService {
             String key = entry.getKey();
             WebSocketSession session = entry.getValue();
             if (key.equals(kakaoId)) continue;
-            send(session, gpsSub);
+            send(session, new MoimSessionReq(GPS, gpsSub));
         }
         log.debug("[ws://] {} 회원님의 위치 발송 완료!", kakaoId);
     }
 
-    void send(WebSocketSession session, GpsSub gpsSub) {
+    void send(WebSocketSession session, MoimSessionReq moimSessionReq) {
         try {
             if (session.isOpen()) {
-                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(gpsSub)));
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(moimSessionReq)));
             }
             else log.error("세션이 닫혀있습니다.", new IOException("세션이 닫혀있습니다."));
         } catch (Exception e) {
