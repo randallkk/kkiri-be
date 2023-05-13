@@ -21,6 +21,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MessageSub {
+	private Long seq;
 	private MoimSessionReq.MoimSessionType messageType;
 	private Long moimId;
 	private String kakaoId;
@@ -31,6 +32,7 @@ public class MessageSub {
 
 	public static MessageSub messageToDto(Message msg) {
 		MessageSub sub = new MessageSub();
+		sub.seq = msg.getSeq();
 		sub.moimId = msg.getMoimId();
 		sub.kakaoId = msg.getKakaoId();
 		sub.nickname = msg.getNickname();
@@ -51,6 +53,7 @@ public class MessageSub {
 
 	public static Message toEntity(MessageSub sub) {
 		Message msg = Message.builder()
+				.seq(sub.getSeq())
 				.message(sub.getMessage())
 				.time(sub.getTime())
 				.kakaoId(sub.getKakaoId())
