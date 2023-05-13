@@ -34,14 +34,8 @@ public class NotiService {
     private final MemberRepository memberRepository;
     private final MemberDeviceRepositorySupport memberDeviceRepositorySupport;
     private final FcmService fcmService;
-    private WebSocketSession session;
     private final MessageRoomService messageRoomService;
     private final MessageService messageService;
-    private final MoimSessionHandler moimSessionHandler;
-
-    private void getSession() {
-        session = moimSessionHandler.getSession();
-    }
 
     public void sendPressNoti(String senderKakaoId, String receiverKakaoId) {
         Member recvMember = memberRepository.findByKakaoId(receiverKakaoId).orElseThrow(
@@ -63,12 +57,10 @@ public class NotiService {
             );
 
             //재촉 메세지 채팅방에 전송
-            if(session.isOpen()) {
-                MessageDto dto = MessageDto.builder()
+            MessageDto dto = MessageDto.builder()
                     .message(senderKakaoId+"님이 " + receiverKakaoId+"님을 재촉 중입니다.")
                     .build();
-                messageRoomService.sendMessage(session, MoimSessionReq.MoimSessionType.URGENT, dto, messageService);
-            }
+            messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto, messageService);
 
         } catch (IOException e) {
             log.error("FCM ERROR");
