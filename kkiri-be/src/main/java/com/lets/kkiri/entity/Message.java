@@ -23,16 +23,16 @@ public class Message {
     private String message;
     @CreatedDate
     private LocalDateTime time;
-    private String memberKakaoId;
+    private String kakaoId;
     private String nickname;
     private Long moimId;
     private MoimSessionReq.MoimSessionType messageType;
 
     @Builder
-    public Message(String message, LocalDateTime time, String memberKakaoId, String nickname, Long moimId, MoimSessionReq.MoimSessionType messageType) {
+    public Message(String message, LocalDateTime time, String kakaoId, String nickname, Long moimId, MoimSessionReq.MoimSessionType messageType) {
         this.message = message;
         this.time = time;
-        this.memberKakaoId = memberKakaoId;
+        this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.moimId = moimId;
         this.messageType = messageType;

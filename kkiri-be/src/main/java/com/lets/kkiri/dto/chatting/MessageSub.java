@@ -23,7 +23,7 @@ import lombok.ToString;
 public class MessageSub {
 	private MoimSessionReq.MoimSessionType messageType;
 	private Long moimId;
-	private String memberKakaoId;
+	private String kakaoId;
 	private String nickname;
 	private String message;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
@@ -32,7 +32,7 @@ public class MessageSub {
 	public static MessageSub messageToDto(Message msg) {
 		MessageSub sub = new MessageSub();
 		sub.moimId = msg.getMoimId();
-		sub.memberKakaoId = msg.getMemberKakaoId();
+		sub.kakaoId = msg.getKakaoId();
 		sub.nickname = msg.getNickname();
 		sub.message = msg.getMessage();
 		sub.time = msg.getTime();
@@ -43,9 +43,21 @@ public class MessageSub {
 	public static MessageSub messageDtoToSub(MessageDto msg) {
 		MessageSub sub = new MessageSub();
 		sub.moimId = msg.getMoimId();
-		sub.memberKakaoId = msg.getMemberKakaoId();
+		sub.kakaoId = msg.getKakaoId();
 		sub.nickname = msg.getNickname();
 		sub.message = msg.getMessage();
 		return sub;
+	}
+
+	public static Message toEntity(MessageSub sub) {
+		Message msg = Message.builder()
+				.message(sub.getMessage())
+				.time(sub.getTime())
+				.kakaoId(sub.getKakaoId())
+				.nickname(sub.getNickname())
+				.moimId(sub.getMoimId())
+				.messageType(sub.getMessageType())
+				.build();
+		return msg;
 	}
 }
