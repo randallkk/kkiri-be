@@ -1,18 +1,13 @@
 package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.common.util.RedisStoreUtil;
 import com.lets.kkiri.dto.WebSocketSessionInfo;
 import com.lets.kkiri.dto.chatting.MessageDto;
 import com.lets.kkiri.dto.chatting.MessageMetaData;
 import com.lets.kkiri.dto.chatting.MessageRes;
 import com.lets.kkiri.dto.chatting.MessageSub;
-import com.lets.kkiri.dto.gps.GpsPub;
-import com.lets.kkiri.dto.gps.GpsSub;
-import com.lets.kkiri.dto.moim.MoimSessionListDto;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 
 import com.lets.kkiri.entity.Message;
@@ -20,10 +15,12 @@ import com.lets.kkiri.repository.chatting.MessageRepositorySupport;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class MessageRoomService {
-    MoimSessionListDto moimSessionListDto;
-    private final RedisStoreUtil redisStoreUtil;
     private final ObjectMapper objectMapper;
     private final MessageRepositorySupport messageRepositorySupport;
+    private final SequenceGeneratorService sequenceGeneratorService;
+    private final MongoTemplate mongoTemplate;
 
     public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content, MessageService messageService) {
-//        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         Long moimId = (Long) session.getAttributes().get("moimId");
         String kakaoId;
 
@@ -69,9 +65,12 @@ public class MessageRoomService {
         Map<String, WebSocketSession> sessions = webSocketSessionInfo.getAllSessionsByMoimId(msg.getMoimId());
         MessageSub sub = MessageSub.messageDtoToSub(msg);
         sub.setMessageType(type);
-//        if(sub.getMessageType() == MoimSessionReq.MoimSessionType.URGENT) {
-//            sub.setMoimId(msg.getMoimId());
-//        }
+        sub.setSeq(sequenceGeneratorService.generateSequence(Message.SEQUENCE_NAME));
+        //메세지 전송 후 DB에 저장
+        sub.setTime(LocalDateTime.now());
+        Message saveMsg = sub.toEntity(sub);
+        mongoTemplate.save(saveMsg);
+
         log.debug("[ws://] session size : {}", sessions.size());
         log.debug("[ws://] MessageSub : {}", sub.toString());
         for (Map.Entry<String, WebSocketSession> entry : sessions.entrySet()) {
