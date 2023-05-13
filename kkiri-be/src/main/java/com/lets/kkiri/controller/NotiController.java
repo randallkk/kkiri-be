@@ -24,7 +24,7 @@ public class NotiController {
             @RequestBody PressNotiReq pressNotiReq
     ) {
         String senderKakaoId = JwtTokenUtil.getIdentifier(token);
-        notiService.sendPressNoti(senderKakaoId, pressNotiReq.getReceiverKakaoId());
+        notiService.sendPressNoti(senderKakaoId, pressNotiReq.getReceiverKakaoId(), pressNotiReq.getChatRoomId());
         return ResponseEntity.ok().build();
     }
 
