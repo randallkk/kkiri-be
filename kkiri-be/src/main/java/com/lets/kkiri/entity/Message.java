@@ -1,9 +1,6 @@
 package com.lets.kkiri.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,12 +11,16 @@ import java.time.LocalDateTime;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Document("message")
 public class Message {
+    @Transient
+    public static final String SEQUENCE_NAME = "message_sequence";
     @Id
     private String id;
+    private Long seq;
     private String message;
     @CreatedDate
     private LocalDateTime time;
@@ -29,7 +30,8 @@ public class Message {
     private MoimSessionReq.MoimSessionType messageType;
 
     @Builder
-    public Message(String message, LocalDateTime time, String kakaoId, String nickname, Long moimId, MoimSessionReq.MoimSessionType messageType) {
+    public Message(Long seq, String message, LocalDateTime time, String kakaoId, String nickname, Long moimId, MoimSessionReq.MoimSessionType messageType) {
+        this.seq = seq;
         this.message = message;
         this.time = time;
         this.kakaoId = kakaoId;
