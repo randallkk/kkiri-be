@@ -2,11 +2,16 @@ package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.common.util.RedisStoreUtil;
+import com.lets.kkiri.dto.WebSocketSessionInfo;
 import com.lets.kkiri.dto.chatting.MessageDto;
 import com.lets.kkiri.dto.chatting.MessageMetaData;
 import com.lets.kkiri.dto.chatting.MessageRes;
 import com.lets.kkiri.dto.chatting.MessageSub;
+import com.lets.kkiri.dto.gps.GpsPub;
+import com.lets.kkiri.dto.gps.GpsSub;
 import com.lets.kkiri.dto.moim.MoimSessionListDto;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 
@@ -18,8 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,29 +37,47 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageRoomService {
     MoimSessionListDto moimSessionListDto;
     private final RedisStoreUtil redisStoreUtil;
-
+    private final ObjectMapper objectMapper;
     private final MessageRepositorySupport messageRepositorySupport;
 
     public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content, MessageService messageService) {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        MessageDto msg = mapper.convertValue(content, MessageDto.class);
-        if(msg != null) {
-            sendMessage(session, type, msg, messageService);
-        }
-        else {
-            throw new IllegalStateException("message null");
+//        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        Long moimId = (Long) session.getAttributes().get("moimId");
+        String kakaoId;
+
+        try{
+            kakaoId = (String) session.getAttributes().get("kakaoId");
+            MessageDto msg = objectMapper.convertValue(content, MessageDto.class);
+            log.debug("[ws://] {} 회원님의 채팅 - Message : {}", kakaoId, msg.toString());
+            sendMessage(type, msg, messageService);
+        } catch (NullPointerException e) {
+            log.error("세션에 kakaoId가 없습니다.", e);
+            try {
+                session.close();
+                log.debug("[ws://] 세션을 닫았습니다.");
+                throw new KkiriException(ErrorCode.UNAUTHORIZED);
+            } catch (IOException ioException) {
+                log.error("세션을 닫는데 실패했습니다.", ioException);
+
+            }
         }
     }
 
-    public <T> void sendMessage(WebSocketSession session, MoimSessionReq.MoimSessionType type, MessageDto msg, MessageService messageService) {
+    public <T> void sendMessage(MoimSessionReq.MoimSessionType type, MessageDto msg, MessageService messageService) {
         log.debug("MessageRoomService / sendMessage ()");
-        ArrayList<WebSocketSession> sessions = redisStoreUtil.getAllSessionsByMoimId(Long.parseLong(session.getAttributes().get("moimId").toString()), WebSocketSession.class);
+        WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
+        Map<String, WebSocketSession> sessions = webSocketSessionInfo.getAllSessionsByMoimId(msg.getMoimId());
         MessageSub sub = MessageSub.messageDtoToSub(msg);
         sub.setMessageType(type);
-        if(sub.getMessageType() == MoimSessionReq.MoimSessionType.URGENT) {
-            sub.setMoimId(Long.parseLong(session.getAttributes().get("moimId").toString()));
+//        if(sub.getMessageType() == MoimSessionReq.MoimSessionType.URGENT) {
+//            sub.setMoimId(msg.getMoimId());
+//        }
+        log.debug("[ws://] session size : {}", sessions.size());
+        log.debug("[ws://] MessageSub : {}", sub.toString());
+        for (Map.Entry<String, WebSocketSession> entry : sessions.entrySet()) {
+            WebSocketSession session = entry.getValue();
+            messageService.sendMessage(session, sub);
         }
-        sessions.parallelStream().forEach(s -> messageService.sendMessage(s, sub));
     }
 
     public MessageRes getFirstChat(Long moimId, Pageable pageable){
