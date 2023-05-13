@@ -3,6 +3,7 @@ package com.lets.kkiri.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.dto.chatting.MessageSub;
 
+import com.lets.kkiri.entity.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +32,8 @@ public class MessageService {
             log.debug("sendMessage : {}", msg);
             //메세지 전송 후 DB에 저장
             msg.setTime(LocalDateTime.now());
-            mongoTemplate.save(msg);
+            Message saveMsg = msg.toEntity(msg);
+            mongoTemplate.save(saveMsg);
         }catch (Exception e){
             log.debug("sendMessage error : {}", e.getMessage());
         }

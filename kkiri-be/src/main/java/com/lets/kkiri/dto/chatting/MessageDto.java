@@ -21,14 +21,14 @@ import lombok.ToString;
 @ToString
 public class MessageDto {
 	private Long moimId;
-	private String memberKakaoId;
+	private String kakaoId;
 	private String nickname;
 	private String message;
 
 	public MessageDto toDto(Message msg) {
 		MessageDto dto = new MessageDto();
 		dto.moimId = msg.getMoimId();
-		dto.memberKakaoId = msg.getMemberKakaoId();
+		dto.kakaoId = msg.getKakaoId();
 		dto.nickname = msg.getNickname();
 		dto.message = msg.getMessage();
 		return dto;
