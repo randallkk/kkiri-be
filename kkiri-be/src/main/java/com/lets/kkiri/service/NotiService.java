@@ -37,7 +37,7 @@ public class NotiService {
     private final MessageRoomService messageRoomService;
     private final MessageService messageService;
 
-    public void sendPressNoti(String senderKakaoId, String receiverKakaoId) {
+    public void sendPressNoti(String senderKakaoId, String receiverKakaoId, Long chatRoomId) {
         Member recvMember = memberRepository.findByKakaoId(receiverKakaoId).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
@@ -58,6 +58,7 @@ public class NotiService {
 
             //재촉 메세지 채팅방에 전송
             MessageDto dto = MessageDto.builder()
+                    .moimId(chatRoomId)
                     .message(senderKakaoId+"님이 " + receiverKakaoId+"님을 재촉 중입니다.")
                     .build();
             messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto, messageService);
