@@ -3,6 +3,7 @@ package com.lets.kkiri.service;
 import com.google.type.DateTime;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
+import com.lets.kkiri.dto.member.MemberGroupDto;
 import com.lets.kkiri.dto.member.MemberKakaoIdNameImageDto;
 import com.lets.kkiri.dto.member.MemberProfileDto;
 import com.lets.kkiri.dto.moim.MoimCardDto;
@@ -10,10 +11,12 @@ import com.lets.kkiri.dto.moim.MoimInfoGetRes;
 import com.lets.kkiri.dto.moim.MoimLinkPostReq;
 import com.lets.kkiri.dto.moim.MoimPostReq;
 import com.lets.kkiri.entity.Member;
+import com.lets.kkiri.entity.MemberGroup;
 import com.lets.kkiri.entity.MemberTopic;
 import com.lets.kkiri.entity.Moim;
 import com.lets.kkiri.repository.MemberTopicRepositorySupport;
 import com.lets.kkiri.repository.MoimRepositorySupport;
+import com.lets.kkiri.repository.member.MemberGroupRepository;
 import com.lets.kkiri.repository.moim.MoimRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +34,17 @@ public class MoimService {
     private final MemberService memberService;
     private final MoimRepository moimRepository;
     private final MemberTopicService memberTopicService;
-    private final MemberTopicRepositorySupport memberTopicRepositorySupport;
     private final MoimRepositorySupport moimRepositorySupport;
+    private final MemberGroupRepository memberGroupRepository;
+    private final MemberTopicRepositorySupport memberTopicRepositorySupport;
 
     public Long addMoim(String kakaoId, MoimPostReq moimPostReq) {
         Moim moim = moimRepository.save(moimPostReq.toEntity());
 
-        Long memberId = memberService.getMemberByKakaoId(kakaoId).getId();
-        memberTopicService.addMemberToMoim(memberId, moim.getId());
+        Member member = memberService.getMemberByKakaoId(kakaoId);
+        memberGroupRepository.save(MemberGroupDto.toEntity(member, moim));
+        // 멤버의 디바이스 모임 구독
+        memberTopicService.addMemberToMoim(member.getId(), moim.getId());
 
         return moim.getId();
     }

@@ -40,7 +40,6 @@ public class MoimController {
             @RequestParam(required = false) String date
     ) {
         String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
-        System.out.println("DATE >>>>>>>>> " + date);
 
         List<MoimCardDto> moimCards = moimService.findMoimsByKakaoId(kakaoId, date);
 
