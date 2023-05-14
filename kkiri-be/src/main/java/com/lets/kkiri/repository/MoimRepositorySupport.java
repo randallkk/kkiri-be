@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,18 +23,13 @@ public class MoimRepositorySupport {
     QMoim qMoim = QMoim.moim;
     QMemberGroup qMemberGroup = QMemberGroup.memberGroup;
 
-    public List<MoimCardDto> findMoimsByMemberIdAndDate(Long memberId, String date) {
+    public List<MoimCardDto> findMoimsByMemberIdAndDate(Long memberId, LocalDate date) {
         BooleanBuilder builder = new BooleanBuilder();
 
         builder.and(qMemberGroup.member.id.eq(memberId));
         builder.and(qMemberGroup.moim.id.eq(qMoim.id));
 
-        if (date != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime parsingDate = LocalDateTime.parse(date, formatter);
-
-            builder.and(qMoim.meetingAt.dayOfMonth().eq(parsingDate.getDayOfMonth()));
-        }
+        if (date != null) builder.and(qMoim.meetingAt.dayOfMonth().eq(date.getDayOfMonth()));
         return jpaQueryFactory.select(
                         Projections.constructor(
                                 MoimCardDto.class,

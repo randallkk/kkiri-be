@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class MoimService {
         }
     }
 
-    public List<MoimCardDto> findMoimsByKakaoId(String kakaoId, String date) {
+    public List<MoimCardDto> findMoimsByKakaoId(String kakaoId, LocalDate date) {
         Member member = memberService.getMemberByKakaoId(kakaoId);
 
         List<MoimCardDto> moimCards = moimRepositorySupport.findMoimsByMemberIdAndDate(member.getId(), date);
