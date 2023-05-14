@@ -12,10 +12,8 @@ import com.lets.kkiri.dto.moim.MoimInfoGetRes;
 import com.lets.kkiri.dto.moim.MoimLinkPostReq;
 import com.lets.kkiri.dto.moim.MoimPostReq;
 import com.lets.kkiri.entity.Member;
-import com.lets.kkiri.entity.MemberGroup;
-import com.lets.kkiri.entity.MemberTopic;
 import com.lets.kkiri.entity.Moim;
-import com.lets.kkiri.repository.MemberTopicRepositorySupport;
+import com.lets.kkiri.repository.MemberGroupRepositorySupport;
 import com.lets.kkiri.repository.MoimRepositorySupport;
 import com.lets.kkiri.repository.member.MemberGroupRepository;
 import com.lets.kkiri.repository.moim.MoimRepository;
@@ -23,8 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +34,7 @@ public class MoimService {
     private final MemberTopicService memberTopicService;
     private final MoimRepositorySupport moimRepositorySupport;
     private final MemberGroupRepository memberGroupRepository;
-    private final MemberTopicRepositorySupport memberTopicRepositorySupport;
+    private final MemberGroupRepositorySupport memberGroupRepositorySupport;
 
     public Long addMoim(String kakaoId, MoimPostReq moimPostReq) {
         Moim moim = moimRepository.save(moimPostReq.toEntity());
@@ -77,7 +74,7 @@ public class MoimService {
     }
 
     public List<MemberProfileDto> findMembersByMoimId(Long moimId){
-        return memberTopicRepositorySupport.findMembersByMoimId(moimId);
+        return memberGroupRepositorySupport.findMembersByMoimId(moimId);
     }
 
     public void addLinkToMoim(MoimLinkPostReq moimPostReq) {
@@ -91,7 +88,7 @@ public class MoimService {
         }
     }
 
-    public List<MoimCardDto> findMoimsByKakaoId(String kakaoId, String date) {
+    public List<MoimCardDto> findMoimsByKakaoId(String kakaoId, LocalDate date) {
         Member member = memberService.getMemberByKakaoId(kakaoId);
 
         List<MoimCardDto> moimCards = moimRepositorySupport.findMoimsByMemberIdAndDate(member.getId(), date);
@@ -113,6 +110,7 @@ public class MoimService {
     public Long addMemberToMoim(String kakaoId, MoimGroupPostReq moimGroupPostReq) {
         Member member = memberService.getMemberByKakaoId(kakaoId);
         Moim moim = moimRepository.findById(moimGroupPostReq.getMoimId()).orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND));
+        memberTopicService.addMemberToMoim(member.getId(), moim.getId());
         return memberGroupRepository.save(MemberGroupDto.toEntity(member, moim)).getMoim().getId();
     }
 }

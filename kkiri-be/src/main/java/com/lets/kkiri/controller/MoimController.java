@@ -11,9 +11,11 @@ import com.lets.kkiri.service.MemberService;
 import com.lets.kkiri.service.MoimService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -38,7 +40,7 @@ public class MoimController {
     @GetMapping()
     public ResponseEntity moimCardList(
             @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
-            @RequestParam(required = false) String date
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
         String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
 
