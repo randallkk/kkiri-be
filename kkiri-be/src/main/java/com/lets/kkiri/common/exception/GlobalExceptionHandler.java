@@ -23,12 +23,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(ErrorResponse.toErrorResponse(e.getErrorCode()));
     }
 
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity exceptionTest(Exception e, HttpServletRequest req) {
-        mattermostManager.sendNotification(e, req.getRequestURI(), getParams(req));
-        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     private String getParams(HttpServletRequest req) {
         StringBuilder params = new StringBuilder();
         Enumeration<String> keys = req.getParameterNames();
