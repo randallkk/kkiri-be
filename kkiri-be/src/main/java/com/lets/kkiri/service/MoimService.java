@@ -110,6 +110,7 @@ public class MoimService {
     public Long addMemberToMoim(String kakaoId, MoimGroupPostReq moimGroupPostReq) {
         Member member = memberService.getMemberByKakaoId(kakaoId);
         Moim moim = moimRepository.findById(moimGroupPostReq.getMoimId()).orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND));
+        memberTopicService.addMemberToMoim(member.getId(), moim.getId());
         return memberGroupRepository.save(MemberGroupDto.toEntity(member, moim)).getMoim().getId();
     }
 }
