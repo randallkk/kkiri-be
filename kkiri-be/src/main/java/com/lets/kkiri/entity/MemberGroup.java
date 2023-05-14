@@ -26,4 +26,8 @@ public class MemberGroup {
         this.member = member;
         this.moim = moim;
     }
+
+    public void changeRank(Long rank) {
+        this.rank = rank.intValue() + 1;
+    }
 }
