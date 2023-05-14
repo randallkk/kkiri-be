@@ -3,6 +3,7 @@ package com.lets.kkiri.service;
 import com.google.type.DateTime;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
+import com.lets.kkiri.dto.MoimGroupPostReq;
 import com.lets.kkiri.dto.member.MemberGroupDto;
 import com.lets.kkiri.dto.member.MemberKakaoIdNameImageDto;
 import com.lets.kkiri.dto.member.MemberProfileDto;
@@ -107,5 +108,11 @@ public class MoimService {
         });
 
         return moimCards;
+    }
+
+    public Long addMemberToMoim(String kakaoId, MoimGroupPostReq moimGroupPostReq) {
+        Member member = memberService.getMemberByKakaoId(kakaoId);
+        Moim moim = moimRepository.findById(moimGroupPostReq.getMoimId()).orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND));
+        return memberGroupRepository.save(MemberGroupDto.toEntity(member, moim)).getMoim().getId();
     }
 }

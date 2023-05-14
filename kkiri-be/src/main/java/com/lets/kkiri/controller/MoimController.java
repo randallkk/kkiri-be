@@ -3,6 +3,7 @@ package com.lets.kkiri.controller;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.common.util.JwtTokenUtil;
+import com.lets.kkiri.dto.MoimGroupPostReq;
 import com.lets.kkiri.dto.moim.*;
 import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.entity.Member;
@@ -58,7 +59,7 @@ public class MoimController {
     }
 
     @PostMapping("/links")
-    public ResponseEntity moinLinkAdd(
+    public ResponseEntity moimLinkAdd(
             @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
             @RequestBody MoimLinkPostReq moimPostReq
 
@@ -72,4 +73,16 @@ public class MoimController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/groups")
+    public ResponseEntity moimGroupJoin(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
+            @RequestBody MoimGroupPostReq moimGroupPostReq
+    ) {
+        String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
+        Long moimId = moimService.addMemberToMoim(kakaoId, moimGroupPostReq);
+        MoimRegisterRes res = MoimRegisterRes.builder().moimId(moimId).build();
+        return ResponseEntity.ok().body(res);
+    }
+
 }
