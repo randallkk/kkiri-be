@@ -6,7 +6,7 @@ body {
 
 .bodyContainer {
   display: flex;
-  padding: 50px;
+  padding: 30px;
   flex-flow: column;
   justify-content: center;
   align-items: center;
@@ -14,8 +14,8 @@ body {
 
 .imageContainer {
   display: flex;
-  width: 450px;
-  height: 550px;
+  width: 500px;
+  height: 500px;
   background-size : contain;
   background-image: url('./assets/kkiri_home.png');
   background-repeat: no-repeat;
@@ -36,9 +36,18 @@ body {
 }
 
 .downloadBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
   height: 50px;
   width: 343px;
   border: none;
   border-radius: 15px;
   background-color: #DCF861;
+}
+
+a {
+  text-decoration: none;
+  color: black;
 }
