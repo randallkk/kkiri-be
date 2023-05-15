@@ -100,6 +100,7 @@ public class MessageRoomService {
 
         List<MessageSub> msgsubList = new ArrayList<>();
         for(Message msg : msgList.getContent()){
+            if(msg.getMessageType().equals(MoimSessionReq.MoimSessionType.EMOJI)) continue;
             MessageSub dto = MessageSub.messageToDto(msg);
             msgsubList.add(dto);
         }
