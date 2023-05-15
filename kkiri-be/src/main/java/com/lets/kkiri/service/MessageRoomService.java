@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.WebSocketSessionInfo;
-import com.lets.kkiri.dto.chatting.MessageDto;
-import com.lets.kkiri.dto.chatting.MessageMetaData;
-import com.lets.kkiri.dto.chatting.MessageRes;
-import com.lets.kkiri.dto.chatting.MessageSub;
+import com.lets.kkiri.dto.chatting.*;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 
+import com.lets.kkiri.dto.noti.MessageNotiDto;
 import com.lets.kkiri.entity.Message;
 import com.lets.kkiri.repository.chatting.MessageRepositorySupport;
 
@@ -36,12 +34,13 @@ public class MessageRoomService {
     private final MessageRepositorySupport messageRepositorySupport;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoTemplate mongoTemplate;
+    private final ChatNotiService chatNotiService;
 
     public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content, MessageService messageService) {
         Long moimId = (Long) session.getAttributes().get("moimId");
         String kakaoId;
 
-        try{
+        try {
             kakaoId = (String) session.getAttributes().get("kakaoId");
             MessageDto msg = objectMapper.convertValue(content, MessageDto.class);
             log.debug("[ws://] {} 회원님의 채팅 - Message : {}", kakaoId, msg.toString());
@@ -70,6 +69,12 @@ public class MessageRoomService {
         sub.setTime(LocalDateTime.now());
         Message saveMsg = sub.toEntity(sub);
         mongoTemplate.save(saveMsg);
+        chatNotiService.sendChatNoti(MessageNotiDto.builder()
+                .message(sub.getMessage())
+                .time(sub.getTime())
+                .moimId(sub.getMoimId())
+                .senderKakaoId(sub.getKakaoId())
+                .build());
 
         log.debug("[ws://] session size : {}", sessions.size());
         log.debug("[ws://] MessageSub : {}", sub.toString());
@@ -79,13 +84,13 @@ public class MessageRoomService {
         }
     }
 
-    public MessageRes getFirstChat(Long moimId, Pageable pageable){
+    public MessageRes getFirstChat(Long moimId, Pageable pageable) {
         Page<Message> messages = messageRepositorySupport.findRecent(moimId, pageable);
         MessageRes res = makeChatList(messages);
         return res;
     }
 
-    public MessageRes getChat(Long moimId, String lastMessageId, Pageable pageable){
+    public MessageRes getChat(Long moimId, String lastMessageId, Pageable pageable) {
         Page<Message> messages = messageRepositorySupport.findMessage(moimId, pageable, lastMessageId);
         MessageRes res = makeChatList(messages);
         return res;
@@ -94,12 +99,12 @@ public class MessageRoomService {
     private MessageRes makeChatList(Page<Message> msgList) {
         MessageRes res = new MessageRes();
         MessageMetaData meta = MessageMetaData.builder()
-            .last(msgList.isLast())
-            .lastMessageId(msgList.getContent().get(msgList.getContent().size()-1).getId())
-            .build();
+                .last(msgList.isLast())
+                .lastMessageId(msgList.getContent().get(msgList.getContent().size() - 1).getId())
+                .build();
 
         List<MessageSub> msgsubList = new ArrayList<>();
-        for(Message msg : msgList.getContent()){
+        for (Message msg : msgList.getContent()) {
             MessageSub dto = MessageSub.messageToDto(msg);
             msgsubList.add(dto);
         }
