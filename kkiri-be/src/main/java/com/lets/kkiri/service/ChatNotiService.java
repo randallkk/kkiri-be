@@ -33,7 +33,7 @@ public class ChatNotiService {
                 () -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)
         );
 
-        Member sender = memberRepository.findNicknameByKakaoId(message.getSenderKakaoId()).orElseThrow(
+        Member sender = memberRepository.findByKakaoId(message.getSenderKakaoId()).orElseThrow(
                 () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
