@@ -75,7 +75,7 @@ public class NotiService {
         }
 
         successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity());
+            notiLogRepository.save(log.toEntity("hurry", senderKakaoId, receiverKakaoId, chatRoomId));
         });
     }
 
@@ -107,7 +107,7 @@ public class NotiService {
         }
 
         successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity());
+            notiLogRepository.save(log.toEntity("sos", senderKakaoId, senderKakaoId, chatRoomId));
         });
     }
 
@@ -135,7 +135,7 @@ public class NotiService {
         }
 
         successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity());
+            notiLogRepository.save(log.toEntity("path", senderKakaoId, routeGuideReq.getReceiverKakaoId(), routeGuideReq.getChatRoomId()));
         });
     }
 
