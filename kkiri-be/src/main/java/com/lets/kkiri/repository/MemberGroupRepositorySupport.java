@@ -5,16 +5,13 @@ import com.lets.kkiri.entity.QMember;
 import com.lets.kkiri.entity.QMemberGroup;
 import com.lets.kkiri.entity.QMoim;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import com.querydsl.core.types.ExpressionUtils;
 
-import org.hibernate.dialect.PostgreSQLDialect;
-import org.hibernate.dialect.function.StandardSQLFunction;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -70,22 +67,29 @@ public class MemberGroupRepositorySupport {
     }
 
     public String getMostLocByMemberIdAndDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
-            StringExpression placeNameArray = Expressions.stringTemplate(
-                "FUNCTION('regexp_split_to_array', {0}, {1})[1]",
-                qMoim.placeName, " ");
-
-        return jpaQueryFactory.select(qMoim.placeName.)
-            .from(qMoim)
-            .where(qMoim.id.in(
-                JPAExpressions
-                    .select(qMoim.id)
-                    .from(qMemberGroup)
-                    .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
-                    .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
-            ))
-            .groupBy(placeNameArray)
-            .orderBy(placeNameArray.count().desc())
-            .fetchFirst();
-
+        return jpaQueryFactory.select(
+                        Expressions.stringTemplate("{0}", Expressions.template(
+                                String.class, "SUBSTRING_INDEX({0}, ' ', 1)", qMoim.placeName
+                        ))
+                )
+                .from(qMoim)
+                .where(qMoim.id.in(
+                        JPAExpressions
+                                .select(qMoim.id)
+                                .from(qMemberGroup)
+                                .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
+                                .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
+                ))
+                .groupBy(
+                        Expressions.stringTemplate("{0}", Expressions.template(
+                                String.class, "SUBSTRING_INDEX({0}, ' ', 1)", qMoim.placeName
+                        ))
+                )
+                .orderBy(
+                        Expressions.stringTemplate("{0}", Expressions.template(
+                                String.class, "SUBSTRING_INDEX({0}, ' ', 1)", qMoim.placeName
+                        )).count().desc()
+                )
+                .fetch().get(0);
     }
 }
