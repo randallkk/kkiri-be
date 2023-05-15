@@ -76,9 +76,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), memberService, redisTemplate)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, OPEN_API_GET).permitAll()
-                .antMatchers(HttpMethod.POST, OPEN_API_POST).permitAll()
-                .antMatchers("/ws/api/**").permitAll()
                 .anyRequest().permitAll()
                 .and().cors();
     }
