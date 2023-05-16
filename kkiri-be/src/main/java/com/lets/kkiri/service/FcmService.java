@@ -58,7 +58,10 @@ public class FcmService {
                     .body(messageDto.getBody())
                     .image(null);
 
-            if(messageDto.getSender() != null) notiLogDtoBuilder.senderKakaoId(messageDto.getSender().getKakaoId());
+            if(messageDto.getSender() != null) {
+                notiLogDtoBuilder.senderKakaoId(messageDto.getSender().getKakaoId());
+                notiLogDtoBuilder.receiver(messageDto.getMoim().getId().toString());
+            }
             if(messageDto.getChannelId() != null) notiLogDtoBuilder.channelId(messageDto.getChannelId());
             results.add(notiLogDtoBuilder.build());
         }
