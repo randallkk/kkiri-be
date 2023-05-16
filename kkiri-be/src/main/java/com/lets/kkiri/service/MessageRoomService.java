@@ -69,12 +69,16 @@ public class MessageRoomService {
         sub.setTime(LocalDateTime.now());
         Message saveMsg = sub.toEntity(sub);
         mongoTemplate.save(saveMsg);
-        chatNotiService.sendChatNoti(MessageNotiDto.builder()
-                .message(sub.getMessage())
-                .time(sub.getTime())
-                .moimId(sub.getMoimId())
-                .senderKakaoId(sub.getKakaoId())
-                .build());
+
+        //채팅 알림
+        if (type.equals(MoimSessionReq.MoimSessionType.MESSAGE)) {
+            chatNotiService.sendChatNoti(MessageNotiDto.builder()
+                    .message(sub.getMessage())
+                    .time(sub.getTime())
+                    .moimId(sub.getMoimId())
+                    .senderKakaoId(sub.getKakaoId())
+                    .build());
+        }
 
         log.debug("[ws://] session size : {}", sessions.size());
         log.debug("[ws://] MessageSub : {}", sub.toString());
