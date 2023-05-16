@@ -15,7 +15,7 @@ public class NotiLogDto {
     private String image;
     private String messageId;
     private String channelId;
-    private String sender;
+    private String senderKakaoId;
     private String receiver;
     private Long moimId;
 
@@ -27,7 +27,7 @@ public class NotiLogDto {
                 .image(notiLog.getImage())
                 .messageId(notiLog.getMessageId())
                 .channelId(notiLog.getChannelId())
-                .sender(notiLog.getSender().toString())
+                .senderKakaoId(notiLog.getSender().toString())
                 .receiver(notiLog.getReceiver().toString())
                 .moimId(notiLog.getMoimId())
                 .build();
@@ -40,7 +40,7 @@ public class NotiLogDto {
                 .image(image)
                 .messageId(messageId)
                 .channelId(channelId)
-                .sender(Long.parseLong(sender))
+                .sender(Long.parseLong(senderKakaoId))
                 .receiver(Long.parseLong(receiver))
                 .moimId(moimId)
                 .build();
