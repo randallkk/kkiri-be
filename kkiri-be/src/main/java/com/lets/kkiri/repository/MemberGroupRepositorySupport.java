@@ -70,22 +70,22 @@ public class MemberGroupRepositorySupport {
     }
 
     public String getMostLocByMemberIdAndDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
-            StringExpression placeNameArray = Expressions.stringTemplate(
-                "FUNCTION('regexp_split_to_array', {0}, {1})[1]",
-                qMoim.placeName, " ");
-
-        return jpaQueryFactory.select(qMoim.placeName.)
-            .from(qMoim)
-            .where(qMoim.id.in(
-                JPAExpressions
-                    .select(qMoim.id)
-                    .from(qMemberGroup)
-                    .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
-                    .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
-            ))
-            .groupBy(placeNameArray)
-            .orderBy(placeNameArray.count().desc())
-            .fetchFirst();
-
+        //     StringExpression placeNameArray = Expressions.stringTemplate(
+        //         "FUNCTION('regexp_split_to_array', {0}, {1})[1]",
+        //         qMoim.placeName, " ");
+        //
+        // return jpaQueryFactory.select(qMoim.placeName.)
+        //     .from(qMoim)
+        //     .where(qMoim.id.in(
+        //         JPAExpressions
+        //             .select(qMoim.id)
+        //             .from(qMemberGroup)
+        //             .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
+        //             .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
+        //     ))
+        //     .groupBy(placeNameArray)
+        //     .orderBy(placeNameArray.count().desc())
+        //     .fetchFirst();
+        return null;
     }
 }
