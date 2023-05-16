@@ -164,7 +164,7 @@ public class NotiService {
             }
 
             successLogList.forEach((log) -> {
-                notiLogRepository.save(log.toEntity());
+                notiLogRepository.save(log.toEntity("comming", "000000", log.getReceiver(), log.getMoimId()));
             });
         }
     }
