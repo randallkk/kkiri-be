@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.WebSocketSessionInfo;
-import com.lets.kkiri.dto.chatting.*;
+import com.lets.kkiri.dto.chatting.MessageDto;
+import com.lets.kkiri.dto.chatting.MessageMetaData;
+import com.lets.kkiri.dto.chatting.MessageRes;
+import com.lets.kkiri.dto.chatting.MessageSub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 
 import com.lets.kkiri.dto.noti.MessageNotiDto;
@@ -88,6 +91,7 @@ public class MessageRoomService {
         }
     }
 
+
     public MessageRes getFirstChat(Long moimId, Pageable pageable) {
         Page<Message> messages = messageRepositorySupport.findRecent(moimId, pageable);
         MessageRes res = makeChatList(messages);
@@ -108,7 +112,8 @@ public class MessageRoomService {
                 .build();
 
         List<MessageSub> msgsubList = new ArrayList<>();
-        for (Message msg : msgList.getContent()) {
+        for(Message msg : msgList.getContent()){
+            if(msg.getMessageType().equals(MoimSessionReq.MoimSessionType.EMOJI)) continue;
             MessageSub dto = MessageSub.messageToDto(msg);
             msgsubList.add(dto);
         }

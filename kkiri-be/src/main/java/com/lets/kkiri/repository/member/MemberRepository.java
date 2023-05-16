@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface MemberRepository extends CrudRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
     Optional<Member> findByKakaoId(String kakaoId);
+    Optional<Member> findById(Long id);
 }
