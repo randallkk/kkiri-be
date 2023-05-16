@@ -10,7 +10,7 @@ import java.util.List;
 
 @Builder
 @AllArgsConstructor
-@Getter
+@Data
 public class FcmMessageDto {
     private List<String> tokenList;
     private String channelId;
