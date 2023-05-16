@@ -32,6 +32,14 @@ public class MessageService {
         }catch (Exception e){
             log.debug("sendMessage error : {}", e.getMessage());
         }
+        // try {
+        //     if (session.isOpen()) {
+        //         session.sendMessage(new TextMessage(objectMapper.writeValueAsString(moimSessionReq)));
+        //     }
+        //     else log.error("세션이 닫혀있습니다.", new IOException("세션이 닫혀있습니다."));
+        // } catch (Exception e) {
+        //     log.error(e.getMessage(), e);
+        // }
     }
 
 }

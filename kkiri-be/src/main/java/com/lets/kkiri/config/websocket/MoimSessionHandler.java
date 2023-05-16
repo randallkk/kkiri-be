@@ -20,7 +20,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class MoimSessionHandler extends TextWebSocketHandler {
 
 	private final ObjectMapper objectMapper;
-	private final MessageService messageService;
 	private final MessageRoomService messageRoomService;
 	private final GpsService gpsService;
 	private final AuthService authService;
@@ -38,7 +37,7 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 				break;
 			case MESSAGE:
 			case EMOJI:
-				messageRoomService.handleActions(session, msg.getType(), content, messageService);
+				messageRoomService.handleActions(session, msg.getType(), content);
 				break;
 			case GPS:
 				gpsService.handleActions(session, content);
