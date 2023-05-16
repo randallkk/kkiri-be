@@ -13,7 +13,6 @@ import com.querydsl.core.Tuple;
 import org.springframework.stereotype.Service;
 
 import com.lets.kkiri.dto.mypage.MyPageResDto;
-import com.lets.kkiri.dto.mypage.MypageDetailDto;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.repository.MemberGroupRepositorySupport;
 
@@ -29,17 +28,29 @@ public class MypageService {
 	private final MemberGroupRepositorySupport memberGroupRepositorySupport;
 	private final MemberRepository memberRepository;
 
-	public MyPageResDto getMyPage(String kakaoId) {
+	public MyPageResDto getMyPage(String kakaoId, String period) {
 		MyPageResDto res = new MyPageResDto();
 		LocalDate now = LocalDate.now();
 		log.debug("startDate: {}", now);
 		Member member = memberService.getMemberByKakaoId(kakaoId);
-		MypageDetailDto month = getMonth(member, now.minusMonths(1).atStartOfDay(), now.atTime(LocalTime.MAX));
+		switch (period) {
+			case "one-month":
+				res = getMyPage(member, now.minusMonths(1).atStartOfDay(), now.atTime(LocalTime.MAX));
+				break;
+			case "three-month":
+				res = getMyPage(member, now.minusMonths(3).atStartOfDay(), now.atTime(LocalTime.MAX));
+				break;
+			case "six-month":
+				res = getMyPage(member, now.minusMonths(6).atStartOfDay(), now.atTime(LocalTime.MAX));
+				break;
+			case "one-year":
+				res = getMyPage(member, now.minusYears(1).atStartOfDay(), now.atTime(LocalTime.MAX));
+				break;
+		}
 		return res;
 	}
 
-	private MypageDetailDto getMonth(Member member, LocalDateTime start, LocalDateTime end) {
-		MypageDetailDto res = new MypageDetailDto();
+	private MyPageResDto getMyPage(Member member, LocalDateTime start, LocalDateTime end) {
 		LocalDate startDay = start.toLocalDate();
 		LocalDate endDay = end.toLocalDate();
 		log.debug("startDate: {}, endDate: {}", start, end);
@@ -52,6 +63,17 @@ public class MypageService {
 		}
 		String mostLoc = getMostLoc(member, start, end);
 		log.debug("mostLoc: {}", mostLoc);
+		String mostTime = getMostTime(member, start, end);
+		log.debug("mostTime: {}", mostTime);
+		MyPageResDto res = MyPageResDto.builder()
+				.startDay(startDay.atStartOfDay())
+				.endDay(endDay.atStartOfDay())
+				.meetCnt(meetCnt)
+				.mostMem(mostMem)
+				.mostLoc(mostLoc)
+				.mostTime(mostTime)
+				.memList(memList)
+				.build();
 		return res;
 	}
 
@@ -76,9 +98,6 @@ public class MypageService {
 					.cnt(tuple.get(1, Long.class))
 					.build());
 		}
-		// for (MypageMemberDto dto : res) {
-		// 	log.debug("dto: {}", dto);
-		// }
 		return res;
 	}
 
@@ -86,4 +105,7 @@ public class MypageService {
 		return memberGroupRepositorySupport.getMostLocByMemberIdAndDate(member.getId(), start, end);
 	}
 
+	private String getMostTime(Member member, LocalDateTime start, LocalDateTime end) {
+		return memberGroupRepositorySupport.getMostTimeByMemberIdAndDate(member.getId(), start, end);
+	}
 }

@@ -7,14 +7,13 @@ import com.lets.kkiri.entity.QMoim;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.dialect.PostgreSQLDialect;
-import org.hibernate.dialect.function.StandardSQLFunction;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -24,6 +23,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class MemberGroupRepositorySupport {
     private final EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
@@ -70,22 +70,45 @@ public class MemberGroupRepositorySupport {
     }
 
     public String getMostLocByMemberIdAndDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
-        //     StringExpression placeNameArray = Expressions.stringTemplate(
-        //         "FUNCTION('regexp_split_to_array', {0}, {1})[1]",
-        //         qMoim.placeName, " ");
-        //
-        // return jpaQueryFactory.select(qMoim.placeName.)
-        //     .from(qMoim)
-        //     .where(qMoim.id.in(
-        //         JPAExpressions
-        //             .select(qMoim.id)
-        //             .from(qMemberGroup)
-        //             .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
-        //             .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
-        //     ))
-        //     .groupBy(placeNameArray)
-        //     .orderBy(placeNameArray.count().desc())
-        //     .fetchFirst();
-        return null;
+        return jpaQueryFactory.select(
+                qMoim.placeName.substring(0, qMoim.placeName.indexOf(" "))
+            )
+            .from(qMoim)
+            .where(qMoim.id.in(
+                JPAExpressions
+                    .select(qMoim.id)
+                    .from(qMemberGroup)
+                    .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
+                    .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
+            ))
+            .groupBy(
+                qMoim.placeName.substring(0, qMoim.placeName.indexOf(" "))
+            )
+            .orderBy(
+                qMoim.placeName.substring(0, qMoim.placeName.indexOf(" ")).count().desc()
+            )
+            .fetchFirst();
+    }
+
+    public String getMostTimeByMemberIdAndDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+        StringExpression cases = new CaseBuilder()
+            .when(qMoim.meetingAt.hour().between(0, 5)).then("새벽시간대")
+            .when(qMoim.meetingAt.hour().between(6, 11)).then("오전시간대")
+            .when(qMoim.meetingAt.hour().between(12, 17)).then("오후시간대")
+            .when(qMoim.meetingAt.hour().between(18, 24)).then("저녁시간대")
+            .otherwise("시간대없음").as("time");
+
+        Tuple tuple = jpaQueryFactory.select(cases, qMoim.meetingAt.count())
+            .from(qMoim)
+            .where(qMoim.id.in(
+                JPAExpressions
+                    .select(qMoim.id)
+                    .from(qMemberGroup)
+                    .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
+                    .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
+            ))
+            .orderBy(qMoim.meetingAt.count().desc())
+            .fetchFirst();
+        return tuple.get(0, String.class);
     }
 }
