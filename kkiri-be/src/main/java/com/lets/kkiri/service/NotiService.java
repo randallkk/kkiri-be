@@ -157,6 +157,7 @@ public class NotiService {
                                 .channelId("comming")
                                 .title("모임 임박 알림")
                                 .body(moims.get(i).getName() + "모임이 임박했습니다.")
+                                .moim(moims.get(i))
                                 .build()
                 );
             } catch (IOException e) {
