@@ -102,6 +102,7 @@ public class MessageRoomService {
 
     private MessageRes makeChatList(Page<Message> msgList) {
         MessageRes res = new MessageRes();
+        if(msgList.getContent().size() <= 0) return null;
         MessageMetaData meta = MessageMetaData.builder()
                 .last(msgList.isLast())
                 .lastMessageId(msgList.getContent().get(msgList.getContent().size() - 1).getId())

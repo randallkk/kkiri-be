@@ -29,11 +29,18 @@ public class MessageController {
 	public ResponseEntity getChat(@RequestParam Long moimId,
 		@RequestParam(required = false) String lastMessageId,
 		@PageableDefault(size=30, page = 0) Pageable pageable) {
-		if(lastMessageId == null)
-			return ResponseEntity.status(200).body(messageRoomService.getFirstChat(moimId, pageable));
-		else
-			return ResponseEntity.status(200).body(messageRoomService.getChat(moimId, lastMessageId, pageable));
+		if(lastMessageId == null) {
+			MessageRes firstChat = messageRoomService.getFirstChat(moimId, pageable);
+			if(firstChat != null) {
+				return ResponseEntity.status(200).body(firstChat);
+			}
+		}
+		else{
+			MessageRes chat = messageRoomService.getChat(moimId, lastMessageId, pageable);
+			if(chat != null) {
+				return ResponseEntity.status(200).body(chat);
+			}
+		}
+		return ResponseEntity.ok().body(null);
 	}
-
-
 }
