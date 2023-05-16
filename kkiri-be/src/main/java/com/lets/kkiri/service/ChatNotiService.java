@@ -49,7 +49,7 @@ public class ChatNotiService {
                             .channelId("chat")
                             .title("채팅 알림")
                             .body(sender.getNickname() + "님이 채팅을 보냈습니다.")
-                            .moimName(targetMoim.getName())
+                            .moim(targetMoim)
                             .time(message.getTime())
                             .sender(sender)
                             .message(message.getMessage())
