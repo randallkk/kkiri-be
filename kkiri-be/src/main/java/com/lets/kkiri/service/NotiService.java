@@ -68,7 +68,7 @@ public class NotiService {
                     .moimId(chatRoomId)
                     .message(senderKakaoId+"님이 " + receiverKakaoId+"님을 재촉 중입니다.")
                     .build();
-            messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto, messageService);
+            messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto);
 
         } catch (IOException e) {
             log.error("FCM ERROR");

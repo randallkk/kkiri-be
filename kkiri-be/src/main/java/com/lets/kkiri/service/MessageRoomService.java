@@ -38,8 +38,9 @@ public class MessageRoomService {
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoTemplate mongoTemplate;
     private final ChatNotiService chatNotiService;
+    private final MessageService messageService;
 
-    public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content, MessageService messageService) {
+    public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content) {
         Long moimId = (Long) session.getAttributes().get("moimId");
         String kakaoId;
 
@@ -47,7 +48,7 @@ public class MessageRoomService {
             kakaoId = (String) session.getAttributes().get("kakaoId");
             MessageDto msg = objectMapper.convertValue(content, MessageDto.class);
             log.debug("[ws://] {} 회원님의 채팅 - Message : {}", kakaoId, msg.toString());
-            sendMessage(type, msg, messageService);
+            sendMessage(type, msg);
         } catch (NullPointerException e) {
             log.error("세션에 kakaoId가 없습니다.", e);
             try {
@@ -61,7 +62,7 @@ public class MessageRoomService {
         }
     }
 
-    public <T> void sendMessage(MoimSessionReq.MoimSessionType type, MessageDto msg, MessageService messageService) {
+    public <T> void sendMessage(MoimSessionReq.MoimSessionType type, MessageDto msg) {
         log.debug("MessageRoomService / sendMessage ()");
         WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
         Map<String, WebSocketSession> sessions = webSocketSessionInfo.getAllSessionsByMoimId(msg.getMoimId());
