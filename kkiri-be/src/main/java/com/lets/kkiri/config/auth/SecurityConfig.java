@@ -29,7 +29,6 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-@Import(WebSocketSecurityConfig.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 인증이 필요없는 API 목록
@@ -78,7 +77,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), memberService, redisTemplate)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.GET, OPEN_API_GET).permitAll()
+                .antMatchers(HttpMethod.POST, OPEN_API_POST).permitAll()
+                .anyRequest().authenticated()
                 .and().cors();
     }
 
