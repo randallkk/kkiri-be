@@ -1,5 +1,8 @@
 package com.lets.kkiri.dto.mypage;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyPageResDto {
-	private MypageDetailDto month;
-	private MypageDetailDto trimestral;
-	private MypageDetailDto semiannual;
-	private MypageDetailDto annual;
+	private LocalDateTime startDay;
+	private LocalDateTime endDay;
+	private Long meetCnt;
+	private String mostMem;
+	private String mostLoc;
+	private String mostTime;
+	private List<MypageMemberDto> memList;
 }
