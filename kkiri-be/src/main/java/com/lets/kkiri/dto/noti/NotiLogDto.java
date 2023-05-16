@@ -32,6 +32,19 @@ public class NotiLogDto {
                 .moimId(notiLog.getMoimId())
                 .build();
     }
+    public NotiLog toEntity() {
+        return NotiLog.builder()
+                .token(token)
+                .title(title)
+                .body(body)
+                .image(image)
+                .messageId(messageId)
+                .channelId(channelId)
+                .sender(Long.parseLong(sender))
+                .receiver(Long.parseLong(receiver))
+                .moimId(moimId)
+                .build();
+    }
     public NotiLog toEntity(String channelId, String sender, String receiver, Long moimId) {
         return NotiLog.builder()
                 .token(token)
