@@ -59,8 +59,8 @@ public class ChatNotiService {
             log.error("FCM ERROR");
         }
 
-        successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity(log.getChannelId(), sender.getKakaoId(), log.getMoimId().toString(), log.getMoimId()));
-        });
+//        successLogList.forEach((log) -> {
+//            notiLogRepository.save(log.toEntity(log.getChannelId(), sender.getKakaoId(), log.getMoimId().toString(), log.getMoimId()));
+//        });
     }
 }
