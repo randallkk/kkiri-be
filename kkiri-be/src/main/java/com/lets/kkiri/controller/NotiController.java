@@ -1,5 +1,6 @@
 package com.lets.kkiri.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.util.JwtTokenUtil;
 import com.lets.kkiri.dto.noti.HelpNotiReq;
 import com.lets.kkiri.dto.noti.PressNotiReq;
@@ -45,6 +46,6 @@ public class NotiController {
     {
         String senderKakaoId = JwtTokenUtil.getIdentifier(token);
         notiService.sendRoute(senderKakaoId, routeGuideReq);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(routeGuideReq.getPath());
     }
 }
