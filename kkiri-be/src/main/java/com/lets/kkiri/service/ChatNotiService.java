@@ -60,7 +60,7 @@ public class ChatNotiService {
         }
 
         successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity(log.getChannelId(), sender.getKakaoId(), log.getReceiver(), log.getMoimId()));
+            notiLogRepository.save(log.toEntity(log.getChannelId(), sender.getKakaoId(), log.getMoimId().toString(), log.getMoimId()));
         });
     }
 }
