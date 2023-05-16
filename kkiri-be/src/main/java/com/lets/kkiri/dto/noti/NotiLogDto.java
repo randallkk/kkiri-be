@@ -28,7 +28,6 @@ public class NotiLogDto {
                 .messageId(notiLog.getMessageId())
                 .channelId(notiLog.getChannelId())
                 .senderKakaoId(notiLog.getSender().toString())
-                .receiver(notiLog.getReceiver().toString())
                 .moimId(notiLog.getMoimId())
                 .build();
     }
@@ -41,7 +40,6 @@ public class NotiLogDto {
                 .messageId(messageId)
                 .channelId(channelId)
                 .sender(Long.parseLong(senderKakaoId))
-                .receiver(Long.parseLong(receiver))
                 .moimId(moimId)
                 .build();
     }
@@ -54,7 +52,6 @@ public class NotiLogDto {
                 .messageId(messageId)
                 .channelId(channelId)
                 .sender(Long.parseLong(sender))
-                .receiver(Long.parseLong(receiver))
                 .moimId(moimId)
                 .build();
     }
