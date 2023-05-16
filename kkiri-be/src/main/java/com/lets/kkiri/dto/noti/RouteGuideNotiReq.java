@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class RouteGuideNotiReq {
+    private Long chatRoomId;
     // 수신 유저 이메일
     private String receiverKakaoId;
     private List<PointDto> path;

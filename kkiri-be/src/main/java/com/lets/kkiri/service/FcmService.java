@@ -51,15 +51,16 @@ public class FcmService {
             String messageId = responses.get(i).getMessageId().split("/")[3];
             String token = tokenList.get(i);
 
-            results.add(
-                    NotiLogDto.builder()
-                            .messageId(messageId)
-                            .token(token)
-                            .title(messageDto.getTitle())
-                            .body(messageDto.getBody())
-                            .image(null)
-                            .build()
-            );
+            NotiLogDto.NotiLogDtoBuilder notiLogDtoBuilder = NotiLogDto.builder()
+                    .messageId(messageId)
+                    .token(token)
+                    .title(messageDto.getTitle())
+                    .body(messageDto.getBody())
+                    .image(null);
+
+            if(messageDto.getSender() != null) notiLogDtoBuilder.senderKakaoId(messageDto.getSender().getKakaoId());
+            if(messageDto.getChannelId() != null) notiLogDtoBuilder.channelId(messageDto.getChannelId());
+            results.add(notiLogDtoBuilder.build());
         }
         return results;
     }
@@ -87,7 +88,7 @@ public class FcmService {
         if(messageDto.getPath() != null) multicastMessageBuilder.putData("path", objectMapper.writeValueAsString(messageDto.getPath()));
         if(messageDto.getMessage() != null) multicastMessageBuilder.putData("message", messageDto.getMessage());
         if(messageDto.getMoimName() != null) multicastMessageBuilder.putData("moimName", messageDto.getMoimName());
-        if(messageDto.getSenderNickname() != null) multicastMessageBuilder.putData("senderNickname", messageDto.getSenderNickname());
+        if(messageDto.getSender() != null) multicastMessageBuilder.putData("senderNickname", messageDto.getSender().getNickname());
         if(messageDto.getTime() != null) multicastMessageBuilder.putData("time", objectMapper.writeValueAsString(messageDto.getTime()));
 
         return multicastMessageBuilder.build();

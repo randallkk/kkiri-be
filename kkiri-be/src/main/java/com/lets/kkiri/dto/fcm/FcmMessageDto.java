@@ -1,6 +1,7 @@
 package com.lets.kkiri.dto.fcm;
 
 import com.lets.kkiri.dto.gps.PointDto;
+import com.lets.kkiri.entity.Member;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ public class FcmMessageDto {
     private String body;
     private List<PointDto> path;
     private String moimName;
-    private String senderNickname;
+    private Member sender;
     private String message;
     private LocalDateTime time;
 }
