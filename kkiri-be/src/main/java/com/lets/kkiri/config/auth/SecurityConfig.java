@@ -37,7 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private static final String[] OPEN_API_POST = new String[]{
-            "/api/auth/**",
+            "/api/auth/login",
+            "/api/auth/reissue",
+            "/api/auth/verify",
+            "/api/moims/payment/**",
+            "/api/moims/groups",
+
     };
 
     private static final String[] ADMIN_API_POST = new String[]{
@@ -77,6 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), memberService, redisTemplate)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
+                .antMatchers("/ws/**").permitAll()
                 .antMatchers(HttpMethod.GET, OPEN_API_GET).permitAll()
                 .antMatchers(HttpMethod.POST, OPEN_API_POST).permitAll()
                 .anyRequest().authenticated()
