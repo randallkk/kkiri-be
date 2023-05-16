@@ -10,6 +10,7 @@ import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.dto.noti.RouteGuideNotiReq;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.Moim;
+import com.lets.kkiri.repository.MoimRepositorySupport;
 import com.lets.kkiri.repository.member.MemberDeviceRepositorySupport;
 import com.lets.kkiri.repository.member.MemberRepository;
 import com.lets.kkiri.repository.moim.MoimRepository;
@@ -18,10 +19,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +37,7 @@ import java.util.List;
 public class NotiService {
     private final NotiLogRepository notiLogRepository;
     private final MoimRepository moimRepository;
+    private final MoimRepositorySupport moimRepositorySupport;
     private final MemberRepository memberRepository;
     private final MemberDeviceRepositorySupport memberDeviceRepositorySupport;
     private final FcmService fcmService;
@@ -130,5 +137,35 @@ public class NotiService {
         successLogList.forEach((log) -> {
             notiLogRepository.save(log.toEntity());
         });
+    }
+
+    @Scheduled(cron = "0 */5 * * * *")
+    public void sendCommingMoim(){
+        String eventTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now().plusHours(1));
+        List<Moim> moims = moimRepositorySupport.findMoimsByMeetingAt(eventTime);
+
+        List<String> tokenList = new ArrayList<>();
+        List<NotiLogDto> successLogList = new ArrayList<>();
+
+        for(int i = 0; i < moims.size(); i ++ ){
+            tokenList.addAll(memberDeviceRepositorySupport.findTokenListByMoimId(0l, moims.get(i).getId().toString()));
+
+            try {
+                successLogList = fcmService.sendMessageToToken(
+                        FcmMessageDto.builder()
+                                .tokenList(tokenList)
+                                .channelId("comming")
+                                .title("모임 임박 알림")
+                                .body(moims.get(i).getName() + "모임이 임박했습니다.")
+                                .build()
+                );
+            } catch (IOException e) {
+                log.error("FCM ERROR");
+            }
+
+            successLogList.forEach((log) -> {
+                notiLogRepository.save(log.toEntity());
+            });
+        }
     }
 }
