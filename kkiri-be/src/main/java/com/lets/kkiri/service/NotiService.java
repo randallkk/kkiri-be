@@ -84,12 +84,12 @@ public class NotiService {
                 () -> new IllegalArgumentException("해당 모임이 존재하지 않습니다.")
         );
 
-        Long senderId = memberRepository.findByKakaoId(senderKakaoId).orElseThrow(
+        Member member = memberRepository.findByKakaoId(senderKakaoId).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
-        ).getId();
+        );
 
         // 보내는 사람을 제외한 모임원들의 토큰들을 불러옴.
-        List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMoimId(senderId, targetMoim.getId().toString());
+        List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMoimId(member.getId(), targetMoim.getId().toString());
         if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
 
         List<NotiLogDto> successLogList = new ArrayList<>();
@@ -99,7 +99,8 @@ public class NotiService {
                             .tokenList(tokenList)
                             .channelId("sos")
                             .title("도움 요청 알림")
-                            .body(senderKakaoId + "님이 도움을 요청 중입니다.")
+                            .body(member.getNickname() + "님이 도움을 요청 중입니다.")
+                            .sender(member)
                             .build()
             );
         } catch (IOException e) {
