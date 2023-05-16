@@ -42,6 +42,8 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 			case GPS:
 				gpsService.handleActions(session, content);
 				break;
+			default:
+				log.error("Unknown message type");
 		}
 	}
 	public WebSocketSession getSession() {
