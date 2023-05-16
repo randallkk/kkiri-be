@@ -51,7 +51,7 @@ public class ChatNotiService {
                             .body(sender.getNickname() + "님이 채팅을 보냈습니다.")
                             .moimName(targetMoim.getName())
                             .time(message.getTime())
-                            .senderNickname(sender.getNickname())
+                            .sender(sender)
                             .message(message.getMessage())
                             .build()
             );
