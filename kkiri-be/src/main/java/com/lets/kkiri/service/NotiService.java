@@ -65,7 +65,7 @@ public class NotiService {
                             .tokenList(tokenList)
                             .channelId("hurry")
                             .title("재촉 알림")
-                            .body(String.format("@{}님이 재촉 중입니다.", sender.getNickname()))
+                            .body(sender.getNickname() + "님이 재촉 중입니다.")
                             .sender(sender)
                             .build()
             );
@@ -73,8 +73,7 @@ public class NotiService {
             //재촉 메세지 채팅방에 전송
             MessageDto dto = MessageDto.builder()
                     .moimId(chatRoomId)
-//                    .message(senderKakaoId+"님이 " + receiverKakaoId+"님을 재촉 중입니다.")
-                    .message(String.format("@{}님이 @{}님을 재촉 중입니다.}", sender.getNickname(), recvMember.getNickname()))
+                    .message(sender.getNickname() + "님이 @" + recvMember.getNickname() + "님을 재촉 중입니다.")
                     .build();
             messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto);
 
@@ -106,7 +105,7 @@ public class NotiService {
                     FcmMessageDto.builder()
                             .tokenList(tokenList)
                             .channelId("sos")
-                            .title(String.format("@{}님이 도움을 요청했어요!", member.getNickname()))
+                            .title("@" + member.getNickname() + "님이 도움을 요청했어요!")
                             .body("길을 헤매는 친구에게 길 안내를 보내주세요!")
                             .sender(member)
                             .build()
@@ -140,7 +139,7 @@ public class NotiService {
                             .channelId("path")
                             .title("길 안내 알림")
                             .sender(sender)
-                            .body(String.format("@{}님이 길 안내 중입니다.", sender.getNickname()))
+                            .body("@" + sender.getNickname() + "님이 길 안내 중입니다.")
                             .path(routeGuideReq.getPath())
                             .build()
             );
@@ -154,14 +153,14 @@ public class NotiService {
     }
 
     @Scheduled(cron = "0 */5 * * * *")
-    public void sendCommingMoim(){
+    public void sendCommingMoim() {
         String eventTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now().plusHours(1));
         List<Moim> moims = moimRepositorySupport.findMoimsByMeetingAt(eventTime);
 
         List<String> tokenList = new ArrayList<>();
         List<NotiLogDto> successLogList = new ArrayList<>();
 
-        for(int i = 0; i < moims.size(); i ++ ){
+        for (int i = 0; i < moims.size(); i++) {
             tokenList.addAll(memberDeviceRepositorySupport.findTokenListByMoimId(0l, moims.get(i).getId().toString()));
 
             try {
@@ -170,7 +169,7 @@ public class NotiService {
                                 .tokenList(tokenList)
                                 .channelId("comming")
                                 .title("모임 임박 알림")
-                                .body(String.format("{}모임이 임박했습니다.", moims.get(i).getName()))
+                                .body(moims.get(i).getName() + "모임이 임박했습니다.")
                                 .moim(moims.get(i))
                                 .build()
                 );
