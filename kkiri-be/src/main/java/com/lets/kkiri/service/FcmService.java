@@ -2,7 +2,6 @@ package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.*;
 import com.lets.kkiri.dto.fcm.FcmMessageDto;
@@ -21,7 +20,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FcmService {
-    private final ObjectMapper objectMapper;
     @Value("${firebase.config.path}")
     String firebaseConfigPath;
 
@@ -56,6 +54,7 @@ public class FcmService {
                     .token(token)
                     .title(messageDto.getTitle())
                     .body(messageDto.getBody())
+                    .moimId(messageDto.getMoim().getId())
                     .image(null);
 
             if(messageDto.getSender() != null) notiLogDtoBuilder.senderKakaoId(messageDto.getSender().getKakaoId());

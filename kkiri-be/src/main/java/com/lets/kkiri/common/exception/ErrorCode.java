@@ -25,7 +25,8 @@ public enum ErrorCode {
     // 200 OK
     SUCCESS(HttpStatus.OK, "정확해"),
 
-    // 409 CONFLICT 이미 존재하는 리소스 접근
+    // 422 UNPROCESSABLE_ENTITY 유효성 검사 실패
+    MOIM_MEMBER_NOT_FOUND(HttpStatus.UNPROCESSABLE_ENTITY, "모임원을 추가해주세요."),
 
     // 500 INTERNAL_SERVER_ERROR 서버 내부 오류
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),

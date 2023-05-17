@@ -39,7 +39,7 @@ public class ChatNotiService {
 
         // 보내는 사람을 제외한 모임원들의 토큰들을 불러옴.
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMoimId(sender.getId(), targetMoim.getId().toString());
-        if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+        if (tokenList.size() == 0) throw new KkiriException(ErrorCode.MOIM_MEMBER_NOT_FOUND);
 
         List<NotiLogDto> successLogList = new ArrayList<>();
         try {
