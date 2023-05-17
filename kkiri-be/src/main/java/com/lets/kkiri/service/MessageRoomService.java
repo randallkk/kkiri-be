@@ -69,6 +69,7 @@ public class MessageRoomService {
         MessageSub sub = MessageSub.messageDtoToSub(msg);
         sub.setMessageType(type);
         sub.setSeq(sequenceGeneratorService.generateSequence(Message.SEQUENCE_NAME));
+
         //메세지 전송 후 DB에 저장
         sub.setTime(LocalDateTime.now());
         Message saveMsg = sub.toEntity(sub);
