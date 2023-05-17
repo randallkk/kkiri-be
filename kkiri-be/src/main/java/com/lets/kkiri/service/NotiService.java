@@ -169,7 +169,7 @@ public class NotiService {
                                 .tokenList(tokenList)
                                 .channelId("comming")
                                 .title("모임 임박 알림")
-                                .body(moims.get(i).getName() + "모임이 임박했습니다.")
+                                .body("실시간으로 친구들의 위치를 확인해 보세요!")
                                 .moim(moims.get(i))
                                 .build()
                 );

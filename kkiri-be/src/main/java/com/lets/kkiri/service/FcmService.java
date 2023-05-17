@@ -83,7 +83,10 @@ public class FcmService {
 
         if(messageDto.getPath() != null) multicastMessageBuilder.putData("path", messageDto.getPath().toString());
         if(messageDto.getMessage() != null) multicastMessageBuilder.putData("message", messageDto.getMessage());
-        if(messageDto.getMoim() != null) multicastMessageBuilder.putData("moimId", messageDto.getMoim().getId().toString());
+        if(messageDto.getMoim() != null) {
+            multicastMessageBuilder.putData("moimId", messageDto.getMoim().getId().toString());
+            multicastMessageBuilder.putData("moimName", messageDto.getMoim().getName());
+        }
         if(messageDto.getSender() != null) {
             multicastMessageBuilder.putData("senderNickname", messageDto.getSender().getNickname());
             multicastMessageBuilder.putData("kakaoId", messageDto.getSender().getKakaoId());
