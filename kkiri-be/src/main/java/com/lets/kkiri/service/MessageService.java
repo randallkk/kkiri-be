@@ -27,6 +27,7 @@ public class MessageService {
 
     public void sendMessage(WebSocketSession session, MessageSub msg)  {
         try{
+            System.out.println("session = " + session);
             if(session.isOpen()) {
                 try{
                     synchronized (session){
