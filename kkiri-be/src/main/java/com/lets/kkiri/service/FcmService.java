@@ -2,6 +2,7 @@ package com.lets.kkiri.service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.*;
 import com.lets.kkiri.dto.fcm.FcmMessageDto;
@@ -28,6 +29,8 @@ public class FcmService {
 
     @Value("${firebase.send.url}")
     String FCM_SEND_URL;
+
+    private final ObjectMapper objectMapper;
 
     public List<NotiLogDto> sendMessageToToken(FcmMessageDto messageDto) throws IOException {
         List<NotiLogDto> results = new ArrayList<>();
@@ -81,7 +84,7 @@ public class FcmService {
                 .putData("title", messageDto.getTitle())
                 .addAllTokens(messageDto.getTokenList());
 
-        if(messageDto.getPath() != null) multicastMessageBuilder.putData("path", messageDto.getPath().toString());
+        if(messageDto.getPath() != null) multicastMessageBuilder.putData("path", objectMapper.writeValueAsString(messageDto.getPath()));
         if(messageDto.getMessage() != null) multicastMessageBuilder.putData("message", messageDto.getMessage());
         if(messageDto.getMoim() != null) {
             multicastMessageBuilder.putData("moimId", messageDto.getMoim().getId().toString());
