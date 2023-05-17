@@ -63,7 +63,13 @@ public class GpsService {
     void send(WebSocketSession session, MoimSessionReq moimSessionReq) {
         try {
             if (session.isOpen()) {
-                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(moimSessionReq)));
+                try {
+                    synchronized (session) {
+                        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(moimSessionReq)));
+                    }
+                } catch (IOException e) {
+                    log.error("세션 동기화 오류", new IOException("세션 동기화 오류"));
+                }
             }
             else log.error("세션이 닫혀있습니다.", new IOException("세션이 닫혀있습니다."));
         } catch (Exception e) {
