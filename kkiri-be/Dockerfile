@@ -8,6 +8,8 @@ COPY build.gradle settings.gradle $APP_HOME/
 
 COPY src $APP_HOME/src
 
+ENV TZ=Asia/Seoul
+
 RUN gradle clean build -x test
 
 FROM openjdk:11-jdk
