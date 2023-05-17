@@ -5,10 +5,11 @@ ENV APP_HOME=/apps
 WORKDIR $APP_HOME
 
 COPY build.gradle settings.gradle $APP_HOME/
-
 COPY src $APP_HOME/src
 
-ENV TZ=Asia/Seoul
+RUN apk add --no-cache tzdata && \
+    ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
+    echo "Asia/Seoul" > /etc/timezone
 
 RUN gradle clean build -x test
 
