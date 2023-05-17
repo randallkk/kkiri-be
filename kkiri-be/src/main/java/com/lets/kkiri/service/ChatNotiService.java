@@ -33,6 +33,7 @@ public class ChatNotiService {
                 () -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)
         );
 
+        log.debug("targetMoim : {}", targetMoim.toString());
         Member sender = memberRepository.findByKakaoId(message.getSenderKakaoId()).orElseThrow(
                 () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
         );
@@ -59,8 +60,10 @@ public class ChatNotiService {
             log.error("FCM ERROR");
         }
 
-        successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity(log.getChannelId(), log.getSenderKakaoId(), log.getReceiver(), log.getMoimId()));
-        });
+        // log.debug("successLogList : {}", successLogList.size());
+        // successLogList.forEach((log) -> {
+        //     System.out.println("moimID 내놔 : " + log.toString());
+        //     notiLogRepository.save(log.toEntity(log.getChannelId(), log.getSenderKakaoId(), log.getReceiver(), log.getMoimId()));
+        // });
     }
 }
