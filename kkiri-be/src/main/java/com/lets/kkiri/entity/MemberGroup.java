@@ -21,7 +21,6 @@ public class MemberGroup {
     private Integer rank;
     private LocalDateTime destination_time;
 
-    @Builder
     public MemberGroup (Member member, Moim moim) {
         this.member = member;
         this.moim = moim;

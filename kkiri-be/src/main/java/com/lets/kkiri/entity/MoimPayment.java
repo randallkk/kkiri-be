@@ -1,5 +1,6 @@
 package com.lets.kkiri.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -21,5 +22,19 @@ public class MoimPayment {
     @ColumnDefault("0")
     private Integer expenditure;
     @ColumnDefault("false")
-    private Boolean status;
+    private Boolean isPaid;
+
+    @Builder
+    public MoimPayment(MemberGroup memberGroup, Integer expenditure) {
+        this.memberGroup = memberGroup;
+        this.expenditure = expenditure;
+    }
+
+    public void addExpenditure(int expenditure) {
+        this.expenditure += expenditure;
+    }
+
+    public void pay() {
+        this.isPaid = true;
+    }
 }
