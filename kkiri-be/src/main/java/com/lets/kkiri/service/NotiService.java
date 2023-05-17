@@ -1,5 +1,7 @@
 package com.lets.kkiri.service;
 
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.config.websocket.MoimSessionHandler;
 import com.lets.kkiri.dto.chatting.MessageDto;
 import com.lets.kkiri.dto.fcm.FcmMessageDto;
@@ -46,7 +48,11 @@ public class NotiService {
 
     public void sendPressNoti(String senderKakaoId, String receiverKakaoId, Long chatRoomId) {
         Member recvMember = memberRepository.findByKakaoId(receiverKakaoId).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+                () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        Member sender = memberRepository.findByKakaoId(senderKakaoId).orElseThrow(
+                () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMemberId(recvMember.getId());
@@ -59,14 +65,16 @@ public class NotiService {
                             .tokenList(tokenList)
                             .channelId("hurry")
                             .title("재촉 알림")
-                            .body(senderKakaoId + "님이 재촉 중입니다.")
+                            .body(String.format("@{}님이 재촉 중입니다.", sender.getNickname()))
+                            .sender(sender)
                             .build()
             );
 
             //재촉 메세지 채팅방에 전송
             MessageDto dto = MessageDto.builder()
                     .moimId(chatRoomId)
-                    .message(senderKakaoId+"님이 " + receiverKakaoId+"님을 재촉 중입니다.")
+//                    .message(senderKakaoId+"님이 " + receiverKakaoId+"님을 재촉 중입니다.")
+                    .message(String.format("@{}님이 @{}님을 재촉 중입니다.}", sender.getNickname(), recvMember.getNickname()))
                     .build();
             messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto);
 
@@ -98,8 +106,8 @@ public class NotiService {
                     FcmMessageDto.builder()
                             .tokenList(tokenList)
                             .channelId("sos")
-                            .title("도움 요청 알림")
-                            .body(member.getNickname() + "님이 도움을 요청 중입니다.")
+                            .title(String.format("@{}님이 도움을 요청했어요!", member.getNickname()))
+                            .body("길을 헤매는 친구에게 길 안내를 보내주세요!")
                             .sender(member)
                             .build()
             );
