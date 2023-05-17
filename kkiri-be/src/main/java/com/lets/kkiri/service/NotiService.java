@@ -56,7 +56,7 @@ public class NotiService {
         );
 
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMemberId(recvMember.getId());
-        if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+        if (tokenList.size() == 0) throw new KkiriException(ErrorCode.MOIM_MEMBER_NOT_FOUND);
 
         List<NotiLogDto> successLogList = new ArrayList<>();
         try {
@@ -89,16 +89,16 @@ public class NotiService {
 
     public void sendHelpNoti(String senderKakaoId, Long chatRoomId) {
         Moim targetMoim = moimRepository.findById(chatRoomId).orElseThrow(
-                () -> new IllegalArgumentException("해당 모임이 존재하지 않습니다.")
+                () -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)
         );
 
         Member member = memberRepository.findByKakaoId(senderKakaoId).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+                () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
         // 보내는 사람을 제외한 모임원들의 토큰들을 불러옴.
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMoimId(member.getId(), targetMoim.getId().toString());
-        if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+        if (tokenList.size() == 0) throw new KkiriException(ErrorCode.MOIM_MEMBER_NOT_FOUND);
 
         List<NotiLogDto> successLogList = new ArrayList<>();
         try {
@@ -122,11 +122,15 @@ public class NotiService {
 
     public void sendRoute(String senderKakaoId, RouteGuideNotiReq routeGuideReq) {
         Member recvMember = memberRepository.findByKakaoId(routeGuideReq.getReceiverKakaoId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+                () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        Member sender = memberRepository.findByKakaoId(senderKakaoId).orElseThrow(
+                () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMemberId(recvMember.getId());
-        if (tokenList.size() == 0) throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+        if (tokenList.size() == 0) throw new KkiriException(ErrorCode.MEMBER_NOT_FOUND);
 
         List<NotiLogDto> successLogList = new ArrayList<>();
         try {
@@ -135,7 +139,8 @@ public class NotiService {
                             .tokenList(tokenList)
                             .channelId("path")
                             .title("길 안내 알림")
-                            .body(senderKakaoId + "님이 길 안내 중입니다.")
+                            .sender(sender)
+                            .body(String.format("@{}님이 길 안내 중입니다.", sender.getNickname()))
                             .path(routeGuideReq.getPath())
                             .build()
             );
@@ -165,7 +170,7 @@ public class NotiService {
                                 .tokenList(tokenList)
                                 .channelId("comming")
                                 .title("모임 임박 알림")
-                                .body(moims.get(i).getName() + "모임이 임박했습니다.")
+                                .body(String.format("{}모임이 임박했습니다.", moims.get(i).getName()))
                                 .moim(moims.get(i))
                                 .build()
                 );
