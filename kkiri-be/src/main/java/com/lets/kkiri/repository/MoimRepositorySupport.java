@@ -44,6 +44,7 @@ public class MoimRepositorySupport {
                         )
                 ).from(qMoim, qMemberGroup)
                 .where(builder)
+                .orderBy(qMoim.meetingAt.desc())
                 .fetch();
     }
 
