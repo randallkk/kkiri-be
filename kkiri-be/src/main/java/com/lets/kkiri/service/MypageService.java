@@ -58,7 +58,7 @@ public class MypageService {
 		log.debug("meetCnt: {}", meetCnt);
 		List<MypageMemberDto> memList = getMemList(member, start, end);
 		String mostMem = null;
-		if(memList != null) {
+		if(memList.size() > 0) {
 			mostMem = memList.get(0).getNickname();
 		}
 		String mostLoc = getMostLoc(member, start, end);
