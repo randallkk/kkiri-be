@@ -48,4 +48,12 @@ public class NotiController {
         notiService.sendRoute(senderKakaoId, routeGuideReq);
         return ResponseEntity.ok().body(routeGuideReq.getPath());
     }
+
+    @GetMapping("/imminent")
+    public ResponseEntity<?> sendImminentNoti(
+            @RequestParam Long moimId
+    ) {
+        notiService.sendImminentNoti(moimId);
+        return ResponseEntity.ok().build();
+    }
 }
