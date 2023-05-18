@@ -182,4 +182,29 @@ public class NotiService {
             });
         }
     }
+
+    //시연용
+    public void sendImminentNoti(Long moimId) {
+        Moim moim = moimRepository.findById(moimId).orElseThrow(
+                () -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)
+        );
+
+        List<String> tokenList = new ArrayList<>();
+        List<NotiLogDto> successLogList = new ArrayList<>();
+
+        tokenList.addAll(memberDeviceRepositorySupport.findTokenListByMoimId(0l, moimId.toString()));
+        try {
+            successLogList = fcmService.sendMessageToToken(
+                FcmMessageDto.builder()
+                    .tokenList(tokenList)
+                    .channelId("comming")
+                    .title("모임 임박 알림")
+                    .body("실시간으로 친구들의 위치를 확인해 보세요!")
+                    .moim(moim)
+                    .build()
+            );
+        } catch (IOException e) {
+            log.error("FCM ERROR");
+        }
+    }
 }
