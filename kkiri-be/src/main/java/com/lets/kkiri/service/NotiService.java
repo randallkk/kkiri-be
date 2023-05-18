@@ -56,34 +56,35 @@ public class NotiService {
         );
 
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMemberId(recvMember.getId());
-        if (tokenList.size() == 0) throw new KkiriException(ErrorCode.MOIM_MEMBER_NOT_FOUND);
+        if (tokenList.size() > 0) {
 
-        List<NotiLogDto> successLogList = new ArrayList<>();
-        try {
-            successLogList = fcmService.sendMessageToToken(
-                    FcmMessageDto.builder()
-                            .tokenList(tokenList)
-                            .channelId("hurry")
-                            .title("재촉 알림")
-                            .body(sender.getNickname() + "님이 재촉 중입니다.")
-                            .sender(sender)
-                            .build()
-            );
+            List<NotiLogDto> successLogList = new ArrayList<>();
+            try {
+                successLogList = fcmService.sendMessageToToken(
+                        FcmMessageDto.builder()
+                                .tokenList(tokenList)
+                                .channelId("hurry")
+                                .title("재촉 알림")
+                                .body(sender.getNickname() + "님이 재촉 중입니다.")
+                                .sender(sender)
+                                .build()
+                );
 
-            //재촉 메세지 채팅방에 전송
-            MessageDto dto = MessageDto.builder()
-                    .moimId(chatRoomId)
-                    .message(sender.getNickname() + "님이 @" + recvMember.getNickname() + "님을 재촉 중입니다.")
-                    .build();
-            messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto);
+                //재촉 메세지 채팅방에 전송
+                MessageDto dto = MessageDto.builder()
+                        .moimId(chatRoomId)
+                        .message(sender.getNickname() + "님이 @" + recvMember.getNickname() + "님을 재촉 중입니다.")
+                        .build();
+                messageRoomService.sendMessage(MoimSessionReq.MoimSessionType.URGENT, dto);
 
-        } catch (IOException e) {
-            log.error("FCM ERROR");
+            } catch (IOException e) {
+                log.error("FCM ERROR");
+            }
+
+            successLogList.forEach((log) -> {
+                notiLogRepository.save(log.toEntity("hurry", senderKakaoId, receiverKakaoId, chatRoomId));
+            });
         }
-
-        successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity("hurry", senderKakaoId, receiverKakaoId, chatRoomId));
-        });
     }
 
     public void sendHelpNoti(String senderKakaoId, Long chatRoomId) {
@@ -97,26 +98,27 @@ public class NotiService {
 
         // 보내는 사람을 제외한 모임원들의 토큰들을 불러옴.
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMoimId(member.getId(), targetMoim.getId().toString());
-        if (tokenList.size() == 0) throw new KkiriException(ErrorCode.MOIM_MEMBER_NOT_FOUND);
+        if (tokenList.size() > 0) {
 
-        List<NotiLogDto> successLogList = new ArrayList<>();
-        try {
-            successLogList = fcmService.sendMessageToToken(
-                    FcmMessageDto.builder()
-                            .tokenList(tokenList)
-                            .channelId("sos")
-                            .title("@" + member.getNickname() + "님이 도움을 요청했어요!")
-                            .body("길을 헤매는 친구에게 길 안내를 보내주세요!")
-                            .sender(member)
-                            .build()
-            );
-        } catch (IOException e) {
-            log.error("FCM ERROR");
+            List<NotiLogDto> successLogList = new ArrayList<>();
+            try {
+                successLogList = fcmService.sendMessageToToken(
+                        FcmMessageDto.builder()
+                                .tokenList(tokenList)
+                                .channelId("sos")
+                                .title("@" + member.getNickname() + "님이 도움을 요청했어요!")
+                                .body("길을 헤매는 친구에게 길 안내를 보내주세요!")
+                                .sender(member)
+                                .build()
+                );
+            } catch (IOException e) {
+                log.error("FCM ERROR");
+            }
+
+            successLogList.forEach((log) -> {
+                notiLogRepository.save(log.toEntity("sos", senderKakaoId, senderKakaoId, chatRoomId));
+            });
         }
-
-        successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity("sos", senderKakaoId, senderKakaoId, chatRoomId));
-        });
     }
 
     public void sendRoute(String senderKakaoId, RouteGuideNotiReq routeGuideReq) {
@@ -129,27 +131,28 @@ public class NotiService {
         );
 
         List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMemberId(recvMember.getId());
-        if (tokenList.size() == 0) throw new KkiriException(ErrorCode.MEMBER_NOT_FOUND);
+        if (tokenList.size() > 0) {
 
-        List<NotiLogDto> successLogList = new ArrayList<>();
-        try {
-            successLogList = fcmService.sendMessageToToken(
-                    FcmMessageDto.builder()
-                            .tokenList(tokenList)
-                            .channelId("path")
-                            .title("길 안내 알림")
-                            .sender(sender)
-                            .body("@" + sender.getNickname() + "님이 길 안내 중입니다.")
-                            .path(routeGuideReq.getPath())
-                            .build()
-            );
-        } catch (IOException e) {
-            log.error("FCM ERROR");
+            List<NotiLogDto> successLogList = new ArrayList<>();
+            try {
+                successLogList = fcmService.sendMessageToToken(
+                        FcmMessageDto.builder()
+                                .tokenList(tokenList)
+                                .channelId("path")
+                                .title("길 안내 알림")
+                                .sender(sender)
+                                .body("@" + sender.getNickname() + "님이 길 안내 중입니다.")
+                                .path(routeGuideReq.getPath())
+                                .build()
+                );
+            } catch (IOException e) {
+                log.error("FCM ERROR");
+            }
+
+            successLogList.forEach((log) -> {
+                notiLogRepository.save(log.toEntity("path", senderKakaoId, routeGuideReq.getReceiverKakaoId(), routeGuideReq.getChatRoomId()));
+            });
         }
-
-        successLogList.forEach((log) -> {
-            notiLogRepository.save(log.toEntity("path", senderKakaoId, routeGuideReq.getReceiverKakaoId(), routeGuideReq.getChatRoomId()));
-        });
     }
 
     @Scheduled(cron = "0 */5 * * * *")
