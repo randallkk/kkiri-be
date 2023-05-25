@@ -1,5 +1,6 @@
 package com.lets.kkiri.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,10 @@ public class MemberGroupExpense {
     private MemberGroup memberGroup;
     @ManyToOne
     private MoimExpense moimExpense;
+
+    @Builder
+    public MemberGroupExpense(MemberGroup memberGroup, MoimExpense moimExpense) {
+        this.memberGroup = memberGroup;
+        this.moimExpense = moimExpense;
+    }
 }
