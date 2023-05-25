@@ -142,6 +142,7 @@ public class PaymentService {
         int memberCnt = memberKakaoIds.size();
         int expense = moimReceiptPostReq.getExpense();
         MoimExpense moimExpense = moimExpenseRepository.save(MoimExpense.builder()
+                .moim(moimRepository.findById(moimId).orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)))
                 .expense(expense)
                 .time(moimReceiptPostReq.getTime())
                 .place(moimReceiptPostReq.getPlace())
