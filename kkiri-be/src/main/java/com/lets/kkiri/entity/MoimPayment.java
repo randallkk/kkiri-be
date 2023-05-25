@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Entity
 public class MoimPayment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumns({
