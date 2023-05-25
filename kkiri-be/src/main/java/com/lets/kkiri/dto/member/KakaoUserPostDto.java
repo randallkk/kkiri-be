@@ -3,11 +3,15 @@ package com.lets.kkiri.dto.member;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import com.lets.kkiri.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class KakaoUserPostDto {
 
     @JsonProperty("id")
