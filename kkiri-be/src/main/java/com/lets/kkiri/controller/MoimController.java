@@ -122,7 +122,7 @@ public class MoimController {
             @RequestBody MoimReceiptPostReq moimReceiptPostReq
     ) {
         paymentService.addReceiptToMoim(moimId, moimReceiptPostReq);
-        return ResponseEntity.created(URI.create("/api/moims/{moimId}/payment")).build();
+        return ResponseEntity.created(URI.create("/api/moims/"+ moimId.toString() +"/payment")).build();
     }
 
     @GetMapping("/{moimId}/payment")
