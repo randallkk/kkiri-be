@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -115,13 +116,23 @@ public class MoimController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping("/payment/receipt")
-    public ResponseEntity<?> addReceiptToMoim(
-            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
+    @PostMapping("/{moimId}/payment/receipt")
+    public ResponseEntity<URI> addReceiptToMoim(
+            @PathVariable Long moimId,
             @RequestBody MoimReceiptPostReq moimReceiptPostReq
     ) {
-        String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
-        paymentService.addReceiptToMoim(kakaoId, moimReceiptPostReq);
-        return ResponseEntity.ok().build();
+        paymentService.addReceiptToMoim(moimId, moimReceiptPostReq);
+        return ResponseEntity.created(URI.create("/api/moims/{moimId}/payment")).build();
+    }
+
+    @GetMapping("/{moimId}/payment")
+    public ResponseEntity<MoimPaymentGetRes> getMoimPayment(
+            @PathVariable Long moimId
+    ) {
+        return ResponseEntity.ok().body(MoimPaymentGetRes.builder()
+                        .totalExpenditure(paymentService.getMoimExpense(moimId))
+                        .totalMemberCnt(moimService.findMemberCountByMoimId(moimId))
+                .moimPaymentList(paymentService.getMoimPayment(moimId))
+                .build());
     }
 }

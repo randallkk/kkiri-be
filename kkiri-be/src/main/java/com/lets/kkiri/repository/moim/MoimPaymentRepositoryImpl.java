@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Repository
@@ -18,5 +20,13 @@ public class MoimPaymentRepositoryImpl implements MoimPaymentRepositorySupport {
                 .selectFrom(QMoimPayment.moimPayment)
                 .where(QMoimPayment.moimPayment.memberGroup.moim.id.eq(moimId).and(QMoimPayment.moimPayment.memberGroup.member.kakaoId.eq(kakaoId)))
                 .fetchOne();
+    }
+
+    @Override
+    public List<MoimPayment> findAllByMoimId(Long moimId) {
+        return jpaQueryFactory
+                .selectFrom(QMoimPayment.moimPayment)
+                .where(QMoimPayment.moimPayment.memberGroup.moim.id.eq(moimId))
+                .fetch();
     }
 }
