@@ -82,7 +82,6 @@ public class PaymentService {
 
             // 6. 응답 코드를 확인합니다.
             if (response.getStatusCodeValue() == 200) {
-                log.debug("response : {}", response.getBody().toString());
                 List<Map<String, Map<String, Map<String, Object>>>> images = (List) response.getBody().get("images");
                 if ("ERROR".equals(images.get(0).get("inferResult"))) {
                     throw new KkiriException(ErrorCode.INTERNAL_SERVER_ERROR, "영수증 사진이 아닙니다.");

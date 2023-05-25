@@ -100,7 +100,6 @@ public class MoimController {
         String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
         try {
             String fileName = file.getOriginalFilename();
-            log.debug("fileName: {}", fileName);
             if (fileName == null) {
                 return ResponseEntity.badRequest().build();
             }
