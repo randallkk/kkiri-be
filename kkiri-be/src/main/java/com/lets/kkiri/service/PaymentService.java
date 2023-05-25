@@ -26,6 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +82,6 @@ public class PaymentService {
 
             // 6. 응답 코드를 확인합니다.
             if (response.getStatusCodeValue() == 200) {
-                log.debug("response : {}", response.getBody().toString());
                 List<Map<String, Map<String, Map<String, Object>>>> images = (List) response.getBody().get("images");
                 if ("ERROR".equals(images.get(0).get("inferResult"))) {
                     throw new KkiriException(ErrorCode.INTERNAL_SERVER_ERROR, "영수증 사진이 아닙니다.");
@@ -93,8 +93,10 @@ public class PaymentService {
 
                 String storeName = (String) storeInfo.get("name").get("text");
                 LocalDateTime datetime = LocalDateTime.now();
-                if (paymentInfo != null) {
-                    datetime = LocalDateTime.parse( paymentInfo.get("date").get("text") + "T" + paymentInfo.get("time").get("text"));
+                try {
+                    datetime = LocalDateTime.parse( paymentInfo.get("date").get("text") + "T" + paymentInfo.get("time").get("text").toString().replace(" ", ""));
+                } catch (DateTimeParseException e) {
+                    e.printStackTrace();
                 }
                 String price = (String) totalPrice.get("price").get("text");
                 price = price.replaceAll("[^0-9]", "");

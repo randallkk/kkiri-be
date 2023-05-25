@@ -63,7 +63,7 @@ public class S3Util {
 
             s3Client.deleteObject(deleteObjectRequest);
 
-            log.debug("{} deletion complete", key);
+            log.debug("[{}] deletion complete", key);
         } catch (AmazonServiceException e) {
             e.printStackTrace();
         } catch (SdkClientException e) {
@@ -77,7 +77,7 @@ public class S3Util {
      */
     private void uploadToS3(PutObjectRequest putObjectRequest) {
         try {
-            s3Client.putObject(putObjectRequest);log.debug(clientRegion.getName());
+            s3Client.putObject(putObjectRequest);
         } catch (AmazonServiceException e) {
             e.printStackTrace();
         } catch (SdkClientException e) {

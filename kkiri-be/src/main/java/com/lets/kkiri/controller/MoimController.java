@@ -94,16 +94,10 @@ public class MoimController {
 
     @PostMapping("/payment/receipt/ocr")
     public ResponseEntity<?> readReceipt(
-            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
         try {
             String fileName = file.getOriginalFilename();
-            log.debug("fileName: {}", fileName);
-            if (fileName == null) {
-                return ResponseEntity.badRequest().build();
-            }
             fileName = String.valueOf(System.currentTimeMillis()).concat(fileName);
             String contentType = Files.probeContentType(Path.of(fileName));
             if (contentType.startsWith("image")) {   // image
@@ -115,6 +109,8 @@ public class MoimController {
         } catch (NoSuchElementException | IOException e){
             log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
+        } catch (NullPointerException e) {
+            throw new KkiriException(ErrorCode.INVALID_PARAMETER, e.getMessage());
         }
         return ResponseEntity.internalServerError().build();
     }
