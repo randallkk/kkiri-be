@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,6 +17,8 @@ public class MoimExpense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    private Moim moim;
     private String place;
     @ColumnDefault("0")
     private Integer expense;
@@ -28,7 +27,8 @@ public class MoimExpense {
     private String receipt_url;
 
     @Builder
-    public MoimExpense(String place, Integer expense, LocalDateTime time, String receipt_url) {
+    public MoimExpense(Moim moim, String place, Integer expense, LocalDateTime time, String receipt_url) {
+        this.moim = moim;
         this.place = place;
         this.expense = expense;
         this.time = time;
