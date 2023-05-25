@@ -1,12 +1,16 @@
 package com.lets.kkiri.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.common.util.S3Util;
 import com.lets.kkiri.dto.ClovaOcrReq;
 import com.lets.kkiri.dto.ReceiptOcrRes;
 import com.lets.kkiri.dto.moim.MoimReceiptPostReq;
+import com.lets.kkiri.entity.*;
+import com.lets.kkiri.repository.member.MemberGroupRepository;
+import com.lets.kkiri.repository.member.MemberRepository;
+import com.lets.kkiri.repository.moim.MemberGroupExpenseRepository;
+import com.lets.kkiri.repository.moim.MoimExpenseRepository;
+import com.lets.kkiri.repository.moim.MoimPaymentRepository;
 import com.lets.kkiri.repository.moim.MoimRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponents;
@@ -27,10 +32,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,6 +44,14 @@ public class PaymentService {
     @Value("${clova.ocr.APIGW}")
     private String url;
 
+    private final MemberRepository memberRepository;
+    private final MoimRepository moimRepository;
+    private final MemberGroupRepository memberGroupRepository;
+    private final MoimExpenseRepository moimExpenseRepository;
+    private final MemberGroupExpenseRepository memberGroupExpenseRepository;
+    private final MoimPaymentRepository moimPaymentRepository;
+
+    @Transactional
     public ReceiptOcrRes readReceipt(MultipartFile file) throws IOException {
         try {
             String imageData = Base64.getEncoder().encodeToString(file.getBytes());
@@ -114,8 +124,82 @@ public class PaymentService {
         throw  new KkiriException(ErrorCode.INTERNAL_SERVER_ERROR, "영수증 인식에 실패했습니다.");
     }
 
-    public void addReceiptToMoim(String kakaoId, MoimReceiptPostReq moimReceiptPostReq) {
 
+    /**
+     * 모임에 영수증 추가
+     * 영수증을 추가하면 해당 멤버들의 정산 금액이 늘어나고, 나머지는 벌금에 추가된다.
+     * @param moimId 모임 id
+     * @param moimReceiptPostReq 영수증 정보
+     *                           - memberKakaoIds : 영수증에 참여한 멤버들의 카카오 id
+     *                           - expense : 영수증 금액
+     *                           - time : 결제 시간
+     *                           - place : 영수증 장소
+     *                           - receiptUrl : 영수증 사진 url
+     */
+    @Transactional
+    public void addReceiptToMoim(Long moimId, MoimReceiptPostReq moimReceiptPostReq) {
+        List<String> memberKakaoIds = moimReceiptPostReq.getMemberKakaoIds();
+        int memberCnt = memberKakaoIds.size();
+        int expense = moimReceiptPostReq.getExpense();
+        MoimExpense moimExpense = moimExpenseRepository.save(MoimExpense.builder()
+                .expense(expense)
+                .time(moimReceiptPostReq.getTime())
+                .place(moimReceiptPostReq.getPlace())
+                .receipt_url(moimReceiptPostReq.getReceiptUrl())
+                .build());
+        for (String kakaoId : memberKakaoIds) {
+            memberGroupExpenseRepository.save(MemberGroupExpense.builder()
+                    .memberGroup(memberGroupRepository.findByMoimIdAndKakaoId(moimId, kakaoId))
+                    .moimExpense(moimExpense)
+                    .build());
+            MoimPayment moimPayment = moimPaymentRepository.findByMoimIdAndKakaoId(moimId, kakaoId);
+            if (moimPayment != null) {
+                moimPayment.addExpenditure(expense / memberCnt);
+            } else {
+                moimPaymentRepository.save(MoimPayment.builder()
+                        .memberGroup(memberGroupRepository.findByMoimIdAndKakaoId(moimId, kakaoId))
+                        .expenditure(expense / memberCnt)
+                        .build());
+            }
+        }
+        Moim moim = moimRepository.findById(moimId)
+                .orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND));
+        moim.addLateFee(expense % memberCnt);
     }
 
+    /**
+     * 모임의 영수증 목록 조회
+     * @param moimId 모임 id
+     * @return 영수증 목록
+     */
+    public Map<String, Integer> getMoimPayment(Long moimId) {
+        List<MoimPayment> moimPaymentList = moimPaymentRepository.findAllByMoimId(moimId);
+        Map<String, Integer> payment = new HashMap<>();
+        int totalMemberCnt = 0;
+        for (MoimPayment moimPayment : moimPaymentList) {
+            payment.put(moimPayment.getMemberGroup().getMember().getKakaoId(), moimPayment.getExpenditure());
+        }
+        return payment;
+    }
+
+//    @Transactional
+//    public void deleteReceiptFromMoim(Long moimId, Long moimExpenseId) {
+//        MoimExpense moimExpense = moimExpenseRepository.findById(moimExpenseId)
+//                .orElseThrow(() -> new KkiriException(ErrorCode.NOT_FOUND, "해당 영수증을 찾을 수 없습니다."));
+//        List<MemberGroupExpense> memberGroupExpenses = memberGroupExpenseRepository.findAllByMoimExpense(moimExpense);
+//        for (MemberGroupExpense memberGroupExpense : memberGroupExpenses) {
+//            memberGroupExpenseRepository.delete(memberGroupExpense);
+//        }
+//        moimExpenseRepository.delete(moimExpense);
+//    }
+
+
+    /**
+     * 모임의 총 정산 금액 조회
+     * @param moimId 모임 id
+     * @return 총 정산 금액
+     */
+    public int getMoimExpense(Long moimId) {
+        return memberGroupExpenseRepository.findMoimExpenseByMoimId(moimId);
+    }
 }

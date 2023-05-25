@@ -12,11 +12,12 @@ import javax.persistence.*;
 @Entity
 public class MoimPayment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name="moim_id"),
-            @JoinColumn(name="member_id")
+            @JoinColumn(name="member_id"),
+            @JoinColumn(name="moim_id")
     })
     private MemberGroup memberGroup;
     @ColumnDefault("0")

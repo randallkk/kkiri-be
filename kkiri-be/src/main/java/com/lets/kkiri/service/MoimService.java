@@ -1,6 +1,5 @@
 package com.lets.kkiri.service;
 
-import com.google.type.DateTime;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.MoimGroupPostReq;
@@ -112,5 +111,9 @@ public class MoimService {
         Moim moim = moimRepository.findById(moimGroupPostReq.getMoimId()).orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND));
         memberTopicService.addMemberToMoim(member.getId(), moim.getId());
         return memberGroupRepository.save(MemberGroupDto.toEntity(member, moim)).getMoim().getId();
+    }
+
+    public int findMemberCountByMoimId(Long moimId) {
+        return memberGroupRepository.countByMoimId(moimId).intValue();
     }
 }
