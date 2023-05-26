@@ -203,6 +203,10 @@ public class PaymentService {
      * @return 총 정산 금액
      */
     public int getMoimExpense(Long moimId) {
-        return moimExpenseRepository.findMoimExpenseByMoimId(moimId);
+        try {
+            return moimExpenseRepository.findMoimExpenseByMoimId(moimId);
+        } catch (NullPointerException e) {
+            return 0;
+        }
     }
 }
