@@ -5,10 +5,7 @@ import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.ClovaOcrReq;
 import com.lets.kkiri.dto.ReceiptOcrRes;
 import com.lets.kkiri.dto.moim.MoimReceiptPostReq;
-import com.lets.kkiri.entity.MemberGroupExpense;
-import com.lets.kkiri.entity.Moim;
-import com.lets.kkiri.entity.MoimExpense;
-import com.lets.kkiri.entity.MoimPayment;
+import com.lets.kkiri.entity.*;
 import com.lets.kkiri.repository.member.MemberGroupRepository;
 import com.lets.kkiri.repository.moim.MemberGroupExpenseRepository;
 import com.lets.kkiri.repository.moim.MoimExpenseRepository;
@@ -150,8 +147,12 @@ public class PaymentService {
                 .receipt_url(moimReceiptPostReq.getReceiptUrl())
                 .build());
         for (String kakaoId : memberKakaoIds) {
+            MemberGroup memberGroup = memberGroupRepository.findByMoimIdAndKakaoId(moimId, kakaoId);
+            if (memberGroup == null) {
+                throw new KkiriException(ErrorCode.MOIM_MEMBER_NOT_FOUND);
+            }
             memberGroupExpenseRepository.save(MemberGroupExpense.builder()
-                    .memberGroup(memberGroupRepository.findByMoimIdAndKakaoId(moimId, kakaoId))
+                    .memberGroup(memberGroup)
                     .moimExpense(moimExpense)
                     .build());
             MoimPayment moimPayment = moimPaymentRepository.findByMoimIdAndKakaoId(moimId, kakaoId);
@@ -202,6 +203,10 @@ public class PaymentService {
      * @return 총 정산 금액
      */
     public int getMoimExpense(Long moimId) {
-        return moimExpenseRepository.findMoimExpenseByMoimId(moimId);
+        try {
+            return moimExpenseRepository.findMoimExpenseByMoimId(moimId);
+        } catch (NullPointerException e) {
+            return 0;
+        }
     }
 }
