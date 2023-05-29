@@ -46,4 +46,8 @@ public class Member {
         this.chatAlarm = chatAlarm;
         this.meetAlarm = meetAlarm;
     }
+
+    public void changeAccountUrl(String accountUrl) {
+        this.accountUrl = accountUrl;
+    }
 }

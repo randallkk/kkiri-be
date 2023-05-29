@@ -2,6 +2,7 @@ package com.lets.kkiri.controller;
 
 import com.lets.kkiri.common.util.JwtTokenUtil;
 import com.lets.kkiri.dto.member.KakaoUserPostDto;
+import com.lets.kkiri.dto.member.MemberAccountDto;
 import com.lets.kkiri.dto.member.MemberDevicePostReq;
 import com.lets.kkiri.dto.member.MemberLoginPostRes;
 import com.lets.kkiri.entity.Member;
@@ -28,5 +29,26 @@ public class MemberController {
         String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
         memberService.addDeviceToken(kakaoId, request.getDeviceToken());
         return ResponseEntity.ok().body("SUCCESS");
+    }
+
+    @PostMapping("/accounts")
+    public ResponseEntity<String> saveAccountUrl(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken,
+            @RequestBody MemberAccountDto request)
+    {
+        String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
+        memberService.saveAccountUrl(kakaoId, request.getAccountUrl());
+        return ResponseEntity.ok().body("SUCCESS");
+    }
+
+    @GetMapping("/accounts")
+    public ResponseEntity<MemberAccountDto> getAccountUrl(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String accessToken)
+    {
+        String kakaoId = JwtTokenUtil.getIdentifier(accessToken);
+        Member member = memberService.getMemberByKakaoId(kakaoId);
+        return ResponseEntity.ok().body(MemberAccountDto.builder()
+                .accountUrl(member.getAccountUrl())
+                .build());
     }
 }
