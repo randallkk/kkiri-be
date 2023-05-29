@@ -9,7 +9,7 @@ import java.util.Map;
 @Getter
 @AllArgsConstructor
 @Builder
-public class MoimPaymentGetRes {
+public class MoimExpenseAmountGetRes {
     private int totalExpenditure;
     private int totalMemberCnt;
     private Map<String, Integer> moimPaymentList;

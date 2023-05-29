@@ -142,13 +142,14 @@ public class MoimController {
      * @return
      */
     @GetMapping("/{moimId}/payments")
-    public ResponseEntity<MoimPaymentGetRes> getMoimPayment(
+    public ResponseEntity<MoimExpenseAmountGetRes> getMoimExpenseAmount(
             @PathVariable Long moimId
     ) {
-        return ResponseEntity.ok().body(MoimPaymentGetRes.builder()
+        return ResponseEntity.ok().body(MoimExpenseAmountGetRes.builder()
                         .totalExpenditure(paymentService.getMoimExpense(moimId))
                         .totalMemberCnt(moimService.findMemberCountByMoimId(moimId))
                 .moimPaymentList(paymentService.getMoimPayment(moimId))
                 .build());
     }
+
 }
