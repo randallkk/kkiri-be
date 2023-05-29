@@ -5,6 +5,7 @@ import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.ClovaOcrReq;
 import com.lets.kkiri.dto.ReceiptOcrRes;
 import com.lets.kkiri.dto.member.MemberExpenditureDto;
+import com.lets.kkiri.dto.moim.MoimExpenseDto;
 import com.lets.kkiri.dto.moim.MoimReceiptPostReq;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.MemberExpense;
@@ -19,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -187,7 +190,6 @@ public class PaymentService {
 //        moimExpenseRepository.delete(moimExpense);
 //    }
 
-
     /**
      * 모임의 총 정산 금액 조회
      * @param moimId 모임 id
@@ -201,8 +203,13 @@ public class PaymentService {
         }
     }
 
-
-//    public Page<MoimExpenseDto> getMoimExpenseList(Long moimId, Pageable pageable) {
-//        return moimExpenseRepository.findAllByMoimId(moimId, pageable).stream().map();
-//    }
+    /**
+     * 모임 구성원들의 정산 목록 조회
+     * @param moimId 모임 id
+     * @param pageable 페이지 정보
+     * @return 정산 목록
+     */
+    public Page<MoimExpenseDto> getMoimExpenseList(Long moimId, Pageable pageable) {
+        return moimExpenseRepository.findAllByMoimId(moimId, pageable);
+    }
 }

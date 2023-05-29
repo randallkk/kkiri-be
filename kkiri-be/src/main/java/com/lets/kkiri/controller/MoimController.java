@@ -11,6 +11,8 @@ import com.lets.kkiri.service.MoimService;
 import com.lets.kkiri.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -138,10 +141,10 @@ public class MoimController {
 
     /**
      * 정산 금액 조회
-     * @param moimId
-     * @return
+     * @param moimId 모임 id
+     * @return 정산 금액
      */
-    @GetMapping("/{moimId}/payments")
+    @GetMapping("/{moimId}/payments/amount")
     public ResponseEntity<MoimExpenseAmountGetRes> getMoimExpenseAmount(
             @PathVariable Long moimId
     ) {
@@ -152,19 +155,27 @@ public class MoimController {
                 .build());
     }
 
-//    @GetMapping("/{moimId}/payments")
-//    public ResponseEntity<MoimPaymentListGetRes> getMoimExpenseList(
-//            @PathVariable Long moimId, Pageable pageable
-//    ) {
-//        Page<MoimExpenseDto> paymentList =  paymentService.getMoimReceiptList(moimId, pageable);
-//        return ResponseEntity.ok().body(MoimPaymentListGetRes.builder()
-//                .meta(new HashMap<>(){{
-//                    put("page", paymentList.getNumber());
-//                    put("totalPages", paymentList.getTotalPages());
-//                    put("size", paymentList.getSize());
-//                    put("totalCount", paymentList.getNumberOfElements());
-//                }})
-//                .paymentList(paymentList.getContent())
-//                .build());
-//    }
+    /**
+     * 정산 내역 목록 조회
+     * @param moimId 모임 id
+     * @param pageable 페이지 정보
+     *                 page: 페이지 번호 (default: 0)
+     *                 size: 페이지 사이즈 (default: 20)
+     * @return 정산 내역 목록
+     */
+    @GetMapping("/{moimId}/payments")
+    public ResponseEntity<MoimExpenseListGetRes> getMoimExpenseList(
+            @PathVariable Long moimId, Pageable pageable
+    ) {
+        Page<MoimExpenseDto> moimExpenseList =  paymentService.getMoimExpenseList(moimId, pageable);
+        return ResponseEntity.ok().body(MoimExpenseListGetRes.builder()
+                .meta(new HashMap<>(){{
+                    put("page", moimExpenseList.getNumber());
+                    put("totalPages", moimExpenseList.getTotalPages());
+                    put("size", moimExpenseList.getSize());
+                    put("totalCount", moimExpenseList.getNumberOfElements());
+                }})
+                .paymentList(moimExpenseList.getContent())
+                .build());
+    }
 }
