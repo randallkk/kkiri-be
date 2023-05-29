@@ -9,22 +9,22 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class MemberGroupExpense {
+public class MemberExpense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name="member_id"),
-            @JoinColumn(name="moim_id")
-    })
-    private MemberGroup memberGroup;
+    private Member member;
     @ManyToOne
     private MoimExpense moimExpense;
+    private Integer expenditure;
+    private Boolean isPaid;
 
     @Builder
-    public MemberGroupExpense(MemberGroup memberGroup, MoimExpense moimExpense) {
-        this.memberGroup = memberGroup;
+    public MemberExpense(Member member, MoimExpense moimExpense, int expenditure) {
+        this.member = member;
         this.moimExpense = moimExpense;
+        this.expenditure = expenditure;
+        this.isPaid = false;
     }
 }

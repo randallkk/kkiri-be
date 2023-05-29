@@ -146,10 +146,25 @@ public class MoimController {
             @PathVariable Long moimId
     ) {
         return ResponseEntity.ok().body(MoimExpenseAmountGetRes.builder()
-                        .totalExpenditure(paymentService.getMoimExpense(moimId))
-                        .totalMemberCnt(moimService.findMemberCountByMoimId(moimId))
-                .moimPaymentList(paymentService.getMoimPayment(moimId))
+                .totalExpenditure(paymentService.getMoimExpense(moimId))
+                .totalMemberCnt(moimService.findMemberCountByMoimId(moimId))
+                .moimPaymentList(paymentService.getEachExpenditureForMoim(moimId))
                 .build());
     }
 
+//    @GetMapping("/{moimId}/payments")
+//    public ResponseEntity<MoimPaymentListGetRes> getMoimExpenseList(
+//            @PathVariable Long moimId, Pageable pageable
+//    ) {
+//        Page<MoimExpenseDto> paymentList =  paymentService.getMoimReceiptList(moimId, pageable);
+//        return ResponseEntity.ok().body(MoimPaymentListGetRes.builder()
+//                .meta(new HashMap<>(){{
+//                    put("page", paymentList.getNumber());
+//                    put("totalPages", paymentList.getTotalPages());
+//                    put("size", paymentList.getSize());
+//                    put("totalCount", paymentList.getNumberOfElements());
+//                }})
+//                .paymentList(paymentList.getContent())
+//                .build());
+//    }
 }

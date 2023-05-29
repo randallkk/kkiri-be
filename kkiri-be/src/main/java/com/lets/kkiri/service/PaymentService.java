@@ -4,12 +4,15 @@ import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.dto.ClovaOcrReq;
 import com.lets.kkiri.dto.ReceiptOcrRes;
+import com.lets.kkiri.dto.member.MemberExpenditureDto;
 import com.lets.kkiri.dto.moim.MoimReceiptPostReq;
-import com.lets.kkiri.entity.*;
-import com.lets.kkiri.repository.member.MemberGroupRepository;
-import com.lets.kkiri.repository.moim.MemberGroupExpenseRepository;
+import com.lets.kkiri.entity.Member;
+import com.lets.kkiri.entity.MemberExpense;
+import com.lets.kkiri.entity.Moim;
+import com.lets.kkiri.entity.MoimExpense;
+import com.lets.kkiri.repository.member.MemberExpenseRepository;
+import com.lets.kkiri.repository.member.MemberRepository;
 import com.lets.kkiri.repository.moim.MoimExpenseRepository;
-import com.lets.kkiri.repository.moim.MoimPaymentRepository;
 import com.lets.kkiri.repository.moim.MoimRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +34,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,11 +50,10 @@ public class PaymentService {
     @Value("${clova.ocr.APIGW}")
     private String url;
 
+    private final MemberRepository memberRepository;
     private final MoimRepository moimRepository;
-    private final MemberGroupRepository memberGroupRepository;
     private final MoimExpenseRepository moimExpenseRepository;
-    private final MemberGroupExpenseRepository memberGroupExpenseRepository;
-    private final MoimPaymentRepository moimPaymentRepository;
+    private final MemberExpenseRepository memberExpenseRepository;
 
     @Transactional
     public ReceiptOcrRes readReceipt(MultipartFile file) throws IOException {
@@ -144,26 +150,16 @@ public class PaymentService {
                 .expense(expense)
                 .time(moimReceiptPostReq.getTime())
                 .place(moimReceiptPostReq.getPlace())
-                .receipt_url(moimReceiptPostReq.getReceiptUrl())
+                .receiptUrl(moimReceiptPostReq.getReceiptUrl())
                 .build());
         for (String kakaoId : memberKakaoIds) {
-            MemberGroup memberGroup = memberGroupRepository.findByMoimIdAndKakaoId(moimId, kakaoId);
-            if (memberGroup == null) {
-                throw new KkiriException(ErrorCode.MOIM_MEMBER_NOT_FOUND);
-            }
-            memberGroupExpenseRepository.save(MemberGroupExpense.builder()
-                    .memberGroup(memberGroup)
+            Member member = memberRepository.findByKakaoId(kakaoId)
+                    .orElseThrow(() -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND));
+            memberExpenseRepository.save(MemberExpense.builder()
+                    .member(member)
                     .moimExpense(moimExpense)
+                    .expenditure(expense / memberCnt)
                     .build());
-            MoimPayment moimPayment = moimPaymentRepository.findByMoimIdAndKakaoId(moimId, kakaoId);
-            if (moimPayment != null) {
-                moimPayment.addExpenditure(expense / memberCnt);
-            } else {
-                moimPaymentRepository.save(MoimPayment.builder()
-                        .memberGroup(memberGroupRepository.findByMoimIdAndKakaoId(moimId, kakaoId))
-                        .expenditure(expense / memberCnt)
-                        .build());
-            }
         }
         Moim moim = moimRepository.findById(moimId)
                 .orElseThrow(() -> new KkiriException(ErrorCode.MOIM_NOT_FOUND));
@@ -171,18 +167,13 @@ public class PaymentService {
     }
 
     /**
-     * 모임의 영수증 목록 조회
+     * 모임 구성원들의 정산 금액 목록 조회
      * @param moimId 모임 id
-     * @return 영수증 목록
+     * @return Map<String, Integer> : 카카오 id, 정산 금액
      */
-    public Map<String, Integer> getMoimPayment(Long moimId) {
-        List<MoimPayment> moimPaymentList = moimPaymentRepository.findAllByMoimId(moimId);
-        Map<String, Integer> payment = new HashMap<>();
-        int totalMemberCnt = 0;
-        for (MoimPayment moimPayment : moimPaymentList) {
-            payment.put(moimPayment.getMemberGroup().getMember().getKakaoId(), moimPayment.getExpenditure());
-        }
-        return payment;
+    public Map<String, Integer> getEachExpenditureForMoim(Long moimId) {
+        return memberExpenseRepository.findEachExpenditureForMoim(moimId).stream()
+                .collect(Collectors.toMap(MemberExpenditureDto::getKakaoId, MemberExpenditureDto::getExpenditure));
     }
 
 //    @Transactional
@@ -209,4 +200,9 @@ public class PaymentService {
             return 0;
         }
     }
+
+
+//    public Page<MoimExpenseDto> getMoimExpenseList(Long moimId, Pageable pageable) {
+//        return moimExpenseRepository.findAllByMoimId(moimId, pageable).stream().map();
+//    }
 }

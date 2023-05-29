@@ -12,9 +12,9 @@ import java.util.Map;
 public class MoimExpenseAmountGetRes {
     private int totalExpenditure;
     private int totalMemberCnt;
-    private Map<String, Integer> moimPaymentList;
+    private Map<String, Integer> moimPaymentList;    // memberGroupExpenditureList
 
-    public void addMoimPaymentDto(String kakaoId, Integer memberPayment) {
-        moimPaymentList.put(kakaoId, memberPayment);
+    public void addMemberGroupExpenditure(String kakaoId, Integer memberGroupExpenditure) {
+        moimPaymentList.put(kakaoId, memberGroupExpenditure);
     }
 }

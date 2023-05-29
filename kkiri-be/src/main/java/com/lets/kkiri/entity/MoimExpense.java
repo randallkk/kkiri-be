@@ -24,14 +24,14 @@ public class MoimExpense {
     private Integer expense;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime time;
-    private String receipt_url;
+    private String receiptUrl;
 
     @Builder
-    public MoimExpense(Moim moim, String place, Integer expense, LocalDateTime time, String receipt_url) {
+    public MoimExpense(Moim moim, String place, Integer expense, LocalDateTime time, String receiptUrl) {
         this.moim = moim;
         this.place = place;
         this.expense = expense;
         this.time = time;
-        this.receipt_url = receipt_url;
+        this.receiptUrl = receiptUrl;
     }
 }
