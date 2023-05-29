@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class MoimExpenseRepositoryImpl implements MoimExpenseRepositorySupport {
     private final JPAQueryFactory jpaQueryFactory;
     QMoimExpense qMoimExpense = QMoimExpense.moimExpense;
-    QMemberExpense qMemberExpense = QMemberExpense.memberExpense;
     QMoim qMoim = QMoim.moim;
 
     @Override
@@ -33,22 +32,13 @@ public class MoimExpenseRepositoryImpl implements MoimExpenseRepositorySupport {
     }
 
     @Override
-    public Page<MoimExpenseDto> findAllByMoimId(Long moimId, Pageable pageable) {
+    public Page<MoimExpense> findAllByMoimId(Long moimId, Pageable pageable) {
         List<MoimExpense> moimExpenseList = jpaQueryFactory.selectFrom(qMoimExpense)
                 .leftJoin(qMoimExpense.moim, qMoim).fetchJoin()
                 .where(qMoimExpense.moim.id.eq(moimId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        log.debug("이게 맞나?");
-        List<MoimExpenseDto> moimExpenseDtoList = moimExpenseList.stream().map(moimExpense -> new MoimExpenseDto(moimExpense,
-                jpaQueryFactory.select(qMemberExpense.member.kakaoId)
-                        .from(qMemberExpense)
-                        .leftJoin(qMemberExpense.moimExpense, qMoimExpense)//.fetchJoin()
-                        .where(qMemberExpense.moimExpense.moim.id.eq(moimId))
-                        .fetch()
-                )).collect(Collectors.toList());
-        log.debug("moimExpenseDtoList: {}", moimExpenseDtoList);
-        return new PageImpl<>(moimExpenseDtoList, pageable, moimExpenseDtoList.size());
+        return new PageImpl<>(moimExpenseList, pageable, moimExpenseList.size());
     }
 }

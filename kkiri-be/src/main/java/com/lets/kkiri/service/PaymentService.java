@@ -21,6 +21,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -205,11 +206,14 @@ public class PaymentService {
 
     /**
      * 모임 구성원들의 정산 목록 조회
+     * : 해당 모임의 memberExpense를 모두 받아와 moimExpense와 한번에 mapping
      * @param moimId 모임 id
      * @param pageable 페이지 정보
      * @return 정산 목록
      */
     public Page<MoimExpenseDto> getMoimExpenseList(Long moimId, Pageable pageable) {
-        return moimExpenseRepository.findAllByMoimId(moimId, pageable);
+        Map<Long, List<String>> kakaoIdList = memberExpenseRepository.findAllKakaoIdByMoimId(moimId);
+        Page<MoimExpense> moimExpenseList = moimExpenseRepository.findAllByMoimId(moimId, pageable);
+        return new PageImpl<>(moimExpenseList.stream().map(moimExpense -> new MoimExpenseDto(moimExpense, kakaoIdList.get(moimExpense.getId()))).collect(Collectors.toList()), pageable, moimExpenseList.getTotalElements());
     }
 }
