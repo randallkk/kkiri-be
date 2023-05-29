@@ -27,7 +27,7 @@ public class MemberExpenseRepositoryImpl implements MemberExpenseRepositorySuppo
                 .select(Projections.bean(
                         MemberExpenditureDto.class,
                         qMemberExpense.member.kakaoId,
-                        qMemberExpense.expenditure.sum()
+                        qMemberExpense.expenditure.sum().as("expenditure")
                 ))
                 .fetch();
     }
