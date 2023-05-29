@@ -93,7 +93,12 @@ public class MoimController {
         return ResponseEntity.ok().body(res);
     }
 
-    @PostMapping("/payment/receipt/ocr")
+    /**
+     * 영수증 이미지 전송 (OCR)
+     * @param file
+     * @return
+     */
+    @PostMapping("/payments/receipts/ocr")
     public ResponseEntity<?> readReceipt(
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
@@ -116,7 +121,13 @@ public class MoimController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping("/{moimId}/payment/receipt")
+    /**
+     * 영수증 입력
+     * @param moimId
+     * @param moimReceiptPostReq
+     * @return
+     */
+    @PostMapping("/{moimId}/payments/receipts")
     public ResponseEntity<URI> addReceiptToMoim(
             @PathVariable Long moimId,
             @RequestBody MoimReceiptPostReq moimReceiptPostReq
@@ -125,7 +136,12 @@ public class MoimController {
         return ResponseEntity.created(URI.create("/api/moims/"+ moimId.toString() +"/payment")).build();
     }
 
-    @GetMapping("/{moimId}/payment")
+    /**
+     * 정산 금액 조회
+     * @param moimId
+     * @return
+     */
+    @GetMapping("/{moimId}/payments")
     public ResponseEntity<MoimPaymentGetRes> getMoimPayment(
             @PathVariable Long moimId
     ) {
