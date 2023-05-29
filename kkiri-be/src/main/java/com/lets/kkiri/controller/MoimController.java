@@ -11,6 +11,8 @@ import com.lets.kkiri.service.MoimService;
 import com.lets.kkiri.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -93,7 +96,12 @@ public class MoimController {
         return ResponseEntity.ok().body(res);
     }
 
-    @PostMapping("/payment/receipt/ocr")
+    /**
+     * 영수증 이미지 전송 (OCR)
+     * @param file
+     * @return
+     */
+    @PostMapping("/payments/receipts/ocr")
     public ResponseEntity<?> readReceipt(
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
@@ -116,7 +124,13 @@ public class MoimController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping("/{moimId}/payment/receipt")
+    /**
+     * 영수증 입력
+     * @param moimId
+     * @param moimReceiptPostReq
+     * @return
+     */
+    @PostMapping("/{moimId}/payments/receipts")
     public ResponseEntity<URI> addReceiptToMoim(
             @PathVariable Long moimId,
             @RequestBody MoimReceiptPostReq moimReceiptPostReq
@@ -125,14 +139,43 @@ public class MoimController {
         return ResponseEntity.created(URI.create("/api/moims/"+ moimId.toString() +"/payment")).build();
     }
 
-    @GetMapping("/{moimId}/payment")
-    public ResponseEntity<MoimPaymentGetRes> getMoimPayment(
+    /**
+     * 정산 금액 조회
+     * @param moimId 모임 id
+     * @return 정산 금액
+     */
+    @GetMapping("/{moimId}/payments/amount")
+    public ResponseEntity<MoimExpenseAmountGetRes> getMoimExpenseAmount(
             @PathVariable Long moimId
     ) {
-        return ResponseEntity.ok().body(MoimPaymentGetRes.builder()
-                        .totalExpenditure(paymentService.getMoimExpense(moimId))
-                        .totalMemberCnt(moimService.findMemberCountByMoimId(moimId))
-                .moimPaymentList(paymentService.getMoimPayment(moimId))
+        return ResponseEntity.ok().body(MoimExpenseAmountGetRes.builder()
+                .totalExpenditure(paymentService.getMoimExpense(moimId))
+                .totalMemberCnt(moimService.findMemberCountByMoimId(moimId))
+                .moimPaymentList(paymentService.getEachExpenditureForMoim(moimId))
+                .build());
+    }
+
+    /**
+     * 정산 내역 목록 조회
+     * @param moimId 모임 id
+     * @param pageable 페이지 정보
+     *                 page: 페이지 번호 (default: 0)
+     *                 size: 페이지 사이즈 (default: 20)
+     * @return 정산 내역 목록
+     */
+    @GetMapping("/{moimId}/payments")
+    public ResponseEntity<MoimExpenseListGetRes> getMoimExpenseList(
+            @PathVariable Long moimId, Pageable pageable
+    ) {
+        Page<MoimExpenseDto> moimExpenseList =  paymentService.getMoimExpenseList(moimId, pageable);
+        return ResponseEntity.ok().body(MoimExpenseListGetRes.builder()
+                .meta(new HashMap<>(){{
+                    put("page", moimExpenseList.getNumber());
+                    put("totalPages", moimExpenseList.getTotalPages());
+                    put("size", moimExpenseList.getSize());
+                    put("totalCount", moimExpenseList.getNumberOfElements());
+                }})
+                .paymentList(moimExpenseList.getContent())
                 .build());
     }
 }
