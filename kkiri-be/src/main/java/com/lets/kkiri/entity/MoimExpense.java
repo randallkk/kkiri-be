@@ -17,7 +17,7 @@ public class MoimExpense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Moim moim;
     private String place;
     @ColumnDefault("0")

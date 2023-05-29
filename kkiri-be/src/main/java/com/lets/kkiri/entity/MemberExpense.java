@@ -13,9 +13,9 @@ public class MemberExpense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private MoimExpense moimExpense;
     private Integer expenditure;
     private Boolean isPaid;
