@@ -32,7 +32,7 @@ public class NotiController {
             @RequestBody NotiMoimIdReq notiMoimIdReq
     ) {
         String senderKakaoId = JwtTokenUtil.getIdentifier(token);
-        notiService.sendHelpNoti(senderKakaoId, notiMoimIdReq.getChatRoomId());
+        notiService.sendHelpNoti(senderKakaoId, notiMoimIdReq.getMoimId());
         return ResponseEntity.ok().build();
     }
 
@@ -60,7 +60,7 @@ public class NotiController {
             @RequestBody NotiMoimIdReq notiMoimIdReq
     ) {
         String senderKakaoId = JwtTokenUtil.getIdentifier(token);
-        notiService.sendPaymentNoti(senderKakaoId, notiMoimIdReq.getChatRoomId());
+        notiService.sendPaymentNoti(senderKakaoId, notiMoimIdReq.getMoimId());
         return ResponseEntity.ok().build();
     }
 }

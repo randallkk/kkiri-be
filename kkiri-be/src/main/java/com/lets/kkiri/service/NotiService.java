@@ -80,8 +80,8 @@ public class NotiService {
         }
     }
 
-    public void sendHelpNoti(String senderKakaoId, Long chatRoomId) {
-        Moim targetMoim = moimRepository.findById(chatRoomId).orElseThrow(
+    public void sendHelpNoti(String senderKakaoId, Long moimId) {
+        Moim targetMoim = moimRepository.findById(moimId).orElseThrow(
                 () -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)
         );
 
@@ -109,7 +109,7 @@ public class NotiService {
             }
 
             successLogList.forEach((log) -> {
-                notiLogRepository.save(log.toEntity("sos", senderKakaoId, senderKakaoId, chatRoomId));
+                notiLogRepository.save(log.toEntity("sos", senderKakaoId, senderKakaoId, moimId));
             });
         }
     }
@@ -204,8 +204,8 @@ public class NotiService {
         }
     }
 
-    public void sendPaymentNoti(String senderKakaoId, Long chatRoomId) {
-        Moim targetMoim = moimRepository.findById(chatRoomId).orElseThrow(
+    public void sendPaymentNoti(String senderKakaoId, Long moimId) {
+        Moim targetMoim = moimRepository.findById(moimId).orElseThrow(
                 () -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)
         );
 
@@ -234,7 +234,7 @@ public class NotiService {
             }
 
             successLogList.forEach((log) -> {
-                notiLogRepository.save(log.toEntity("payment", senderKakaoId, senderKakaoId, chatRoomId));
+                notiLogRepository.save(log.toEntity("payment", senderKakaoId, senderKakaoId, moimId));
             });
         }
     }

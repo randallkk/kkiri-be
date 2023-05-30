@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class NotiMoimIdReq {
     // 수신 모임 id
-    private Long chatRoomId;
+    private Long moimId;
 }
