@@ -12,7 +12,9 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MoimExpenseListGetRes {
+public class MoimSettlementInfoGetRes {
     private Map<String, Integer> meta;
-    private List<MoimExpenseDto> paymentList;
+    private String hostKakaoId;
+    private String accountUrl;
+    private List<MoimExpenseDto> expenseList;
 }
