@@ -2,13 +2,10 @@ package com.lets.kkiri.service;
 
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.config.websocket.MoimSessionHandler;
 import com.lets.kkiri.dto.chatting.MessageDto;
 import com.lets.kkiri.dto.fcm.FcmMessageDto;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
-import com.lets.kkiri.dto.noti.HelpNotiReq;
 import com.lets.kkiri.dto.noti.NotiLogDto;
-import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.dto.noti.RouteGuideNotiReq;
 import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.Moim;
@@ -20,15 +17,11 @@ import com.lets.kkiri.repository.noti.NotiLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
