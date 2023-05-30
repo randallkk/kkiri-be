@@ -1,5 +1,7 @@
 package com.lets.kkiri.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,15 +12,16 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
-@IdClass(MemberGroupId.class)
 public class MemberGroup {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Member member;
-    @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Moim moim;
     private Integer rank;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime destination_time;
 
     @Builder
