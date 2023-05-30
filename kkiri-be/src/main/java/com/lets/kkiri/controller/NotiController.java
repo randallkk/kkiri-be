@@ -1,15 +1,12 @@
 package com.lets.kkiri.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.util.JwtTokenUtil;
-import com.lets.kkiri.dto.noti.HelpNotiReq;
+import com.lets.kkiri.dto.noti.NotiMoimIdReq;
 import com.lets.kkiri.dto.noti.PressNotiReq;
 import com.lets.kkiri.dto.noti.RouteGuideNotiReq;
-import com.lets.kkiri.service.FcmService;
 import com.lets.kkiri.service.NotiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +29,10 @@ public class NotiController {
     @PostMapping("/helps")
     public ResponseEntity<?> sendHelpNoti(
             @RequestHeader(JwtTokenUtil.HEADER_STRING) String token,
-            @RequestBody HelpNotiReq helpNotiReq
+            @RequestBody NotiMoimIdReq notiMoimIdReq
     ) {
         String senderKakaoId = JwtTokenUtil.getIdentifier(token);
-        notiService.sendHelpNoti(senderKakaoId, helpNotiReq.getChatRoomId());
+        notiService.sendHelpNoti(senderKakaoId, notiMoimIdReq.getChatRoomId());
         return ResponseEntity.ok().build();
     }
 
@@ -54,6 +51,16 @@ public class NotiController {
             @RequestParam Long moimId
     ) {
         notiService.sendImminentNoti(moimId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/payments")
+    public ResponseEntity<?> sendPaymentNoti(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String token,
+            @RequestBody NotiMoimIdReq notiMoimIdReq
+    ) {
+        String senderKakaoId = JwtTokenUtil.getIdentifier(token);
+        notiService.sendPaymentNoti(senderKakaoId, notiMoimIdReq.getChatRoomId());
         return ResponseEntity.ok().build();
     }
 }
