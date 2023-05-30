@@ -203,4 +203,39 @@ public class NotiService {
             log.error("FCM ERROR");
         }
     }
+
+    public void sendPaymentNoti(String senderKakaoId, Long chatRoomId) {
+        Moim targetMoim = moimRepository.findById(chatRoomId).orElseThrow(
+                () -> new KkiriException(ErrorCode.MOIM_NOT_FOUND)
+        );
+
+        Member member = memberRepository.findByKakaoId(senderKakaoId).orElseThrow(
+                () -> new KkiriException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        // 보내는 사람을 제외한 모임원들의 토큰들을 불러옴.
+        List<String> tokenList = memberDeviceRepositorySupport.findTokenListByMoimId(member.getId(), targetMoim.getId().toString());
+        if (tokenList.size() > 0) {
+
+            List<NotiLogDto> successLogList = new ArrayList<>();
+            try {
+                successLogList = fcmService.sendMessageToToken(
+                        FcmMessageDto.builder()
+                                .tokenList(tokenList)
+                                .channelId("payment")
+                                .title("정산 요청 알림")
+                                .body("정산을 완료해주세요 !")
+                                .moim(targetMoim)
+                                .sender(member)
+                                .build()
+                );
+            } catch (IOException e) {
+                log.error("FCM ERROR");
+            }
+
+            successLogList.forEach((log) -> {
+                notiLogRepository.save(log.toEntity("payment", senderKakaoId, senderKakaoId, chatRoomId));
+            });
+        }
+    }
 }

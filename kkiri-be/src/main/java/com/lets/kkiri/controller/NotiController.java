@@ -53,4 +53,14 @@ public class NotiController {
         notiService.sendImminentNoti(moimId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/payments")
+    public ResponseEntity<?> sendPaymentNoti(
+            @RequestHeader(JwtTokenUtil.HEADER_STRING) String token,
+            @RequestBody NotiMoimIdReq notiMoimIdReq
+    ) {
+        String senderKakaoId = JwtTokenUtil.getIdentifier(token);
+        notiService.sendPaymentNoti(senderKakaoId, notiMoimIdReq.getChatRoomId());
+        return ResponseEntity.ok().build();
+    }
 }
