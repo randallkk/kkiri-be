@@ -2,6 +2,9 @@ package com.lets.kkiri.service;
 
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
+import com.lets.kkiri.dto.member.MemberAccountDto;
+import com.lets.kkiri.dto.moim.MoimAccountUrlDto;
+import com.lets.kkiri.entity.Member;
 import com.lets.kkiri.entity.MemberGroup;
 import com.lets.kkiri.repository.member.MemberGroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +24,6 @@ public class MemberGroupService {
         return memberGroupRepository.countByMoimId(moimId);
     }
 
-    public int getMemberRank(Long moimId, String kakaoId) {
-        return memberGroupRepository.findMemberRank(moimId, kakaoId);
-    }
-
     @Transactional
     public MemberGroup setMemberRank(Long moimId, String kakaoId) {
         MemberGroup memberGroup = memberGroupRepository.findByMoimIdAndKakaoId(moimId, kakaoId);
@@ -40,5 +39,9 @@ public class MemberGroupService {
 
     public Map<String, Long> getMemberGroupRanking(Long moimId) {
         return memberGroupRepository.findAllMemberRank(moimId);
+    }
+
+    public MoimAccountUrlDto findHostByMoimId(Long moimId) {
+        return memberGroupRepository.findHostByMoimId(moimId);
     }
 }

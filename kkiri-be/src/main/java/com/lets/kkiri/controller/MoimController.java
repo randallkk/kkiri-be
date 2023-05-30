@@ -7,6 +7,7 @@ import com.lets.kkiri.common.util.S3Util;
 import com.lets.kkiri.dto.MoimGroupPostReq;
 import com.lets.kkiri.dto.ReceiptOcrRes;
 import com.lets.kkiri.dto.moim.*;
+import com.lets.kkiri.service.MemberGroupService;
 import com.lets.kkiri.service.MoimService;
 import com.lets.kkiri.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/moims")
-@RequiredArgsConstructor
 public class MoimController {
     private final MoimService moimService;
+    private final MemberGroupService memberGroupService;
     private final PaymentService paymentService;
     private final S3Util s3Util;
 
@@ -164,18 +166,21 @@ public class MoimController {
      * @return 정산 내역 목록
      */
     @GetMapping("/{moimId}/payments")
-    public ResponseEntity<MoimExpenseListGetRes> getMoimExpenseList(
+    public ResponseEntity<MoimSettlementInfoGetRes> getMoimExpenseList(
             @PathVariable Long moimId, Pageable pageable
     ) {
         Page<MoimExpenseDto> moimExpenseList =  paymentService.getMoimExpenseList(moimId, pageable);
-        return ResponseEntity.ok().body(MoimExpenseListGetRes.builder()
+        MoimAccountUrlDto moimAccountUrlDto = memberGroupService.findHostByMoimId(moimId);
+        return ResponseEntity.ok().body(MoimSettlementInfoGetRes.builder()
                 .meta(new HashMap<>(){{
                     put("page", moimExpenseList.getNumber());
                     put("totalPages", moimExpenseList.getTotalPages());
                     put("size", moimExpenseList.getSize());
                     put("totalCount", moimExpenseList.getNumberOfElements());
                 }})
-                .paymentList(moimExpenseList.getContent())
+                .hostKakaoId(moimAccountUrlDto.getKakaoId())
+                .accountUrl(moimAccountUrlDto.getAccountUrl())
+                .expenseList(moimExpenseList.getContent())
                 .build());
     }
 }
