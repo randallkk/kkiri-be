@@ -53,6 +53,7 @@ public class MypageService {
 	private MyPageResDto getMyPage(Member member, LocalDateTime start, LocalDateTime end) {
 		LocalDate startDay = start.toLocalDate();
 		LocalDate endDay = end.toLocalDate();
+		log.debug("memberId : {}", member.getId());
 		log.debug("startDate: {}, endDate: {}", start, end);
 		Long meetCnt = getMyMoimCount(member, start, end);
 		log.debug("meetCnt: {}", meetCnt);
@@ -85,6 +86,7 @@ public class MypageService {
 		List<MypageMemberDto> res = new ArrayList<>();
 		List<Tuple> list = memberGroupRepositorySupport.getMemberListByMemberIdAndDate(
 			member.getId(), start, end);
+
 		int idx = 1;
 		for (Tuple tuple : list) {
 			Long memberId = tuple.get(0, Long.class);
@@ -102,7 +104,13 @@ public class MypageService {
 	}
 
 	private String getMostLoc(Member member, LocalDateTime start, LocalDateTime end) {
-		return memberGroupRepositorySupport.getMostLocByMemberIdAndDate(member.getId(), start, end);
+		String res = "";
+		long startTime = System.currentTimeMillis();
+		res = memberGroupRepositorySupport.getMostLocByMemberIdAndDate(member.getId(), start, end);
+		long endTime = System.currentTimeMillis();
+		long durationTimeSec = endTime - startTime;
+		System.out.println(durationTimeSec + "m/s"); // 밀리세컨드
+		return res;
 	}
 
 	private String getMostTime(Member member, LocalDateTime start, LocalDateTime end) {

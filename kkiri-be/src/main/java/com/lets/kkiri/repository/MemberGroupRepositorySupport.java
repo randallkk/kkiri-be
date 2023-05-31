@@ -54,33 +54,27 @@ public class MemberGroupRepositorySupport {
             .fetchCount();
     }
 
+    //통계: 가장 많이 만난 사람
     public List<Tuple> getMemberListByMemberIdAndDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+        QMemberGroup subMG = new QMemberGroup("subMG");
         return jpaQueryFactory.select(qMemberGroup.member.id, qMemberGroup.member.id.count())
             .from(qMemberGroup)
-            .where(qMoim.id.in(
-                JPAExpressions
-                    .select(qMoim.id)
-                    .from(qMemberGroup)
-                    .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
-                    .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
-            ))
+            .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
+            .leftJoin(subMG).on(qMoim.id.eq(subMG.moim.id).and(subMG.member.id.eq(memberId)).and(qMoim.meetingAt.between(startDate, endDate)))
+            .where(subMG.moim.id.isNotNull())
             .groupBy(qMemberGroup.member.id)
             .orderBy(qMemberGroup.member.id.count().desc())
             .fetch();
     }
 
+    //통계: 가장 많이 만난 장소
     public String getMostLocByMemberIdAndDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         return jpaQueryFactory.select(
                 qMoim.placeName.substring(0, qMoim.placeName.indexOf(" "))
             )
             .from(qMoim)
-            .where(qMoim.id.in(
-                JPAExpressions
-                    .select(qMoim.id)
-                    .from(qMemberGroup)
-                    .leftJoin(qMoim).on(qMemberGroup.moim.id.eq(qMoim.id))
-                    .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
-            ))
+            .join(qMemberGroup).on(qMoim.id.eq(qMemberGroup.moim.id))
+            .where(qMemberGroup.member.id.eq(memberId).and(qMoim.meetingAt.between(startDate, endDate)))
             .groupBy(
                 qMoim.placeName.substring(0, qMoim.placeName.indexOf(" "))
             )
@@ -90,6 +84,7 @@ public class MemberGroupRepositorySupport {
             .fetchFirst();
     }
 
+    //통계: 가장 많이 만난 시간대
     public String getMostTimeByMemberIdAndDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         StringExpression cases = new CaseBuilder()
             .when(qMoim.meetingAt.hour().between(0, 5)).then("새벽시간대")
