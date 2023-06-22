@@ -14,6 +14,10 @@ public class NotiLogDto {
     private String body;
     private String image;
     private String messageId;
+    private String channelId;
+    private String senderKakaoId;
+    private String receiver;
+    private Long moimId;
 
     public static NotiLogDto of(NotiLog notiLog) {
         return NotiLogDto.builder()
@@ -22,6 +26,9 @@ public class NotiLogDto {
                 .body(notiLog.getBody())
                 .image(notiLog.getImage())
                 .messageId(notiLog.getMessageId())
+                .channelId(notiLog.getChannelId())
+                .senderKakaoId(notiLog.getSender().toString())
+                .moimId(notiLog.getMoimId())
                 .build();
     }
     public NotiLog toEntity() {
@@ -31,6 +38,21 @@ public class NotiLogDto {
                 .body(body)
                 .image(image)
                 .messageId(messageId)
+                .channelId(channelId)
+                .sender(Long.parseLong(senderKakaoId))
+                .moimId(moimId)
+                .build();
+    }
+    public NotiLog toEntity(String channelId, String sender, String receiver, Long moimId) {
+        return NotiLog.builder()
+                .token(token)
+                .title(title)
+                .body(body)
+                .image(image)
+                .messageId(messageId)
+                .channelId(channelId)
+                .sender(Long.parseLong(sender))
+                .moimId(moimId)
                 .build();
     }
 }

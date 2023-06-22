@@ -27,8 +27,18 @@ public class MessageService {
 
     public void sendMessage(WebSocketSession session, MessageSub msg)  {
         try{
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
-            log.debug("sendMessage : {}", msg);
+            System.out.println("session = " + session);
+            if(session.isOpen()) {
+                try{
+                    synchronized (session){
+                        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
+                        log.debug("sendMessage : {}", msg);
+                    }
+                }catch (IOException e){
+                    log.error("세션 동기화 오류", new IOException("세션 동기화 오류"));
+                }
+            }
+            else log.error("sendMessage : 세션이 닫혀있습니다.", new IOException("sendMessage : 세션이 닫혀있습니다."));
         }catch (Exception e){
             log.debug("sendMessage error : {}", e.getMessage());
         }

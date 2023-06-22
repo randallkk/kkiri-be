@@ -1,10 +1,13 @@
 package com.lets.kkiri.repository;
 
 import com.lets.kkiri.dto.moim.MoimCardDto;
+import com.lets.kkiri.entity.Moim;
 import com.lets.kkiri.entity.QMemberGroup;
 import com.lets.kkiri.entity.QMoim;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -41,6 +44,18 @@ public class MoimRepositorySupport {
                         )
                 ).from(qMoim, qMemberGroup)
                 .where(builder)
+                .orderBy(qMoim.meetingAt.desc())
+                .fetch();
+    }
+
+    public List<Moim> findMoimsByMeetingAt(String meetingAt) {
+        StringExpression stringExpression = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})", qMoim.meetingAt, "%Y-%m-%d %H:%i"
+        );
+        return jpaQueryFactory.selectFrom(qMoim)
+                .where(
+                        stringExpression.eq(meetingAt)
+                )
                 .fetch();
     }
 }

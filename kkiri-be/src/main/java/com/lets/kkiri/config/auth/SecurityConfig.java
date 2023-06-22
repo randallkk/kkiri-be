@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +38,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] OPEN_API_POST = new String[]{
             "/api/auth/login",
+            "/api/auth/reissue",
+            "/api/auth/verify",
+            "/api/moims/payment/**",
+            "/api/moims/groups",
+
     };
 
     private static final String[] ADMIN_API_POST = new String[]{

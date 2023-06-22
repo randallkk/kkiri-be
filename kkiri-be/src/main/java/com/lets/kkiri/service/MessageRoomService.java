@@ -10,6 +10,7 @@ import com.lets.kkiri.dto.chatting.MessageRes;
 import com.lets.kkiri.dto.chatting.MessageSub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 
+import com.lets.kkiri.dto.noti.MessageNotiDto;
 import com.lets.kkiri.entity.Message;
 import com.lets.kkiri.repository.chatting.MessageRepositorySupport;
 
@@ -36,16 +37,18 @@ public class MessageRoomService {
     private final MessageRepositorySupport messageRepositorySupport;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoTemplate mongoTemplate;
+    private final ChatNotiService chatNotiService;
+    private final MessageService messageService;
 
-    public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content, MessageService messageService) {
+    public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content) {
         Long moimId = (Long) session.getAttributes().get("moimId");
         String kakaoId;
 
-        try{
+        try {
             kakaoId = (String) session.getAttributes().get("kakaoId");
             MessageDto msg = objectMapper.convertValue(content, MessageDto.class);
             log.debug("[ws://] {} 회원님의 채팅 - Message : {}", kakaoId, msg.toString());
-            sendMessage(type, msg, messageService);
+            sendMessage(type, msg);
         } catch (NullPointerException e) {
             log.error("세션에 kakaoId가 없습니다.", e);
             try {
@@ -59,17 +62,28 @@ public class MessageRoomService {
         }
     }
 
-    public <T> void sendMessage(MoimSessionReq.MoimSessionType type, MessageDto msg, MessageService messageService) {
+    public <T> void sendMessage(MoimSessionReq.MoimSessionType type, MessageDto msg) {
         log.debug("MessageRoomService / sendMessage ()");
         WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
         Map<String, WebSocketSession> sessions = webSocketSessionInfo.getAllSessionsByMoimId(msg.getMoimId());
         MessageSub sub = MessageSub.messageDtoToSub(msg);
         sub.setMessageType(type);
         sub.setSeq(sequenceGeneratorService.generateSequence(Message.SEQUENCE_NAME));
+
         //메세지 전송 후 DB에 저장
         sub.setTime(LocalDateTime.now());
         Message saveMsg = sub.toEntity(sub);
         mongoTemplate.save(saveMsg);
+
+        //채팅 알림
+        if (type.equals(MoimSessionReq.MoimSessionType.MESSAGE)) {
+            chatNotiService.sendChatNoti(MessageNotiDto.builder()
+                    .message(sub.getMessage())
+                    .time(sub.getTime())
+                    .moimId(sub.getMoimId())
+                    .senderKakaoId(sub.getKakaoId())
+                    .build());
+        }
 
         log.debug("[ws://] session size : {}", sessions.size());
         log.debug("[ws://] MessageSub : {}", sub.toString());
@@ -79,13 +93,14 @@ public class MessageRoomService {
         }
     }
 
-    public MessageRes getFirstChat(Long moimId, Pageable pageable){
+
+    public MessageRes getFirstChat(Long moimId, Pageable pageable) {
         Page<Message> messages = messageRepositorySupport.findRecent(moimId, pageable);
         MessageRes res = makeChatList(messages);
         return res;
     }
 
-    public MessageRes getChat(Long moimId, String lastMessageId, Pageable pageable){
+    public MessageRes getChat(Long moimId, String lastMessageId, Pageable pageable) {
         Page<Message> messages = messageRepositorySupport.findMessage(moimId, pageable, lastMessageId);
         MessageRes res = makeChatList(messages);
         return res;
@@ -93,13 +108,15 @@ public class MessageRoomService {
 
     private MessageRes makeChatList(Page<Message> msgList) {
         MessageRes res = new MessageRes();
+        if(msgList.getContent().size() <= 0) return null;
         MessageMetaData meta = MessageMetaData.builder()
-            .last(msgList.isLast())
-            .lastMessageId(msgList.getContent().get(msgList.getContent().size()-1).getId())
-            .build();
+                .last(msgList.isLast())
+                .lastMessageId(msgList.getContent().get(msgList.getContent().size() - 1).getId())
+                .build();
 
         List<MessageSub> msgsubList = new ArrayList<>();
         for(Message msg : msgList.getContent()){
+            if(msg.getMessageType().equals(MoimSessionReq.MoimSessionType.EMOJI)) continue;
             MessageSub dto = MessageSub.messageToDto(msg);
             msgsubList.add(dto);
         }

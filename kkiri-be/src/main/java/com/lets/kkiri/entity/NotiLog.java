@@ -30,4 +30,7 @@ public class NotiLog {
     private String messageId;
     @CreatedDate
     private LocalDateTime sendAt;
+    private String channelId;
+    private Long sender;
+    private Long moimId;
 }

@@ -46,4 +46,7 @@ public class Moim {
     public void addLinkToMoim (String link) {
         this.link = link;
     }
+    public void addLateFee(int fee) {
+        this.lateFee += fee;
+    }
 }

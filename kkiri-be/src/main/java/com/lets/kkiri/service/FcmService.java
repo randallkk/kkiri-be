@@ -21,7 +21,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FcmService {
-    private final ObjectMapper objectMapper;
     @Value("${firebase.config.path}")
     String firebaseConfigPath;
 
@@ -30,6 +29,8 @@ public class FcmService {
 
     @Value("${firebase.send.url}")
     String FCM_SEND_URL;
+
+    private final ObjectMapper objectMapper;
 
     public List<NotiLogDto> sendMessageToToken(FcmMessageDto messageDto) throws IOException {
         List<NotiLogDto> results = new ArrayList<>();
@@ -51,15 +52,14 @@ public class FcmService {
             String messageId = responses.get(i).getMessageId().split("/")[3];
             String token = tokenList.get(i);
 
-            results.add(
-                    NotiLogDto.builder()
-                            .messageId(messageId)
-                            .token(token)
-                            .title(messageDto.getTitle())
-                            .body(messageDto.getBody())
-                            .image(null)
-                            .build()
-            );
+            NotiLogDto.NotiLogDtoBuilder notiLogDtoBuilder = NotiLogDto.builder()
+                    .messageId(messageId)
+                    .token(token)
+                    .title(messageDto.getTitle())
+                    .body(messageDto.getBody())
+                    .image(null);
+
+            results.add(notiLogDtoBuilder.build());
         }
         return results;
     }
@@ -81,9 +81,21 @@ public class FcmService {
         MulticastMessage.Builder multicastMessageBuilder = MulticastMessage.builder()
                 .setNotification(notificationBuilder.build())
                 .setAndroidConfig(androidConfigBuilder.build())
+                .putData("title", messageDto.getTitle())
                 .addAllTokens(messageDto.getTokenList());
 
         if(messageDto.getPath() != null) multicastMessageBuilder.putData("path", objectMapper.writeValueAsString(messageDto.getPath()));
+        if(messageDto.getMessage() != null) multicastMessageBuilder.putData("message", messageDto.getMessage());
+        if(messageDto.getMoim() != null) {
+            multicastMessageBuilder.putData("moimId", messageDto.getMoim().getId().toString());
+            multicastMessageBuilder.putData("moimName", messageDto.getMoim().getName());
+        }
+        if(messageDto.getSender() != null) {
+            multicastMessageBuilder.putData("senderNickname", messageDto.getSender().getNickname());
+            multicastMessageBuilder.putData("kakaoId", messageDto.getSender().getKakaoId());
+        }
+        if(messageDto.getTime() != null) multicastMessageBuilder.putData("time", messageDto.getTime().toString());
+
         return multicastMessageBuilder.build();
     }
 
