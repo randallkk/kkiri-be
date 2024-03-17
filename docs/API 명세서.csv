@@ -1,0 +1,33 @@
+﻿우선순위,epic,메서드,설명,요청 주소,인가,FE 담당,BE 담당
+1차배포,채팅,GET,채팅방의 이전 채팅 내용 불러오기,api/chat,none,,
+1차배포,채팅,WEBSOCKET,채팅 메세지 전송,wss://k8a606.p.ssafy.io/ws/api,member,Eunjee Lee,이지영
+1차배포,채팅,WEBSOCKET,채팅 메시지 수신,,none,,
+1차배포,실시간 위치,POST,도착 시간 전송 (반경 50m),/api/gps/arrive,member,박유진,randallkk
+1차배포,"실시간 위치, 알림",POST,도움 요청,/api/noti/helps,member,박유진,김준호
+1차배포,실시간 위치,POST,그린 경로 전송,/api/noti/helps/guides,member,박유진,김준호
+1차배포,"실시간 위치, 알림",POST,재촉 알림,/api/noti/presses,member,박유진,김준호
+1차배포,실시간 위치,WEBSOCKET,실시간 위치 수신,,none,박유진,randallkk
+1차배포,실시간 위치,WEBSOCKET,실시간 위치 송신,,none,박유진,randallkk
+1차배포,,WEBSOCKET,웹소켓 연결,wss://k8a606.p.ssafy.io/ws/api/{moimId},none,,
+1차배포,,WEBSOCKET,웹소켓 연결 종료,,none,Eunjee Lee,randallkk
+1차배포,,WEBSOCKET,웹소켓 로그인 확인,,none,Eunjee Lee,randallkk
+2차배포,소셜 로그인,POST,카카오 로그인,/api/auth/login,none,유한별,김준호
+2차배포,회원 관리,POST,로그아웃,/api/auth/logout,member,유한별,김준호
+2차배포,회원 관리,POST,ACCESS_TOKEN 재발급,/api/auth/reissue,none,유한별,김준호
+2차배포,회원 관리,POST,REFRESH TOKEN 검증,/api/auth/verify,none,유한별,김준호
+2차배포,회원 관리,GET,계좌 정보 조회,/api/members/accounts,member,,randallkk
+2차배포,회원 관리,POST,계좌 정보 추가,/api/members/accounts,member,,randallkk
+2차배포,회원 관리,POST,사용자 FCM 토큰 저장,/api/members/devices,member,유한별,김준호
+2차배포,모임 관리,GET,모임카드 목록 조회,/api/moims,member,Eunjee Lee,김준호
+2차배포,모임 관리,GET,모임 상세 정보,/api/moims/{moimId},member,유한별,김준호
+2차배포,모임 관리,POST,모임 링크 작성,/api/moims/links,member,유한별,김준호
+2차배포,모임 만들기,POST,모임 생성,/api/moims,member,유한별,김준호
+2차배포,"검색, 모임 만들기",GET,장소 검색( KAKAO MAPS API ),/api/search,member,,김준호
+2차배포,마이페이지,GET,마이페이지 정보 조회,/api/mypage,member,유한별,이지영
+2차배포,모임 참여하기,POST,초대받은 모임에 참여,/api/moims/groups,member,유한별,김준호
+2차배포,정산하기,GET,정산 내역 목록 조회,/api/moims/{moimId}/payments,member,박유진,randallkk
+2차배포,정산하기,GET,정산 금액 조회,/api/moims/{moimId}/payments/amount,member,박유진,randallkk
+2차배포,정산하기,POST,영수증 입력,/api/moims/{moimId}/payments/receipts,member,박유진,randallkk
+2차배포,정산하기,POST,영수증 이미지 전송 (OCR),/api/moims/payments/receipts/ocr,member,박유진,randallkk
+2차배포,알림,GET,약속 1시간전 알림 보내기,/api/noti/imminent,none,,
+2차배포,알림,POST,정산 알림 보내기,/api/noti/payments,member,박유진,김준호
