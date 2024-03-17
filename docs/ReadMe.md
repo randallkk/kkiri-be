@@ -88,9 +88,7 @@
 <img src="images/ReadMe/Screenshot_20230519_120148_kkiri.jpg" width="30%"/> 
 
 ### 2) 모임 생성
-<img src="images/ReadMe/Screenshot_20230519_120148_kkiri.jpg" width="30%"/> 
-<img src="images/ReadMe/Screenshot_20230519_120044_kkiri.jpg" width="30%"/> 
-<img src="images/ReadMe/Screenshot_20230519_120154_kkiri.jpg" width="30%"/>
+<img src="images/ReadMe/Screenshot_20230519_120148_kkiri.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230519_120044_kkiri.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230519_120154_kkiri.jpg" width="30%"/>
 
 ### 3) 위치 공유
 
@@ -98,41 +96,21 @@
 
 ### 4) 길 안내
 
-<img src="images/ReadMe/Screenshot_20230519_120739_kkiri.jpg" width="30%"/> 
-
-<img src="images/ReadMe/ezgif.com-gif-maker_(4).gif" width="30%"/> 
-
-<img src="images/ReadMe/ezgif.com-gif-maker_(6).gif" width="30%"/> 
+<img src="images/ReadMe/Screenshot_20230519_120739_kkiri.jpg" width="30%"/> <img src="images/ReadMe/ezgif.com-gif-maker_(4).gif" width="30%"/> <img src="images/ReadMe/ezgif.com-gif-maker_(6).gif" width="30%"/> 
 
 ### 5) 채팅/이모티콘
 
-<img src="images/ReadMe/ezgif.com-video-to-gif.gif" width="30%"/> 
-
-<img src="images/ReadMe/ezgif.com-video-to-gif_(1).gif" width="30%"/> 
-
-<img src="images/ReadMe/ezgif.com-video-to-gif_(2).gif" width="30%"/> 
+<img src="images/ReadMe/ezgif.com-video-to-gif.gif" width="30%"/> <img src="images/ReadMe/ezgif.com-video-to-gif_(1).gif" width="30%"/> <img src="images/ReadMe/ezgif.com-video-to-gif_(2).gif" width="30%"/> 
 
 ### 6) 알림
 
-<img src="images/ReadMe/Screenshot_20230519_121355_kkiri.jpg" width="30%"/> 
-
-<img src="images/ReadMe/ezgif.com-gif-maker.gif" width="30%"/> 
-
-<img src="images/ReadMe/ezgif.com-gif-maker_(5).gif" width="30%"/> 
+<img src="images/ReadMe/Screenshot_20230519_121355_kkiri.jpg" width="30%"/> <img src="images/ReadMe/ezgif.com-gif-maker.gif" width="30%"/> <img src="images/ReadMe/ezgif.com-gif-maker_(5).gif" width="30%"/> 
 
 ### 7) 간편 정산
 
-<img src="images/ReadMe/Screenshot_20230527-211812_Gallery.jpg" width="30%"/> 
+<img src="images/ReadMe/Screenshot_20230527-211812_Gallery.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230527-211832_Gallery.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230527-212405_Gallery.jpg" width="30%"/> 
 
-<img src="images/ReadMe/Screenshot_20230527-211832_Gallery.jpg" width="30%"/> 
-
-<img src="images/ReadMe/Screenshot_20230527-212405_Gallery.jpg" width="30%"/> 
-
-<img src="images/ReadMe/Screenshot_20230527-211842_Gallery.jpg" width="30%"/> 
-
-<img src="images/ReadMe/Screenshot_20230527-211855_Gallery.jpg" width="30%"/> 
-
-<img src="images/ReadMe/Screenshot_20230531-083046_kkiri.jpg" width="30%"/> 
+<img src="images/ReadMe/Screenshot_20230527-211842_Gallery.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230527-211855_Gallery.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230531-083046_kkiri.jpg" width="30%"/> 
 
 <img src="images/ReadMe/ezgif.com-gif-maker_(7).gif" width="30%"/> 
 
@@ -140,9 +118,7 @@
 
 ### 8) 설정 및 마이페이지
 
-<img src="images/ReadMe/Screenshot_20230530_173637_kkiri.jpg" width="30%"/> 
-
-<img src="images/ReadMe/Screenshot_20230527-205155_kkiri.jpg" width="30%"/> 
+<img src="images/ReadMe/Screenshot_20230530_173637_kkiri.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230527-205155_kkiri.jpg" width="30%"/> 
 
 ### ⚙ 아키텍처 구조도
 
