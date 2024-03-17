@@ -2,9 +2,9 @@
 
 ### 📋 프로젝트 개요
 
-> 프로젝트명 : 끼리
-개발 기간 : 2023년 04월 10일 ~ 2023년 05월 20일 (6주)
-분류 : 팀 프로젝트
+> 프로젝트명 : 끼리<br>
+개발 기간 : 2023년 04월 10일 ~ 2023년 05월 20일 (6주)<br>
+분류 : 팀 프로젝트<br>
 팀 구성 : 프론트엔드 3명, 백엔드 3명
 > 
 
@@ -112,9 +112,8 @@
 
 <img src="images/ReadMe/Screenshot_20230527-211842_Gallery.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230527-211855_Gallery.jpg" width="30%"/> <img src="images/ReadMe/Screenshot_20230531-083046_kkiri.jpg" width="30%"/> 
 
-<img src="images/ReadMe/ezgif.com-gif-maker_(7).gif" width="30%"/> 
+<img src="images/ReadMe/ezgif.com-gif-maker_(7).gif" width="30%" alt="정산하기.gif"/> 
 
-정산하기.gif
 
 ### 8) 설정 및 마이페이지
 
