@@ -1,4 +1,4 @@
-![Untitled](images/ReadMe/Untitled.png)
+![Thumbnail](images/ReadMe/Untitled.png)
 
 ### 📋 프로젝트 개요
 
@@ -85,69 +85,65 @@
 ### 🎨 기능 상세 및 구현 화면
 
 ### 1) 홈
-
-![Screenshot_20230519_120148_kkiri.jpg](images/ReadMe/Screenshot_20230519_120148_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230519_120148_kkiri.jpg" width="30%"/> 
 
 ### 2) 모임 생성
-
-![Screenshot_20230519_120148_kkiri.jpg](images/ReadMe/Screenshot_20230519_120148_kkiri.jpg)
-
-![Screenshot_20230519_120044_kkiri.jpg](images/ReadMe/Screenshot_20230519_120044_kkiri.jpg)
-
-![Screenshot_20230519_120154_kkiri.jpg](images/ReadMe/Screenshot_20230519_120154_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230519_120148_kkiri.jpg" width="30%"/> 
+<img src="images/ReadMe/Screenshot_20230519_120044_kkiri.jpg" width="30%"/> 
+<img src="images/ReadMe/Screenshot_20230519_120154_kkiri.jpg" width="30%"/>
 
 ### 3) 위치 공유
 
-![Screenshot_20230519_120629_kkiri.jpg](images/ReadMe/Screenshot_20230519_120629_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230519_120629_kkiri.jpg" width="30%"/> 
 
 ### 4) 길 안내
 
-![Screenshot_20230519_120739_kkiri.jpg](images/ReadMe/Screenshot_20230519_120739_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230519_120739_kkiri.jpg" width="30%"/> 
 
-![ezgif.com-gif-maker (4).gif](images/ReadMe/ezgif.com-gif-maker_(4).gif)
+<img src="images/ReadMe/ezgif.com-gif-maker_(4).gif" width="30%"/> 
 
-![ezgif.com-gif-maker (6).gif](images/ReadMe/ezgif.com-gif-maker_(6).gif)
+<img src="images/ReadMe/ezgif.com-gif-maker_(6).gif" width="30%"/> 
 
 ### 5) 채팅/이모티콘
 
-![ezgif.com-video-to-gif.gif](images/ReadMe/ezgif.com-video-to-gif.gif)
+<img src="images/ReadMe/ezgif.com-video-to-gif.gif" width="30%"/> 
 
-![ezgif.com-video-to-gif (1).gif](images/ReadMe/ezgif.com-video-to-gif_(1).gif)
+<img src="images/ReadMe/ezgif.com-video-to-gif_(1).gif" width="30%"/> 
 
-![ezgif.com-video-to-gif (2).gif](images/ReadMe/ezgif.com-video-to-gif_(2).gif)
+<img src="images/ReadMe/ezgif.com-video-to-gif_(2).gif" width="30%"/> 
 
 ### 6) 알림
 
-![Screenshot_20230519_121355_kkiri.jpg](images/ReadMe/Screenshot_20230519_121355_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230519_121355_kkiri.jpg" width="30%"/> 
 
-![ezgif.com-gif-maker.gif](images/ReadMe/ezgif.com-gif-maker.gif)
+<img src="images/ReadMe/ezgif.com-gif-maker.gif" width="30%"/> 
 
-![ezgif.com-gif-maker (5).gif](images/ReadMe/ezgif.com-gif-maker_(5).gif)
+<img src="images/ReadMe/ezgif.com-gif-maker_(5).gif" width="30%"/> 
 
 ### 7) 간편 정산
 
-![Screenshot_20230527-211812_Gallery.jpg](images/ReadMe/Screenshot_20230527-211812_Gallery.jpg)
+<img src="images/ReadMe/Screenshot_20230527-211812_Gallery.jpg" width="30%"/> 
 
-![Screenshot_20230527-211832_Gallery.jpg](images/ReadMe/Screenshot_20230527-211832_Gallery.jpg)
+<img src="images/ReadMe/Screenshot_20230527-211832_Gallery.jpg" width="30%"/> 
 
-![Screenshot_20230527-212405_Gallery.jpg](images/ReadMe/Screenshot_20230527-212405_Gallery.jpg)
+<img src="images/ReadMe/Screenshot_20230527-212405_Gallery.jpg" width="30%"/> 
 
-![Screenshot_20230527-211842_Gallery.jpg](images/ReadMe/Screenshot_20230527-211842_Gallery.jpg)
+<img src="images/ReadMe/Screenshot_20230527-211842_Gallery.jpg" width="30%"/> 
 
-![Screenshot_20230527-211855_Gallery.jpg](images/ReadMe/Screenshot_20230527-211855_Gallery.jpg)
+<img src="images/ReadMe/Screenshot_20230527-211855_Gallery.jpg" width="30%"/> 
 
-![Screenshot_20230531-083046_kkiri.jpg](images/ReadMe/Screenshot_20230531-083046_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230531-083046_kkiri.jpg" width="30%"/> 
 
-![정산하기.gif](images/ReadMe/ezgif.com-gif-maker_(7).gif)
+<img src="images/ReadMe/ezgif.com-gif-maker_(7).gif" width="30%"/> 
 
 정산하기.gif
 
 ### 8) 설정 및 마이페이지
 
-![Screenshot_20230530_173637_kkiri.jpg](images/ReadMe/ReadMe/Screenshot_20230530_173637_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230530_173637_kkiri.jpg" width="30%"/> 
 
-![Screenshot_20230527-205155_kkiri.jpg](images/ReadMe/ReadMe/Screenshot_20230527-205155_kkiri.jpg)
+<img src="images/ReadMe/Screenshot_20230527-205155_kkiri.jpg" width="30%"/> 
 
 ### ⚙ 아키텍처 구조도
 
-![Untitled](images/ReadMe/Untitled%201.png)
+![Architecture](images/ReadMe/Untitled%201.png)

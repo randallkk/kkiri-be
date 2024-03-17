@@ -308,7 +308,7 @@ server {
                 proxy_pass http://kkiri-service;
         }
         
-        location ~ ^/api(swagger|webjars|configuration|swagger-resources|v2|csrf) {
+        location ~ ^/api(swagger|webjars|configu  wration|swagger-resources|v2|csrf) {
                 proxy_pass http://kkiri-service;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
@@ -334,41 +334,3 @@ server {
         ssl_certificate_key /etc/letsencrypt/live/k8a606.p.ssafy.io/privkey.pem;
 }
 ```
-
-# 3. 시연 시나리오
-
-## 3.1. 모임 생성
-
----
-
-![Screenshot_20230519_120148_kkiri.jpg](images/porting manual/Screenshot_20230519_120148_kkiri.jpg)
-
-![Screenshot_20230519_120154_kkiri.jpg](images/porting manual/Screenshot_20230519_120154_kkiri.jpg)
-
-![Screenshot_20230519_120044_kkiri.jpg](images/porting manual/Screenshot_20230519_120044_kkiri.jpg)
-
-## 3.2. 위치 공유
-
----
-
-![Screenshot_20230519_120629_kkiri.jpg](images/porting manual/Screenshot_20230519_120629_kkiri.jpg)
-
-## 3.3. 채팅
-
----
-
-## 3.4. 길 안내
-
----
-
-![Screenshot_20230519_120739_kkiri.jpg](images/porting manual/Screenshot_20230519_120739_kkiri.jpg)
-
-## 3.5. AR 길 안내
-
----
-
-## 3.6. 알림
-
----
-
-![Screenshot_20230519_121355_kkiri.jpg](images/porting manual/Screenshot_20230519_121355_kkiri.jpg)
