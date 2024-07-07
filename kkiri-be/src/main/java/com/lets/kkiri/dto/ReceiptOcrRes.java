@@ -19,4 +19,11 @@ public class ReceiptOcrRes {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime time;
     private String receiptUrl;
+
+    public ReceiptOcrRes() {
+        this.place = "";
+        this.expense = 0;
+        this.time = getTime();
+        this.receiptUrl = "";
+    }
 }

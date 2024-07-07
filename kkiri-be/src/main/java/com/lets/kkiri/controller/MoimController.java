@@ -128,9 +128,10 @@ public class MoimController {
             fileName = String.valueOf(System.currentTimeMillis()).concat(fileName);
             String contentType = Files.probeContentType(Path.of(fileName));
             if (contentType.startsWith("image")) {   // image
-                ReceiptOcrRes receiptOcrRes = paymentService.readReceipt(file);
+//                ReceiptOcrRes receiptOcrRes = paymentService.readReceipt(file);
 //                String receiptUrl = s3Util.upload(file, "receipt/"+fileName, contentType, file.getSize());
                 String receiptUrl = "";
+                ReceiptOcrRes receiptOcrRes = new ReceiptOcrRes();
                 receiptOcrRes.setReceiptUrl(receiptUrl);
                 return ResponseEntity.ok(receiptOcrRes);
             }
