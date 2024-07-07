@@ -3,22 +3,22 @@ package com.lets.kkiri.controller;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
 import com.lets.kkiri.common.util.JwtTokenUtil;
-import com.lets.kkiri.common.util.S3Util;
 import com.lets.kkiri.dto.MoimGroupPostReq;
 import com.lets.kkiri.dto.ReceiptOcrRes;
-import com.lets.kkiri.dto.moim.*;
+import com.lets.kkiri.dto.moim.MoimAccountUrlDto;
+import com.lets.kkiri.dto.moim.MoimCardDto;
+import com.lets.kkiri.dto.moim.MoimCardListGetRes;
+import com.lets.kkiri.dto.moim.MoimExpenseAmountGetRes;
+import com.lets.kkiri.dto.moim.MoimExpenseDto;
+import com.lets.kkiri.dto.moim.MoimInfoGetRes;
+import com.lets.kkiri.dto.moim.MoimLinkPostReq;
+import com.lets.kkiri.dto.moim.MoimPostReq;
+import com.lets.kkiri.dto.moim.MoimReceiptPostReq;
+import com.lets.kkiri.dto.moim.MoimRegisterRes;
+import com.lets.kkiri.dto.moim.MoimSettlementInfoGetRes;
 import com.lets.kkiri.service.MemberGroupService;
 import com.lets.kkiri.service.MoimService;
 import com.lets.kkiri.service.PaymentService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -27,6 +27,22 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +52,7 @@ public class MoimController {
     private final MoimService moimService;
     private final MemberGroupService memberGroupService;
     private final PaymentService paymentService;
-    private final S3Util s3Util;
+//    private final S3Util s3Util;
 
 
     @PostMapping()
@@ -113,7 +129,8 @@ public class MoimController {
             String contentType = Files.probeContentType(Path.of(fileName));
             if (contentType.startsWith("image")) {   // image
                 ReceiptOcrRes receiptOcrRes = paymentService.readReceipt(file);
-                String receiptUrl = s3Util.upload(file, "receipt/"+fileName, contentType, file.getSize());
+//                String receiptUrl = s3Util.upload(file, "receipt/"+fileName, contentType, file.getSize());
+                String receiptUrl = "";
                 receiptOcrRes.setReceiptUrl(receiptUrl);
                 return ResponseEntity.ok(receiptOcrRes);
             }
