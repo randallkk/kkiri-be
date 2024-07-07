@@ -37,7 +37,7 @@ public class MessageRoomService {
     private final MessageRepositorySupport messageRepositorySupport;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoTemplate mongoTemplate;
-    private final ChatNotiService chatNotiService;
+//    private final ChatNotiService chatNotiService;
     private final MessageService messageService;
 
     public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content) {
@@ -76,14 +76,14 @@ public class MessageRoomService {
         mongoTemplate.save(saveMsg);
 
         //채팅 알림
-        if (type.equals(MoimSessionReq.MoimSessionType.MESSAGE)) {
-            chatNotiService.sendChatNoti(MessageNotiDto.builder()
-                    .message(sub.getMessage())
-                    .time(sub.getTime())
-                    .moimId(sub.getMoimId())
-                    .senderKakaoId(sub.getKakaoId())
-                    .build());
-        }
+//        if (type.equals(MoimSessionReq.MoimSessionType.MESSAGE)) {
+//            chatNotiService.sendChatNoti(MessageNotiDto.builder()
+//                    .message(sub.getMessage())
+//                    .time(sub.getTime())
+//                    .moimId(sub.getMoimId())
+//                    .senderKakaoId(sub.getKakaoId())
+//                    .build());
+//        }
 
         log.debug("[ws://] session size : {}", sessions.size());
         log.debug("[ws://] MessageSub : {}", sub.toString());
