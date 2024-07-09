@@ -1,6 +1,6 @@
 package com.lets.kkiri.config.auth;
 
-import com.lets.kkiri.config.jwt.JwtAuthenticationFilter;
+import com.lets.kkiri.common.exception.ExceptionHandlerFilter;
 import com.lets.kkiri.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
