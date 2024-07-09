@@ -1,18 +1,13 @@
 package com.lets.kkiri.common.util;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.*;
-
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * jwt 토큰 유틸 정의.
@@ -30,44 +25,23 @@ public class JwtTokenUtil {
 
     @Autowired
     public JwtTokenUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration.atk}") Long atkExpirationTime, @Value("${jwt.expiration.rtk}") Long rtkExpirationTime) {
-        this.secretKey = secretKey;
-        this.atkExpirationTime = atkExpirationTime;
-        this.rtkExpirationTime = rtkExpirationTime;
-    }
-
-
-    public void setExpirationTime() {
+        JwtTokenUtil.secretKey = secretKey;
+        JwtTokenUtil.atkExpirationTime = atkExpirationTime;
         JwtTokenUtil.rtkExpirationTime = rtkExpirationTime;
-    }
-
-    public static JWTVerifier getVerifier() {
-        return JWT
-                .require(Algorithm.HMAC512(secretKey.getBytes()))
-                .withIssuer(ISSUER)
-                .build();
-    }
-
-    public static String getToken(String kakaoId) {
-        Date expires = JwtTokenUtil.getTokenExpiration(rtkExpirationTime);
-        return JWT.create()
-                .withSubject(kakaoId)
-                .withExpiresAt(expires)
-                .withIssuer(ISSUER)
-                .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .sign(Algorithm.HMAC512(secretKey.getBytes()));
     }
 
     public static String getToken(long expiresToken, String kakaoId) {
         Date expires = JwtTokenUtil.getTokenExpiration(expiresToken);
-        return JWT.create()
-                .withSubject(kakaoId)
-                .withExpiresAt(expires)
-                .withIssuer(ISSUER)
-                .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .sign(Algorithm.HMAC512(secretKey.getBytes()));
+        return Jwts.builder()
+                .setSubject(kakaoId)
+                .setExpiration(expires)
+                .setIssuer(ISSUER)
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .signWith(SignatureAlgorithm.HS512, secretKey.getBytes())
+                .compact();
     }
 
-    public static String getIdentifier(String token){
+    public static String getIdentifier(String token) {
         return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
     }
 
@@ -85,58 +59,5 @@ public class JwtTokenUtil {
 
         Long now = new Date().getTime();
         return (expiration.getTime() - now);
-    }
-
-    public static void handleError(String token) {
-        JWTVerifier verifier = JWT
-                .require(Algorithm.HMAC512(secretKey.getBytes()))
-                .withIssuer(ISSUER)
-                .build();
-
-        try {
-            verifier.verify(token.replace(TOKEN_PREFIX, ""));
-        } catch (AlgorithmMismatchException ex) {
-            throw ex;
-        } catch (InvalidClaimException ex) {
-            throw ex;
-        } catch (SignatureGenerationException ex) {
-            throw ex;
-        } catch (SignatureVerificationException ex) {
-            throw ex;
-        } catch (TokenExpiredException ex) {
-            throw ex;
-        } catch (JWTCreationException ex) {
-            throw ex;
-        } catch (JWTDecodeException ex) {
-            throw ex;
-        } catch (JWTVerificationException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
-
-    public static void handleError(JWTVerifier verifier, String token) {
-        try {
-            verifier.verify(token.replace(TOKEN_PREFIX, ""));
-        } catch (AlgorithmMismatchException ex) {
-            throw ex;
-        } catch (InvalidClaimException ex) {
-            throw ex;
-        } catch (SignatureGenerationException ex) {
-            throw ex;
-        } catch (SignatureVerificationException ex) {
-            throw ex;
-        } catch (TokenExpiredException ex) {
-            throw ex;
-        } catch (JWTCreationException ex) {
-            throw ex;
-        } catch (JWTDecodeException ex) {
-            throw ex;
-        } catch (JWTVerificationException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw ex;
-        }
     }
 }
