@@ -1,26 +1,20 @@
 package com.lets.kkiri.config.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.config.jwt.JwtAuthenticationFilter;
 import com.lets.kkiri.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 /**
  * Spring Security 설정
@@ -82,9 +76,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), memberService, redisTemplate)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.GET, OPEN_API_GET).permitAll()  // OPEN_API_GET에 해당되는 경로에 대해 모든 요청 인가
+                .antMatchers(HttpMethod.POST, OPEN_API_POST).permitAll()    // OPEN_API_POST에 해당되는 경로에 대해 모든 요청 인가
+//                .anyRequest().permitAll()   // 모든 요청 인가 (인가 사용 안함)
                 .and().cors();
     }
-
-
 }
