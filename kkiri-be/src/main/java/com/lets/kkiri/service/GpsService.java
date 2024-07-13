@@ -31,7 +31,7 @@ public class GpsService {
         try {
             kakaoId = (String) session.getAttributes().get("kakaoId");
             GpsPub gpsPub = objectMapper.convertValue(object, GpsPub.class);
-            log.debug("[ws://] {} 회원님의 위치 - gpsPub : {}", kakaoId, gpsPub.toString());
+            log.info("[ws://] {} 회원님의 위치 - gpsPub : {}", kakaoId, gpsPub.toString());
             sendMessage(new GpsSub(moimId, kakaoId, gpsPub));
         } catch (NullPointerException e) {
             log.error("세션에 kakaoId가 없습니다.", e);

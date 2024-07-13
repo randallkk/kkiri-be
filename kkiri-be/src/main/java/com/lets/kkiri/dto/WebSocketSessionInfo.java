@@ -21,7 +21,6 @@ public class WebSocketSessionInfo {
     public void addSession(Long moimId, String kakaoId, WebSocketSession session) {
         sessionMap.computeIfAbsent(moimId, k -> new HashMap());
         sessionMap.get(moimId).put(kakaoId, session);
-        log.debug("[ws://] sessionMap에 {} 회원님의 session이 추가되었습니다.", kakaoId);
     }
 
     public void removeSession(Long moimId, String sessionId) {

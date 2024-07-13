@@ -78,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, OPEN_API_GET).permitAll()  // OPEN_API_GET에 해당되는 경로에 대해 모든 요청 인가
                 .antMatchers(HttpMethod.POST, OPEN_API_POST).permitAll()    // OPEN_API_POST에 해당되는 경로에 대해 모든 요청 인가
+                .anyRequest().authenticated()
 //                .anyRequest().permitAll()   // 모든 요청 인가 (인가 사용 안함)
                 .and().cors();
     }
