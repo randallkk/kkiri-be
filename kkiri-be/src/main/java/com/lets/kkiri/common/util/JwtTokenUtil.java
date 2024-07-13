@@ -1,7 +1,10 @@
 package com.lets.kkiri.common.util;
 
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -42,7 +45,11 @@ public class JwtTokenUtil {
     }
 
     public static String getIdentifier(String token) {
-        return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+        try {
+            return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+        } catch (SignatureException e) {
+            throw new KkiriException(ErrorCode.INVALID_SIGNATURE, e);
+        }
     }
 
     public static Date getTokenExpiration(long expirationTime) {

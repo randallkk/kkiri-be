@@ -15,4 +15,9 @@ public class KkiriException extends RuntimeException {
         super(message);
         this.errorCode = errorCode;
     }
+
+    public KkiriException(ErrorCode errorCode, Exception e) {
+        super(e);
+        this.errorCode = errorCode;
+    }
 }
