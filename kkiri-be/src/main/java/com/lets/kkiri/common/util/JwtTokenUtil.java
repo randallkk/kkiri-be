@@ -64,7 +64,7 @@ public class JwtTokenUtil {
                 .getBody()
                 .getExpiration();
 
-        Long now = new Date().getTime();
+        long now = new Date().getTime();
         return (expiration.getTime() - now);
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class AuthService {
-    private final ObjectMapper objectMapper;
 
     private final RedisService redisService;
 
