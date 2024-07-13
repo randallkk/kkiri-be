@@ -19,7 +19,7 @@ public class WebSocketSessionInfo {
     }
 
     public void addSession(Long moimId, String kakaoId, WebSocketSession session) {
-        sessionMap.computeIfAbsent(moimId, k -> new HashMap());
+        sessionMap.computeIfAbsent(moimId, k -> new HashMap<>());
         sessionMap.get(moimId).put(kakaoId, session);
     }
 

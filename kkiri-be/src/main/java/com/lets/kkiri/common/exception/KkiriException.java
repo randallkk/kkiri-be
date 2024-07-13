@@ -1,6 +1,5 @@
 package com.lets.kkiri.common.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 @Getter
 public class KkiriException extends RuntimeException {

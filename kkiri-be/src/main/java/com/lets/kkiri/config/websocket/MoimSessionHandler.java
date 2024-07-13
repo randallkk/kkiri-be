@@ -26,11 +26,8 @@ public class MoimSessionHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
 		// 클라이언트가 서버에 연결되면 호출되는 메소드
-		StringBuilder sb = new StringBuilder();
 		Long moimId = (Long) session.getAttributes().get("moimId");
 		String kakaoId = (String) session.getAttributes().get("kakaoId");
-		sb.append(moimId).append(":")
-				.append(kakaoId);
 
 		WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
 		webSocketSessionInfo.addSession(moimId, kakaoId, session);
