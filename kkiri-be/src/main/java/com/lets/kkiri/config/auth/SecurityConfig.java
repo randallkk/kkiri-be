@@ -1,6 +1,5 @@
 package com.lets.kkiri.config.auth;
 
-import com.lets.kkiri.common.exception.ExceptionHandlerFilter;
 import com.lets.kkiri.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 사용 하지않음
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), memberService, redisTemplate)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
+                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class) // JWT 토큰 인증 필터 전에 예외 처리 필터를 추가
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, OPEN_API_GET).permitAll()  // OPEN_API_GET에 해당되는 경로에 대해 모든 요청 인가
                 .antMatchers(HttpMethod.POST, OPEN_API_POST).permitAll()    // OPEN_API_POST에 해당되는 경로에 대해 모든 요청 인가
