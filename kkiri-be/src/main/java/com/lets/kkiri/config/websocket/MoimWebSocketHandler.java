@@ -1,6 +1,9 @@
 package com.lets.kkiri.config.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lets.kkiri.common.exception.ErrorCode;
+import com.lets.kkiri.common.exception.KkiriException;
+import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.service.GpsService;
 import com.lets.kkiri.service.MessageRoomService;
@@ -8,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -36,6 +40,15 @@ public class MoimWebSocketHandler extends TextWebSocketHandler {
 	}
 
 	@Override
+	public void afterConnectionClosed(WebSocketSession session, @NotNull CloseStatus status) {
+		// 클라이언트가 서버와의 연결을 끊으면 호출되는 메소드
+		Long moimId = (Long) session.getAttributes().get("moimId");
+		String kakaoId = (String) session.getAttributes().get("kakaoId");
+		moimSessionHandler.remove(moimId, kakaoId);
+		log.info("[ws://] kakaoId: {} 회원님이 {} 모임 웹소켓에서 나갔삼", kakaoId, moimId);
+	}
+
+	@Override
 	protected void handleTextMessage(@NotNull WebSocketSession session, TextMessage message) throws Exception {
 		String payload = message.getPayload();
 		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
@@ -47,8 +60,11 @@ public class MoimWebSocketHandler extends TextWebSocketHandler {
 				messageRoomService.handleActions(session, msg.getType(), content);
 				break;
 			case GPS:
-				gpsService.handleActions(session, content);
-				break;
+				if (content instanceof GpsPub) {
+					gpsService.handleActions(session, (GpsPub) content);
+					break;
+				}
+				else throw new KkiriException(ErrorCode.INVALID_PARAMETER, "Invalid GPS message format");
 			default:
 				log.error("Unknown message type");
 		}
