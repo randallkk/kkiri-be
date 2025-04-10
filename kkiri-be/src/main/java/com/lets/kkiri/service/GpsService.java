@@ -3,7 +3,7 @@ package com.lets.kkiri.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.dto.WebSocketSessionInfo;
+import com.lets.kkiri.config.websocket.MoimSessionHandler;
 import com.lets.kkiri.dto.gps.GpsPub;
 import com.lets.kkiri.dto.gps.GpsSub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
@@ -24,6 +24,7 @@ import static com.lets.kkiri.dto.moim.MoimSessionReq.MoimSessionType.GPS;
 public class GpsService {
 
     private final ObjectMapper objectMapper;
+    private final MoimSessionHandler moimSessionHandler;
 
     public void handleActions(WebSocketSession session, Object object) {
         Long moimId = (Long) session.getAttributes().get("moimId");
@@ -49,8 +50,7 @@ public class GpsService {
     void sendMessage(GpsSub gpsSub) {
         Long moimId = gpsSub.getMoimId();
         String kakaoId = gpsSub.getKakaoId();
-        WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
-        Map<String, WebSocketSession> sessions = webSocketSessionInfo.getAllSessionsByMoimId(moimId);
+        Map<String, WebSocketSession> sessions = moimSessionHandler.getAllSessionsByMoimId(moimId);
         for (Map.Entry<String, WebSocketSession> entry : sessions.entrySet()) {
             String key = entry.getKey();
             WebSocketSession session = entry.getValue();

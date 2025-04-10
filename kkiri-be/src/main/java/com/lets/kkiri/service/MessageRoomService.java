@@ -3,17 +3,18 @@ package com.lets.kkiri.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.dto.WebSocketSessionInfo;
+import com.lets.kkiri.config.websocket.MoimSessionHandler;
 import com.lets.kkiri.dto.chatting.MessageDto;
 import com.lets.kkiri.dto.chatting.MessageMetaData;
 import com.lets.kkiri.dto.chatting.MessageRes;
 import com.lets.kkiri.dto.chatting.MessageSub;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 
-import com.lets.kkiri.dto.noti.MessageNotiDto;
 import com.lets.kkiri.entity.Message;
 import com.lets.kkiri.repository.chatting.MessageRepositorySupport;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,10 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +38,7 @@ public class MessageRoomService {
     private final MongoTemplate mongoTemplate;
 //    private final ChatNotiService chatNotiService;
     private final MessageService messageService;
+    private final MoimSessionHandler moimSessionHandler;
 
     public void handleActions(WebSocketSession session, MoimSessionReq.MoimSessionType type, Object content) {
         Long moimId = (Long) session.getAttributes().get("moimId");
@@ -63,9 +63,9 @@ public class MessageRoomService {
     }
 
     public <T> void sendMessage(MoimSessionReq.MoimSessionType type, MessageDto msg) {
+        log.debug("MessageRoomService is not working now.");
         log.debug("MessageRoomService / sendMessage ()");
-        WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
-        Map<String, WebSocketSession> sessions = webSocketSessionInfo.getAllSessionsByMoimId(msg.getMoimId());
+        Map<String, WebSocketSession> sessions = moimSessionHandler.getAllSessionsByMoimId(msg.getMoimId());
         MessageSub sub = MessageSub.messageDtoToSub(msg);
         sub.setMessageType(type);
         sub.setSeq(sequenceGeneratorService.generateSequence(Message.SEQUENCE_NAME));

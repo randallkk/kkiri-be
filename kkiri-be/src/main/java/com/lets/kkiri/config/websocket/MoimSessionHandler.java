@@ -1,60 +1,30 @@
 package com.lets.kkiri.config.websocket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lets.kkiri.dto.WebSocketSessionInfo;
-import com.lets.kkiri.dto.moim.MoimSessionReq;
-import com.lets.kkiri.service.GpsService;
-import com.lets.kkiri.service.MessageRoomService;
-import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class MoimSessionHandler extends TextWebSocketHandler {
+public class MoimSessionHandler {
 
-	private final ObjectMapper objectMapper;
-	private final MessageRoomService messageRoomService;
-	private final GpsService gpsService;
-	private WebSocketSession mySession;
+    private final Map<Long, Map<String, WebSocketSession>> sessionMap = new ConcurrentHashMap<>();
 
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session) {
-		// 클라이언트가 서버에 연결되면 호출되는 메소드
-		Long moimId = (Long) session.getAttributes().get("moimId");
-		String kakaoId = (String) session.getAttributes().get("kakaoId");
+    public void register(Long moimId, String userId, WebSocketSession session) {
+        sessionMap.computeIfAbsent(moimId, k -> new ConcurrentHashMap<>());
+        sessionMap.get(moimId).put(userId, session);
+        log.debug("[ws://] {} 회원님이 {} 모임에 등록되었습니다.", moimId, userId);
+    }
 
-		WebSocketSessionInfo webSocketSessionInfo = WebSocketSessionInfo.getInstance();
-		webSocketSessionInfo.addSession(moimId, kakaoId, session);
+    public void remove(Long moimId, String userId) {
+        sessionMap.get(moimId).remove(userId);
+        log.debug("[ws://] {} 회원님이 {} 모임에서 제거되었습니다.", moimId, userId);
+    }
 
-		log.info("[ws://] kakaoId: {} 회원님이 {} 모임 웹소켓에 접속 완료 햇삼 꺄륵><", kakaoId, moimId);
-	}
-
-	@Override
-	protected void handleTextMessage(@NotNull WebSocketSession session, TextMessage message) throws Exception {
-		String payload = message.getPayload();
-		mySession = session;
-		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
-		Object content = msg.getContent();
-
-		switch (msg.getType()) {
-			case MESSAGE:
-			case EMOJI:
-				messageRoomService.handleActions(session, msg.getType(), content);
-				break;
-			case GPS:
-				gpsService.handleActions(session, content);
-				break;
-			default:
-				log.error("Unknown message type");
-		}
-	}
-	public WebSocketSession getSession() {
-		return mySession;
-	}
+    public Map<String, WebSocketSession> getAllSessionsByMoimId(Long moimId) {
+        return sessionMap.get(moimId);
+    }
 }
