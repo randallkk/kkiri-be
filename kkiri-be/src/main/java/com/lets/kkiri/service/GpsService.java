@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.config.websocket.MoimSessionHandler;
 import com.lets.kkiri.dto.gps.GpsDto;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.dto.moim.MoimSessionReq.MoimSessionType;
@@ -12,7 +11,6 @@ import com.lets.kkiri.pubsub.RedisPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import static com.lets.kkiri.dto.moim.MoimSessionReq.MoimSessionType.GPS;
@@ -26,7 +24,6 @@ public class GpsService {
     private final RedisPublisher redisPublisher;
 
     public void handleActions(WebSocketSession session, MoimSessionType type, GpsDto gpsDto) {
-        Long moimId = gpsDto.getMoimId();
         try {
             redisPublisher.publish("kkiri:moim",
                     objectMapper.writeValueAsString(new MoimSessionReq(GPS, gpsDto)));
