@@ -1,16 +1,12 @@
 package com.lets.kkiri.dto.chatting;
 
-import java.time.LocalDateTime;
+import com.lets.kkiri.dto.BaseMessageDto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.entity.Message;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -19,7 +15,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @ToString
-public class MessageDto {
+public class MessageDto extends BaseMessageDto {
 	private Long moimId;
 	private String kakaoId;
 	private String nickname;

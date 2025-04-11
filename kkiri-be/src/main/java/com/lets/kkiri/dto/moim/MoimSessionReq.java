@@ -1,5 +1,6 @@
 package com.lets.kkiri.dto.moim;
 
+import com.lets.kkiri.dto.BaseMessageDto;
 import lombok.*;
 
 @Getter
@@ -12,5 +13,5 @@ public class MoimSessionReq {
         MESSAGE, GPS, EMOJI, URGENT, JOIN
     }
     private MoimSessionType type;
-    private Object content;
+    private BaseMessageDto content;
 }

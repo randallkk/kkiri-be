@@ -3,7 +3,7 @@ package com.lets.kkiri.config.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lets.kkiri.common.exception.ErrorCode;
 import com.lets.kkiri.common.exception.KkiriException;
-import com.lets.kkiri.dto.gps.GpsPub;
+import com.lets.kkiri.dto.gps.GpsDto;
 import com.lets.kkiri.dto.moim.MoimSessionReq;
 import com.lets.kkiri.service.GpsService;
 import com.lets.kkiri.service.MessageRoomService;
@@ -53,6 +53,7 @@ public class MoimWebSocketHandler extends TextWebSocketHandler {
 		String payload = message.getPayload();
 		MoimSessionReq msg = objectMapper.readValue(payload, MoimSessionReq.class);
 		Object content = msg.getContent();
+		log.debug(msg.getContent() instanceof GpsDto ? "true" : content.toString());
 
 		switch (msg.getType()) {
 			case MESSAGE:
@@ -60,8 +61,8 @@ public class MoimWebSocketHandler extends TextWebSocketHandler {
 				messageRoomService.handleActions(session, msg.getType(), content);
 				break;
 			case GPS:
-				if (content instanceof GpsPub) {
-					gpsService.handleActions(session, (GpsPub) content);
+				if (content instanceof GpsDto) {
+					gpsService.handleActions(session, msg.getType(), (GpsDto) content);
 					break;
 				}
 				else throw new KkiriException(ErrorCode.INVALID_PARAMETER, "Invalid GPS message format");
